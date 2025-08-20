@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>永续合约预测系统 - 手机版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .mobile-container {
+            width: 100%;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .mobile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 15px 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .mobile-header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* 主要内容区域 */
+        .mobile-content {
+            flex: 1;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 卡片样式 */
+        .mobile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .mobile-card h2 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-card h2::before {
+            content: "📊";
+            font-size: 1.1rem;
+        }
+
+        /* 表单样式 */
+        .mobile-form-group {
+            margin-bottom: 20px;
+        }
+
+        .mobile-form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .mobile-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .mobile-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .mobile-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f8f9fa;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .mobile-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* 按钮样式 */
+        .mobile-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mobile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .mobile-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .mobile-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 结果展示区域 */
+        .mobile-result {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .mobile-result h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mobile-result h3::before {
+            content: "🎯";
+        }
+
+        .mobile-result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .mobile-result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .mobile-result-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .mobile-result-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .mobile-result-value.positive {
+            color: #28a745;
+        }
+
+        .mobile-result-value.negative {
+            color: #dc3545;
+        }
+
+        /* 加载状态 */
+        .mobile-loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .mobile-loading.show {
+            display: block;
+        }
+
+        .mobile-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 状态指示器 */
+        .mobile-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #28a745;
+        }
+
+        .mobile-status::before {
+            content: "📡";
+        }
+
+        /* 底部安全区域 */
+        .mobile-safe-area {
+            height: env(safe-area-inset-bottom, 20px);
+            background: white;
+        }
+
+        /* 横屏优化 */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .mobile-header {
+                padding: 10px 15px;
+            }
+            
+            .mobile-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .mobile-content {
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .mobile-card {
+                padding: 15px;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media (max-width: 360px) {
+            .mobile-content {
+                padding: 15px 10px;
+            }
+            
+            .mobile-card {
+                padding: 15px;
+            }
+            
+            .mobile-input, .mobile-select {
+                padding: 12px;
+            }
+            
+            .mobile-btn {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- 顶部导航 -->
+        <div class="mobile-header">
+            <h1>永续合约预测系统</h1>
+            <p>AI智能预测 · 移动端优化版</p>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="mobile-content">
+            <!-- 状态指示器 -->
+            <div class="mobile-status">
+                实时数据连接正常
+            </div>
+
+            <!-- 预测设置卡片 -->
+            <div class="mobile-card">
+                <h2>预测设置</h2>
+                
+                <div class="mobile-form-group">
+                    <label for="mobile-symbol">选择币种</label>
+                    <select id="mobile-symbol" class="mobile-select">
+                        <option value="BTCUSDT">BTC/USDT - 比特币</option>
+                        <option value="ETHUSDT">ETH/USDT - 以太坊</option>
+                        <option value="BNBUSDT">BNB/USDT - 币安币</option>
+                        <option value="ADAUSDT">ADA/USDT - 艾达币</option>
+                        <option value="XRPUSDT">XRP/USDT - 瑞波币</option>
+                        <option value="SOLUSDT">SOL/USDT - Solana</option>
+                        <option value="DOGEUSDT">DOGE/USDT - 狗狗币</option>
+                        <option value="AVAXUSDT">AVAX/USDT - 雪崩</option>
+                    </select>
+                </div>
+
+                <div class="mobile-form-group">
+                    <label for="mobile-timeframe">预测时间</label>
+                    <select id="mobile-timeframe" class="mobile-select">
+                        <option value="1">1分钟</option>
+                        <option value="5" selected>5分钟</option>
+                        <option value="15">15分钟</option>
+                        <option value="30">30分钟</option>
+                        <option value="60">1小时</option>
+                    </select>
+                </div>
+
+                <div class="mobile-form-group">
+                    <label for="mobile-amount">投资金额 (USDT)</label>
+                    <input type="number" id="mobile-amount" class="mobile-input" 
+                           placeholder="请输入投资金额" value="100" min="1" max="10000">
+                </div>
+
+                <button class="mobile-btn" onclick="startPrediction()">
+                    <span>🚀</span>
+                    开始AI预测
+                </button>
+            </div>
+
+            <!-- 加载状态 -->
+            <div class="mobile-loading" id="mobile-loading">
+                <div class="mobile-spinner"></div>
+                <p>AI正在分析市场数据...</p>
+            </div>
+
+            <!-- 预测结果卡片 -->
+            <div class="mobile-card" id="mobile-result-card" style="display: none;">
+                <h2>预测结果</h2>
+                <div class="mobile-result" id="mobile-result">
+                    <!-- 结果将在这里显示 -->
+                </div>
+            </div>
+
+            <!-- 实时行情卡片 -->
+            <div class="mobile-card">
+                <h2>实时行情</h2>
+                <div id="mobile-price-display">
+                    <div class="mobile-result-item">
+                        <div class="mobile-result-label">当前价格</div>
+                        <div class="mobile-result-value" id="current-price">加载中...</div>
+                    </div>
+                    <div class="mobile-result-item">
+                        <div class="mobile-result-label">24h涨跌</div>
+                        <div class="mobile-result-value" id="price-change">加载中...</div>
+                    </div>
+                    <div class="mobile-result-item">
+                        <div class="mobile-result-label">24h成交量</div>
+                        <div class="mobile-result-value" id="volume">加载中...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部安全区域 -->
+        <div class="mobile-safe-area"></div>
+    </div>
+
+    <script>
+        // 模拟数据
+        const mockPrices = {
+            'BTCUSDT': { price: 110000, change: 2.5, volume: '2.1B' },
+            'ETHUSDT': { price: 4200, change: 1.8, volume: '1.5B' },
+            'BNBUSDT': { price: 720, change: -0.5, volume: '800M' },
+            'ADAUSDT': { price: 1.15, change: 3.2, volume: '600M' },
+            'XRPUSDT': { price: 2.45, change: 5.1, volume: '1.2B' },
+            'SOLUSDT': { price: 245, change: -1.2, volume: '900M' },
+            'DOGEUSDT': { price: 0.42, change: 8.5, volume: '2.5B' },
+            'AVAXUSDT': { price: 52, change: 2.1, volume: '400M' }
+        };
+
+        // 更新价格显示
+        function updatePriceDisplay() {
+            const symbol = document.getElementById('mobile-symbol').value;
+            const data = mockPrices[symbol];
+            
+            if (data) {
+                document.getElementById('current-price').textContent = `$${data.price.toLocaleString()}`;
+                
+                const changeElement = document.getElementById('price-change');
+                changeElement.textContent = `${data.change > 0 ? '+' : ''}${data.change}%`;
+                changeElement.className = `mobile-result-value ${data.change > 0 ? 'positive' : 'negative'}`;
+                
+                document.getElementById('volume').textContent = data.volume;
+            }
+        }
+
+        // 开始预测
+        function startPrediction() {
+            const symbol = document.getElementById('mobile-symbol').value;
+            const timeframe = document.getElementById('mobile-timeframe').value;
+            const amount = document.getElementById('mobile-amount').value;
+            
+            if (!amount || amount <= 0) {
+                alert('请输入有效的投资金额');
+                return;
+            }
+            
+            // 显示加载状态
+            document.getElementById('mobile-loading').classList.add('show');
+            document.getElementById('mobile-result-card').style.display = 'none';
+            
+            // 模拟AI预测过程
+            setTimeout(() => {
+                showPredictionResult(symbol, timeframe, amount);
+            }, 3000);
+        }
+
+        // 显示预测结果
+        function showPredictionResult(symbol, timeframe, amount) {
+            document.getElementById('mobile-loading').classList.remove('show');
+            
+            // 模拟预测结果
+            const direction = Math.random() > 0.5 ? '上涨' : '下跌';
+            const confidence = (Math.random() * 30 + 70).toFixed(1);
+            const expectedReturn = (Math.random() * 10 + 5).toFixed(2);
+            const targetPrice = mockPrices[symbol].price * (1 + (Math.random() * 0.1 - 0.05));
+            
+            const resultHTML = `
+                <div class="mobile-result-item">
+                    <div class="mobile-result-label">预测方向</div>
+                    <div class="mobile-result-value ${direction === '上涨' ? 'positive' : 'negative'}">
+                        ${direction === '上涨' ? '📈' : '📉'} ${direction}
+                    </div>
+                </div>
+                <div class="mobile-result-item">
+                    <div class="mobile-result-label">置信度</div>
+                    <div class="mobile-result-value">${confidence}%</div>
+                </div>
+                <div class="mobile-result-item">
+                    <div class="mobile-result-label">预期收益率</div>
+                    <div class="mobile-result-value positive">+${expectedReturn}%</div>
+                </div>
+                <div class="mobile-result-item">
+                    <div class="mobile-result-label">目标价格</div>
+                    <div class="mobile-result-value">$${targetPrice.toLocaleString()}</div>
+                </div>
+                <div class="mobile-result-item">
+                    <div class="mobile-result-label">预期收益</div>
+                    <div class="mobile-result-value positive">+$${(amount * expectedReturn / 100).toFixed(2)}</div>
+                </div>
+            `;
+            
+            document.getElementById('mobile-result').innerHTML = resultHTML;
+            document.getElementById('mobile-result-card').style.display = 'block';
+            
+            // 滚动到结果区域
+            document.getElementById('mobile-result-card').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }
+
+        // 监听币种变化
+        document.getElementById('mobile-symbol').addEventListener('change', updatePriceDisplay);
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePriceDisplay();
+            
+            // 模拟实时价格更新
+            setInterval(() => {
+                const symbol = document.getElementById('mobile-symbol').value;
+                if (mockPrices[symbol]) {
+                    // 随机小幅波动
+                    const variation = (Math.random() - 0.5) * 0.02;
+                    mockPrices[symbol].price *= (1 + variation);
+                    mockPrices[symbol].change += (Math.random() - 0.5) * 0.5;
+                    updatePriceDisplay();
+                }
+            }, 5000);
+        });
+
+        // 防止页面缩放
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>
