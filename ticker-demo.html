@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时行情表演示</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+        }
+
+        .ticker-panel {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: #2d2d2d;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticker-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ticker-controls select {
+            padding: 5px 10px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+        }
+
+        .refresh-btn {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: #444;
+        }
+
+        .ticker-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ticker-table th {
+            background: #2d2d2d;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #ccc;
+            border-bottom: 1px solid #333;
+        }
+
+        .ticker-table th.sortable {
+            cursor: pointer;
+        }
+
+        .ticker-table th.sortable:hover {
+            background: #333;
+        }
+
+        .ticker-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #333;
+        }
+
+        .ticker-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .ticker-row:hover {
+            background: #2d2d2d;
+        }
+
+        .ticker-row.selected {
+            background: rgba(0, 212, 170, 0.1);
+            border-left: 3px solid #00d4aa;
+        }
+
+        .symbol-name {
+            font-weight: 600;
+            color: #00d4aa;
+        }
+
+        .symbol-desc {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .price {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+
+        .change-positive {
+            color: #22c55e;
+        }
+
+        .change-negative {
+            color: #ef4444;
+        }
+
+        .change-percent {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .change-percent.positive {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .change-percent.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .volume {
+            font-family: 'Courier New', monospace;
+        }
+
+        .favorite-icon {
+            color: #666;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .favorite-icon.active {
+            color: #f59e0b;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #00b894;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @keyframes priceFlash {
+            0% { background: rgba(0, 212, 170, 0.3); }
+            100% { background: transparent; }
+        }
+
+        .price-flash {
+            animation: priceFlash 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> 实时币价行情表</h1>
+                <p>专业的加密货币行情显示界面</p>
+            </div>
+
+            <div class="ticker-panel">
+                <div class="panel-header">
+                    <span><i class="fas fa-chart-bar"></i> 实时行情</span>
+                    <div class="ticker-controls">
+                        <select v-model="tickerFilter" @change="filterTickers">
+                            <option value="all">全部</option>
+                            <option value="usdt">USDT交易对</option>
+                            <option value="favorites">自选</option>
+                        </select>
+                        <button class="refresh-btn" @click="refreshTickers" :disabled="refreshing">
+                            <i class="fas fa-sync-alt" :class="{ 'fa-spin': refreshing }"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="loading" class="loading">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>加载行情数据...</p>
+                </div>
+
+                <table v-else class="ticker-table">
+                    <thead>
+                        <tr>
+                            <th @click="sortTickers('symbol')" class="sortable">
+                                交易对 <i class="fas fa-sort"></i>
+                            </th>
+                            <th @click="sortTickers('price')" class="sortable text-right">
+                                最新价格 <i class="fas fa-sort"></i>
+                            </th>
+                            <th @click="sortTickers('changePercent')" class="sortable text-right">
+                                24h涨跌 <i class="fas fa-sort"></i>
+                            </th>
+                            <th @click="sortTickers('volume')" class="sortable text-right">
+                                24h成交量 <i class="fas fa-sort"></i>
+                            </th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="ticker in filteredTickers" 
+                            :key="ticker.symbol" 
+                            class="ticker-row"
+                            :class="{ 'selected': ticker.symbol === selectedSymbol, 'price-flash': ticker.justUpdated }"
+                            @click="selectTicker(ticker)">
+                            <td>
+                                <div>
+                                    <span class="symbol-name">{{ ticker.symbol }}</span>
+                                    <i class="fas fa-star favorite-icon" 
+                                       :class="{ 'active': ticker.isFavorite }"
+                                       @click.stop="toggleFavorite(ticker)"></i>
+                                </div>
+                                <div class="symbol-desc">{{ ticker.description }}</div>
+                            </td>
+                            <td class="text-right">
+                                <div class="price">{{ formatPrice(ticker.price) }}</div>
+                            </td>
+                            <td class="text-right">
+                                <span class="change-percent" 
+                                      :class="ticker.changePercent >= 0 ? 'positive' : 'negative'">
+                                    {{ ticker.changePercent >= 0 ? '+' : '' }}{{ ticker.changePercent.toFixed(2) }}%
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <div class="volume">{{ formatVolume(ticker.volume) }}</div>
+                                <div style="font-size: 0.8rem; color: #999;">
+                                    ${{ formatVolume(ticker.volumeUsd) }}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-primary" @click.stop="startTrading(ticker)">
+                                    交易
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    loading: true,
+                    refreshing: false,
+                    selectedSymbol: 'BTCUSDT',
+                    tickerFilter: 'all',
+                    favoriteSymbols: JSON.parse(localStorage.getItem('favoriteSymbols') || '[]'),
+                    tickers: [],
+                    filteredTickers: []
+                };
+            },
+            mounted() {
+                this.initTickers();
+                // 每3秒自动刷新
+                setInterval(() => {
+                    if (!this.refreshing) {
+                        this.refreshTickers();
+                    }
+                }, 3000);
+            },
+            methods: {
+                initTickers() {
+                    const symbols = [
+                        { symbol: 'BTCUSDT', description: 'Bitcoin', basePrice: 43250 },
+                        { symbol: 'ETHUSDT', description: 'Ethereum', basePrice: 2580 },
+                        { symbol: 'BNBUSDT', description: 'BNB', basePrice: 315 },
+                        { symbol: 'ADAUSDT', description: 'Cardano', basePrice: 0.52 },
+                        { symbol: 'SOLUSDT', description: 'Solana', basePrice: 98.5 },
+                        { symbol: 'XRPUSDT', description: 'XRP', basePrice: 0.63 },
+                        { symbol: 'DOTUSDT', description: 'Polkadot', basePrice: 7.2 },
+                        { symbol: 'DOGEUSDT', description: 'Dogecoin', basePrice: 0.085 },
+                        { symbol: 'AVAXUSDT', description: 'Avalanche', basePrice: 36.8 },
+                        { symbol: 'LINKUSDT', description: 'Chainlink', basePrice: 14.5 }
+                    ];
+
+                    this.tickers = symbols.map(item => {
+                        const changePercent = (Math.random() - 0.5) * 20;
+                        const price = item.basePrice * (1 + changePercent / 100);
+                        const volume = Math.random() * 100000 + 10000;
+
+                        return {
+                            symbol: item.symbol,
+                            description: item.description,
+                            price: price,
+                            changePercent: changePercent,
+                            volume: volume,
+                            volumeUsd: volume * price,
+                            isFavorite: this.favoriteSymbols.includes(item.symbol),
+                            justUpdated: false
+                        };
+                    });
+
+                    this.filterTickers();
+                    this.loading = false;
+                },
+
+                refreshTickers() {
+                    this.refreshing = true;
+                    
+                    this.tickers.forEach(ticker => {
+                        const changePercent = (Math.random() - 0.5) * 20;
+                        const basePrice = ticker.price / (1 + ticker.changePercent / 100);
+                        
+                        ticker.price = basePrice * (1 + changePercent / 100);
+                        ticker.changePercent = changePercent;
+                        ticker.volume = Math.random() * 100000 + 10000;
+                        ticker.volumeUsd = ticker.volume * ticker.price;
+                        ticker.justUpdated = true;
+                        
+                        // 清除更新标记
+                        setTimeout(() => {
+                            ticker.justUpdated = false;
+                        }, 500);
+                    });
+
+                    this.filterTickers();
+                    
+                    setTimeout(() => {
+                        this.refreshing = false;
+                    }, 1000);
+                },
+
+                filterTickers() {
+                    let filtered = [...this.tickers];
+
+                    switch (this.tickerFilter) {
+                        case 'usdt':
+                            filtered = filtered.filter(ticker => ticker.symbol.endsWith('USDT'));
+                            break;
+                        case 'favorites':
+                            filtered = filtered.filter(ticker => ticker.isFavorite);
+                            break;
+                    }
+
+                    this.filteredTickers = filtered;
+                },
+
+                sortTickers(field) {
+                    this.filteredTickers.sort((a, b) => {
+                        if (field === 'symbol') {
+                            return a[field].localeCompare(b[field]);
+                        }
+                        return b[field] - a[field];
+                    });
+                },
+
+                selectTicker(ticker) {
+                    this.selectedSymbol = ticker.symbol;
+                },
+
+                toggleFavorite(ticker) {
+                    ticker.isFavorite = !ticker.isFavorite;
+                    
+                    if (ticker.isFavorite) {
+                        if (!this.favoriteSymbols.includes(ticker.symbol)) {
+                            this.favoriteSymbols.push(ticker.symbol);
+                        }
+                    } else {
+                        const index = this.favoriteSymbols.indexOf(ticker.symbol);
+                        if (index > -1) {
+                            this.favoriteSymbols.splice(index, 1);
+                        }
+                    }
+                    
+                    localStorage.setItem('favoriteSymbols', JSON.stringify(this.favoriteSymbols));
+                    this.filterTickers();
+                },
+
+                startTrading(ticker) {
+                    alert(`开始交易 ${ticker.symbol}`);
+                },
+
+                formatPrice(price) {
+                    if (!price) return '0.00';
+                    if (price >= 1000) return price.toFixed(2);
+                    if (price >= 1) return price.toFixed(4);
+                    return price.toFixed(6);
+                },
+
+                formatVolume(volume) {
+                    if (!volume) return '0';
+                    if (volume >= 1e9) return (volume / 1e9).toFixed(2) + 'B';
+                    if (volume >= 1e6) return (volume / 1e6).toFixed(2) + 'M';
+                    if (volume >= 1e3) return (volume / 1e3).toFixed(2) + 'K';
+                    return volume.toFixed(2);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

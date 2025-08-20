@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>永续合约预测系统 - 演示版</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* 主题变量 */
+        :root {
+            /* 白天模式 */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #6c757d;
+            --border-color: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.2);
+            --card-bg: #ffffff;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* 黑夜模式 */
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            --bg-primary: #2d3748;
+            --bg-secondary: #4a5568;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --card-bg: #2d3748;
+            --gradient-primary: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .demo-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .demo-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .interactive-demo {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        
+        .demo-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .demo-tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .demo-content {
+            min-height: 400px;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .price-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .price-item.reference-exchange {
+            border-left: 4px solid #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .price-item.price-higher {
+            border-left: 4px solid #28a745;
+        }
+
+        .price-item.price-lower {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .exchange-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .change {
+            font-size: 0.9rem;
+        }
+        
+        .positive {
+            color: #28a745;
+        }
+        
+        .negative {
+            color: #dc3545;
+        }
+        
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .prediction-item {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .timeframe {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+        
+        .direction {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+        }
+        
+        .probability {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .membership-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .plan-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        
+        .plan-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        
+        .plan-card.recommended {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f0ff 100%);
+            position: relative;
+        }
+        
+        .plan-card.recommended:before {
+            content: "推荐";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .plan-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 1rem 0;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-tabs {
+                flex-direction: column;
+            }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+            <h1>🚀 永续合约预测系统</h1>
+            <p>基于AI大模型的专业级加密货币预测平台</p>
+        </div>
+        
+        <!-- 功能特色展示 -->
+        <div class="demo-grid">
+            <div class="demo-card">
+                <h3>📊 实时交易仪表盘</h3>
+                <ul class="feature-list">
+                    <li>10大交易所实时数据同步</li>
+                    <li>专业级K线图表展示</li>
+                    <li>多交易所价格对比</li>
+                    <li>深度图和订单簿</li>
+                    <li>套利机会识别</li>
+                </ul>
+            </div>
+            
+            <div class="demo-card">
+                <h3>🤖 AI智能预测</h3>
+                <ul class="feature-list">
+                    <li>DEEPSEEK大模型分析</li>
+                    <li>多时间粒度预测</li>
+                    <li>技术指标综合分析</li>
+                    <li>市场情绪监控</li>
+                    <li>预测准确率统计</li>
+                </ul>
+            </div>
+            
+            <div class="demo-card">
+                <h3>💎 会员服务体系</h3>
+                <ul class="feature-list">
+                    <li>灵活的收费模式</li>
+                    <li>24小时免费试用</li>
+                    <li>多种支付方式</li>
+                    <li>分级会员权限</li>
+                    <li>专属客服支持</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 交互式演示 -->
+        <div class="interactive-demo">
+            <div class="demo-tabs">
+                <div class="demo-tab active" onclick="showTab('market')">实时行情</div>
+                <div class="demo-tab" onclick="showTab('prediction')">AI预测</div>
+                <div class="demo-tab" onclick="showTab('membership')">会员套餐</div>
+            </div>
+            
+            <div class="demo-content">
+                <!-- 实时行情演示 -->
+                <div id="market-demo" class="tab-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>BTC/USDT 多交易所实时价格</h3>
+                        <div>
+                            <label>参照交易所：</label>
+                            <select id="exchange-selector" onchange="selectExchange(this.value)" style="margin-left: 0.5rem; padding: 0.5rem;">
+                                <option value="binance">币安 Binance</option>
+                                <option value="okx">OKX</option>
+                                <option value="bybit">Bybit</option>
+                                <option value="coinbase">Coinbase Pro</option>
+                                <option value="kraken">Kraken</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="price-grid" id="price-grid">
+                        <!-- 价格数据将通过JavaScript动态生成 -->
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">
+                        💡 价格每3秒自动更新，当前以 <span id="reference-exchange-name">币安</span> 为参照，展示价格差异和套利机会
+                    </p>
+                </div>
+                
+                <!-- AI预测演示 -->
+                <div id="prediction-demo" class="tab-content" style="display: none;">
+                    <h3>AI预测结果展示</h3>
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <button class="btn" onclick="generatePrediction()" id="predict-btn">
+                            开始AI预测分析
+                        </button>
+                    </div>
+                    <div class="prediction-grid" id="prediction-grid">
+                        <!-- 预测结果将通过JavaScript动态生成 -->
+                    </div>
+                    <div id="prediction-analysis" style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; display: none;">
+                        <h4>📈 分析说明</h4>
+                        <p id="analysis-text"></p>
+                    </div>
+                </div>
+                
+                <!-- 会员套餐演示 -->
+                <div id="membership-demo" class="tab-content" style="display: none;">
+                    <h3>选择适合您的套餐</h3>
+                    <div class="membership-plans">
+                        <div class="plan-card">
+                            <h4>基础版</h4>
+                            <div class="plan-price">¥99<span style="font-size: 1rem; color: #666;">/月</span></div>
+                            <ul class="feature-list">
+                                <li>200次/日预测</li>
+                                <li>基础技术指标</li>
+                                <li>7x24小时服务</li>
+                            </ul>
+                            <button class="btn">选择基础版</button>
+                        </div>
+                        
+                        <div class="plan-card recommended">
+                            <h4>专业版</h4>
+                            <div class="plan-price">¥299<span style="font-size: 1rem; color: #666;">/月</span></div>
+                            <ul class="feature-list">
+                                <li>500次/日预测</li>
+                                <li>全部技术指标</li>
+                                <li>高级市场分析</li>
+                                <li>优先客服</li>
+                            </ul>
+                            <button class="btn">选择专业版</button>
+                        </div>
+                        
+                        <div class="plan-card">
+                            <h4>旗舰版</h4>
+                            <div class="plan-price">¥599<span style="font-size: 1rem; color: #666;">/月</span></div>
+                            <ul class="feature-list">
+                                <li>无限次预测</li>
+                                <li>全部功能</li>
+                                <li>专属客服</li>
+                                <li>API接口</li>
+                            </ul>
+                            <button class="btn">选择旗舰版</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🔗 完整版本包含完整的后端API、数据库集成、支付系统等功能</p>
+            <p>📧 联系我们获取完整源码和部署支持</p>
+        </div>
+    </div>
+    
+    <script>
+        // 模拟数据
+        let marketData = {};
+        let predicting = false;
+        let isDarkMode = false;
+        let selectedExchange = 'binance'; // 默认选择币安
+        
+        // 交易所配置
+        const exchanges = [
+            { id: 'binance', name: '币安 Binance', icon: 'B', color: '#f3ba2f' },
+            { id: 'okx', name: 'OKX', icon: 'O', color: '#0052ff' },
+            { id: 'bybit', name: 'Bybit', icon: 'By', color: '#f7a600' },
+            { id: 'coinbase', name: 'Coinbase Pro', icon: 'C', color: '#0052ff' },
+            { id: 'kraken', name: 'Kraken', icon: 'K', color: '#5741d9' }
+        ];
+        
+        // 初始化
+        function init() {
+            initTheme();
+            generateMarketData();
+            updatePriceDisplay();
+
+            // 每3秒更新一次价格
+            setInterval(() => {
+                generateMarketData();
+                updatePriceDisplay();
+            }, 3000);
+        }
+        
+        // 生成模拟市场数据
+        function generateMarketData() {
+            const basePrice = 43250; // BTC基础价格
+            
+            exchanges.forEach(exchange => {
+                const variation = (Math.random() - 0.5) * 0.02; // ±1%变化
+                const price = basePrice * (1 + variation);
+                const change = (Math.random() - 0.5) * 10; // ±5%变化
+                
+                marketData[exchange.id] = {
+                    name: exchange.name,
+                    price: price,
+                    change: change,
+                    volume: Math.random() * 50000 + 10000
+                };
+            });
+        }
+        
+        // 更新价格显示
+        function updatePriceDisplay() {
+            const priceGrid = document.getElementById('price-grid');
+            priceGrid.innerHTML = '';
+
+            // 获取参照交易所的价格
+            const referencePrice = marketData[selectedExchange]?.price || 0;
+
+            Object.entries(marketData).forEach(([id, data]) => {
+                const priceItem = document.createElement('div');
+
+                // 判断是否为参照交易所
+                const isReference = id === selectedExchange;
+                const priceDiff = data.price - referencePrice;
+                const priceDiffPercent = referencePrice > 0 ? (priceDiff / referencePrice) * 100 : 0;
+
+                let priceItemClass = 'price-item';
+                if (isReference) {
+                    priceItemClass += ' reference-exchange';
+                } else if (priceDiff > 0) {
+                    priceItemClass += ' price-higher';
+                } else if (priceDiff < 0) {
+                    priceItemClass += ' price-lower';
+                }
+
+                priceItem.className = priceItemClass;
+
+                const changeClass = data.change > 0 ? 'positive' : 'negative';
+                const changeSymbol = data.change > 0 ? '+' : '';
+
+                let diffDisplay = '';
+                if (!isReference && referencePrice > 0) {
+                    const diffSymbol = priceDiff > 0 ? '+' : '';
+                    diffDisplay = `
+                        <div style="font-size: 0.8rem; margin-top: 0.25rem;">
+                            <span style="color: ${priceDiff > 0 ? '#28a745' : '#dc3545'};">
+                                差价: ${diffSymbol}$${priceDiff.toFixed(2)} (${diffSymbol}${priceDiffPercent.toFixed(2)}%)
+                            </span>
+                        </div>
+                    `;
+                }
+
+                priceItem.innerHTML = `
+                    <div class="exchange-name">
+                        ${data.name}
+                        ${isReference ? '<span style="background: #667eea; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.7rem; margin-left: 0.5rem;">参照</span>' : ''}
+                    </div>
+                    <div class="price">$${data.price.toFixed(2)}</div>
+                    <div class="change ${changeClass}">
+                        ${changeSymbol}${data.change.toFixed(2)}%
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                        24h量: ${formatVolume(data.volume)}
+                    </div>
+                    ${diffDisplay}
+                `;
+
+                priceGrid.appendChild(priceItem);
+            });
+        }
+        
+        // 格式化成交量
+        function formatVolume(volume) {
+            if (volume >= 1e6) return (volume / 1e6).toFixed(1) + 'M';
+            if (volume >= 1e3) return (volume / 1e3).toFixed(1) + 'K';
+            return volume.toFixed(0);
+        }
+        
+        // 切换标签页
+        function showTab(tabName) {
+            // 隐藏所有内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 移除所有活跃状态
+            document.querySelectorAll('.demo-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容
+            document.getElementById(tabName + '-demo').style.display = 'block';
+            
+            // 添加活跃状态
+            event.target.classList.add('active');
+        }
+        
+        // 选择交易所
+        function selectExchange(exchangeId) {
+            selectedExchange = exchangeId;
+            const exchangeName = exchanges.find(ex => ex.id === exchangeId)?.name || exchangeId;
+            document.getElementById('reference-exchange-name').textContent = exchangeName;
+
+            // 更新价格显示
+            updatePriceDisplay();
+        }
+
+        // 生成AI预测
+        function generatePrediction() {
+            if (predicting) return;
+
+            predicting = true;
+            const btn = document.getElementById('predict-btn');
+            btn.innerHTML = '<span class="loading"></span> AI分析中...';
+            btn.disabled = true;
+
+            // 获取选定交易所的数据
+            const exchangeData = marketData[selectedExchange];
+            const exchangeName = exchanges.find(ex => ex.id === selectedExchange)?.name || selectedExchange;
+
+            // 模拟AI分析时间
+            setTimeout(() => {
+                const timeframes = ['1分钟', '5分钟', '15分钟', '1小时'];
+                const predictionGrid = document.getElementById('prediction-grid');
+                predictionGrid.innerHTML = '';
+
+                timeframes.forEach(timeframe => {
+                    // 基于选定交易所的价格变化趋势进行预测
+                    const priceChange = exchangeData ? exchangeData.change : 0;
+                    const baseDirection = priceChange > 0 ? 'up' : 'down';
+
+                    // 添加一些随机性，但倾向于当前趋势
+                    const direction = Math.random() > 0.3 ? baseDirection : (baseDirection === 'up' ? 'down' : 'up');
+                    const baseProbability = Math.abs(priceChange) * 2 + 60;
+                    const probability = Math.min(baseProbability + Math.random() * 20, 95);
+
+                    const predictionItem = document.createElement('div');
+                    predictionItem.className = 'prediction-item';
+
+                    predictionItem.innerHTML = `
+                        <div class="timeframe">${timeframe}</div>
+                        <div class="direction">${direction === 'up' ? '↗' : '↘'}</div>
+                        <div class="probability">${probability.toFixed(1)}%</div>
+                    `;
+
+                    predictionGrid.appendChild(predictionItem);
+                });
+
+                // 显示分析说明
+                const analysisDiv = document.getElementById('prediction-analysis');
+                const analysisText = document.getElementById('analysis-text');
+
+                const currentPrice = exchangeData ? exchangeData.price.toFixed(2) : '43250.00';
+                const currentChange = exchangeData ? exchangeData.change.toFixed(2) : '0.00';
+
+                const analyses = [
+                    `基于${exchangeName}的BTC/USDT数据分析，当前价格$${currentPrice}，24h变化${currentChange}%，RSI指标显示超卖状态，MACD出现金叉信号，预计短期内价格将上涨。`,
+                    `根据${exchangeName}交易数据，当前价格$${currentPrice}，市场情绪偏向谨慎，成交量萎缩，支撑位面临考验，建议关注关键价位突破情况。`,
+                    `${exchangeName}数据显示当前价格$${currentPrice}，多项技术指标显示市场处于震荡状态，建议等待明确的突破信号再做决策。`
+                ];
+
+                analysisText.textContent = analyses[Math.floor(Math.random() * analyses.length)];
+                analysisDiv.style.display = 'block';
+
+                // 恢复按钮状态
+                btn.innerHTML = '重新预测';
+                btn.disabled = false;
+                predicting = false;
+
+            }, 2000);
+        }
+        
+        // 主题相关函数
+        function initTheme() {
+            // 从localStorage读取主题设置
+            const savedTheme = localStorage.getItem('demo-theme');
+            if (savedTheme) {
+                isDarkMode = savedTheme === 'dark';
+            } else {
+                // 检测系统主题偏好
+                isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            applyTheme();
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            applyTheme();
+            localStorage.setItem('demo-theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        function applyTheme() {
+            const themeIcon = document.getElementById('theme-icon');
+            if (isDarkMode) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

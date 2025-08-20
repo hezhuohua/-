@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>永续合约预测系统 - 服务测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #5a6fd8; }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 永续合约预测系统 - 服务状态检测</h1>
+        
+        <div class="info">
+            <h3>📋 服务地址</h3>
+            <ul>
+                <li><strong>前端界面</strong>: <a href="http://localhost:8080" target="_blank">http://localhost:8080</a></li>
+                <li><strong>后端API</strong>: <a href="http://localhost:8000" target="_blank">http://localhost:8000</a></li>
+                <li><strong>API文档</strong>: <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a></li>
+                <li><strong>健康检查</strong>: <a href="http://localhost:8000/health" target="_blank">http://localhost:8000/health</a></li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ 当前状态</h3>
+            <p>如果您看到这个页面，说明前端文件可以正常访问。现在需要检查后端服务状态。</p>
+        </div>
+
+        <h3>🔧 服务测试</h3>
+        <button onclick="testBackendHealth()">测试后端健康状态</button>
+        <button onclick="testMarketData()">测试市场数据API</button>
+        <button onclick="testAuth()">测试认证API</button>
+        <button onclick="startMockServer()">启动模拟服务器</button>
+
+        <div id="test-results"></div>
+
+        <div class="info">
+            <h3>🛠️ 故障排除</h3>
+            <ol>
+                <li><strong>后端服务未启动</strong>：运行 <code>python backend/minimal_server.py</code></li>
+                <li><strong>端口被占用</strong>：检查8000和8080端口是否被其他程序占用</li>
+                <li><strong>依赖缺失</strong>：运行 <code>pip install fastapi uvicorn</code></li>
+                <li><strong>Python环境问题</strong>：确保Python 3.7+已正确安装</li>
+            </ol>
+        </div>
+
+        <div class="success">
+            <h3>✅ 快速启动指南</h3>
+            <p><strong>方法1 - 使用启动脚本：</strong></p>
+            <pre>python start_services.py</pre>
+            
+            <p><strong>方法2 - 手动启动：</strong></p>
+            <pre>
+# 终端1 - 启动后端
+python backend/minimal_server.py
+
+# 终端2 - 启动前端（可选）
+python -m http.server 8080
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        async function testBackendHealth() {
+            addTestResult('正在测试后端健康状态... <span class="loading"></span>');
+            
+            try {
+                const response = await fetch('http://localhost:8000/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult(`✅ 后端服务正常运行 - 状态: ${data.status}`, 'success');
+                } else {
+                    addTestResult(`❌ 后端服务响应异常 - 状态码: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addTestResult(`❌ 无法连接到后端服务 - ${error.message}`, 'error');
+                addTestResult('💡 请确保后端服务已启动: python backend/minimal_server.py', 'warning');
+            }
+        }
+
+        async function testMarketData() {
+            addTestResult('正在测试市场数据API... <span class="loading"></span>');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/market/data/BTCUSDT');
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult(`✅ 市场数据API正常 - BTC价格: $${data.data?.binance?.price || 'N/A'}`, 'success');
+                } else {
+                    addTestResult(`❌ 市场数据API异常 - 状态码: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addTestResult(`❌ 市场数据API连接失败 - ${error.message}`, 'error');
+            }
+        }
+
+        async function testAuth() {
+            addTestResult('正在测试认证API... <span class="loading"></span>');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@example.com',
+                        password: 'demo123'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult(`✅ 认证API正常 - 演示账号登录成功`, 'success');
+                } else {
+                    addTestResult(`❌ 认证API异常 - 状态码: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addTestResult(`❌ 认证API连接失败 - ${error.message}`, 'error');
+            }
+        }
+
+        function startMockServer() {
+            addTestResult('🚀 正在启动模拟服务器...', 'info');
+            addTestResult('请在终端运行: python backend/minimal_server.py', 'warning');
+            addTestResult('或者运行: python start_services.py', 'warning');
+        }
+
+        // 页面加载时自动测试
+        window.onload = function() {
+            addTestResult('🔍 开始自动检测服务状态...', 'info');
+            setTimeout(testBackendHealth, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "TestSprite": {
+      "command": "npx",
+      "args": ["@testsprite/testsprite-mcp@latest"],
+      "env": {
+        "API_KEY": "your-testsprite-api-key-here"
+      }
+    }
+  }
+}
+
+// 配置说明：
+// 1. 将此文件内容复制到VSCode的MCP配置文件中
+// 2. 替换 "your-testsprite-api-key-here" 为您的实际API密钥
+// 3. 保存配置文件并重启VSCode
+// 4. MCP服务器将自动启动并提供AI辅助功能
+
+// 配置文件位置：
+// Windows: %APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\cline_mcp_settings.json
+// macOS: ~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json
+// Linux: ~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json
+
+// 功能特性：
+// - 智能代码补全和建议
+// - 自动错误检测和修复
+// - 代码重构和优化建议
+// - 自动文档和注释生成
+// - 单元测试代码生成
+// - 代码解释和分析
+// - 性能优化建议
+// - 安全漏洞检测

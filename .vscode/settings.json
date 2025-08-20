@@ -1,0 +1,38 @@
+{
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.formatting.provider": "black",
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.analysis.typeCheckingMode": "basic",
+  "files.associations": {
+    "*.html": "html",
+    "*.vue": "vue"
+  },
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "vue": "html"
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+},
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.wrapLineLength": 120,
+  "css.validate": true,
+  "javascript.validate.enable": true,
+  "typescript.validate.enable": true,
+  "vue.format.defaultFormatter.html": "prettier",
+  "vue.format.defaultFormatter.js": "prettier",
+  "vue.format.defaultFormatter.ts": "prettier",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.port": 5500,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash"
+}

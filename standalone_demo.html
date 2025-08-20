@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>永续合约预测系统 - 独立演示版</title>
+    
+    <!-- CSS框架 -->
+    <link href="https://cdn.jsdelivr.net/npm/element-plus@2.4.4/dist/index.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .status-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .service-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .service-status {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+        .status-testing { background: #ffc107; animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover { background: #5a6fd8; }
+        .btn-success { background: #28a745; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-danger { background: #dc3545; }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .code {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #667eea;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-chart-line"></i> 永续合约预测系统</h1>
+        <div>
+            <span>独立演示版</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="status-card">
+            <h2>🔧 服务状态诊断</h2>
+            <p>正在检测系统服务状态，请稍候...</p>
+            
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3><i class="fas fa-server"></i> 后端API服务</h3>
+                    <p>地址: http://localhost:8000</p>
+                    <div class="service-status">
+                        <div id="backend-status" class="status-indicator status-testing"></div>
+                        <span id="backend-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testBackend()">重新检测</button>
+                    <a href="http://localhost:8000/docs" target="_blank" class="btn btn-success">API文档</a>
+                </div>
+
+                <div class="service-card">
+                    <h3><i class="fas fa-globe"></i> 前端界面</h3>
+                    <p>地址: http://localhost:8080</p>
+                    <div class="service-status">
+                        <div id="frontend-status" class="status-indicator status-testing"></div>
+                        <span id="frontend-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testFrontend()">重新检测</button>
+                    <a href="http://localhost:8080" target="_blank" class="btn btn-success">打开界面</a>
+                </div>
+
+                <div class="service-card">
+                    <h3><i class="fas fa-heartbeat"></i> 健康检查</h3>
+                    <p>地址: http://localhost:8000/health</p>
+                    <div class="service-status">
+                        <div id="health-status" class="status-indicator status-testing"></div>
+                        <span id="health-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testHealth()">重新检测</button>
+                    <a href="http://localhost:8000/health" target="_blank" class="btn btn-success">健康检查</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h3>⚠️ 服务未启动？</h3>
+            <p>如果上述服务显示离线状态，请按照以下步骤启动服务：</p>
+        </div>
+
+        <div class="status-card">
+            <h3>🚀 启动服务</h3>
+            
+            <div class="alert alert-info">
+                <h4>方法1：使用批处理脚本（推荐）</h4>
+                <div class="code">start_server.bat</div>
+                <p>双击运行 start_server.bat 文件，会自动启动前后端服务</p>
+            </div>
+
+            <div class="alert alert-info">
+                <h4>方法2：手动启动</h4>
+                <p><strong>步骤1：启动后端服务</strong></p>
+                <div class="code">python backend/minimal_server.py</div>
+                
+                <p><strong>步骤2：启动前端服务（新终端）</strong></p>
+                <div class="code">python -m http.server 8080</div>
+            </div>
+
+            <div class="alert alert-success">
+                <h4>方法3：直接使用演示页面</h4>
+                <p>如果无法启动服务，可以直接使用以下演示页面：</p>
+                <a href="demo.html" class="btn btn-success">打开演示页面</a>
+                <a href="index.html" class="btn btn-success">打开完整界面</a>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h3>🛠️ 故障排除</h3>
+            
+            <div class="alert alert-warning">
+                <h4>常见问题及解决方案：</h4>
+                <ul>
+                    <li><strong>Python命令不可用</strong>：确保Python已安装并添加到系统PATH</li>
+                    <li><strong>端口被占用</strong>：检查8000和8080端口是否被其他程序占用</li>
+                    <li><strong>依赖缺失</strong>：运行 <code>pip install fastapi uvicorn</code></li>
+                    <li><strong>权限问题</strong>：以管理员身份运行命令提示符</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-info">
+                <h4>检查端口占用：</h4>
+                <div class="code">
+netstat -ano | findstr :8000<br>
+netstat -ano | findstr :8080
+                </div>
+            </div>
+        </div>
+
+        <div id="test-log" class="status-card" style="display: none;">
+            <h3>📋 测试日志</h3>
+            <div id="log-content" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 5px;"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('test-log');
+            const logContent = document.getElementById('log-content');
+            
+            logDiv.style.display = 'block';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<strong>${timestamp}</strong>: ${message}`;
+            logEntry.style.margin = '5px 0';
+            logEntry.style.color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#333';
+            
+            logContent.appendChild(logEntry);
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+
+        async function testBackend() {
+            const statusEl = document.getElementById('backend-status');
+            const textEl = document.getElementById('backend-text');
+            
+            statusEl.className = 'status-indicator status-testing';
+            textEl.textContent = '检测中...';
+            log('正在检测后端API服务...');
+            
+            try {
+                const response = await fetch('http://localhost:8000/', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    statusEl.className = 'status-indicator status-online';
+                    textEl.textContent = '在线';
+                    log('✅ 后端API服务正常', 'success');
+                } else {
+                    statusEl.className = 'status-indicator status-offline';
+                    textEl.textContent = `异常 (${response.status})`;
+                    log(`❌ 后端API响应异常: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator status-offline';
+                textEl.textContent = '离线';
+                log(`❌ 后端API连接失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFrontend() {
+            const statusEl = document.getElementById('frontend-status');
+            const textEl = document.getElementById('frontend-text');
+            
+            statusEl.className = 'status-indicator status-testing';
+            textEl.textContent = '检测中...';
+            log('正在检测前端服务...');
+            
+            try {
+                const response = await fetch('http://localhost:8080/', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    statusEl.className = 'status-indicator status-online';
+                    textEl.textContent = '在线';
+                    log('✅ 前端服务正常', 'success');
+                } else {
+                    statusEl.className = 'status-indicator status-offline';
+                    textEl.textContent = `异常 (${response.status})`;
+                    log(`❌ 前端服务响应异常: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator status-offline';
+                textEl.textContent = '离线';
+                log(`❌ 前端服务连接失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testHealth() {
+            const statusEl = document.getElementById('health-status');
+            const textEl = document.getElementById('health-text');
+            
+            statusEl.className = 'status-indicator status-testing';
+            textEl.textContent = '检测中...';
+            log('正在检测健康检查端点...');
+            
+            try {
+                const response = await fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.className = 'status-indicator status-online';
+                    textEl.textContent = `健康 (${data.status})`;
+                    log(`✅ 健康检查正常: ${data.status}`, 'success');
+                } else {
+                    statusEl.className = 'status-indicator status-offline';
+                    textEl.textContent = `异常 (${response.status})`;
+                    log(`❌ 健康检查异常: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                statusEl.className = 'status-indicator status-offline';
+                textEl.textContent = '离线';
+                log(`❌ 健康检查连接失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function runAllTests() {
+            log('🔍 开始全面服务检测...');
+            await testBackend();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testFrontend();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await testHealth();
+            log('✅ 服务检测完成');
+        }
+
+        // 页面加载时自动检测
+        window.onload = function() {
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-chart-line"></i> 永续合约预测系统</h1>
+        <div>服务状态检测</div>
+    </div>
+
+    <div class="container">
+        <div class="status-card">
+            <h2>🔍 系统服务状态</h2>
+            <p>正在自动检测各项服务的运行状态...</p>
+            
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3><i class="fas fa-server"></i> 后端API</h3>
+                    <p>FastAPI服务 - 端口8000</p>
+                    <div class="service-status">
+                        <div id="backend-status" class="status-indicator status-testing"></div>
+                        <span id="backend-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testBackend()">重新检测</button>
+                </div>
+
+                <div class="service-card">
+                    <h3><i class="fas fa-globe"></i> 前端服务</h3>
+                    <p>HTTP服务器 - 端口8080</p>
+                    <div class="service-status">
+                        <div id="frontend-status" class="status-indicator status-testing"></div>
+                        <span id="frontend-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testFrontend()">重新检测</button>
+                </div>
+
+                <div class="service-card">
+                    <h3><i class="fas fa-heartbeat"></i> 健康检查</h3>
+                    <p>系统健康状态监控</p>
+                    <div class="service-status">
+                        <div id="health-status" class="status-indicator status-testing"></div>
+                        <span id="health-text">检测中...</span>
+                    </div>
+                    <button class="btn" onclick="testHealth()">重新检测</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            <h3>📋 快速访问</h3>
+            <p>如果服务正常运行，您可以直接访问：</p>
+            <a href="http://localhost:8080" target="_blank" class="btn">前端界面</a>
+            <a href="http://localhost:8000" target="_blank" class="btn">后端API</a>
+            <a href="http://localhost:8000/docs" target="_blank" class="btn">API文档</a>
+            <a href="http://localhost:8000/health" target="_blank" class="btn">健康检查</a>
+        </div>
+
+        <div class="alert alert-warning">
+            <h3>🚀 启动服务</h3>
+            <p>如果服务未运行，请使用以下方法启动：</p>
+            <div class="code">
+                <strong>Windows用户：</strong><br>
+                双击运行 start_server.bat<br><br>
+                <strong>或手动启动：</strong><br>
+                python backend/minimal_server.py
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <h3>💡 备用方案</h3>
+            <p>如果无法启动服务，可以直接使用离线演示：</p>
+            <a href="demo.html" class="btn btn-success">离线演示页面</a>
+            <a href="index.html" class="btn btn-success">完整界面（离线）</a>
+        </div>
+
+        <div id="test-log" class="status-card" style="display: none;">
+            <h3>📋 检测日志</h3>
+            <div id="log-content" style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 1rem; border-radius: 5px;"></div>
+            <button class="btn" onclick="runAllTests()">重新检测所有服务</button>
+        </div>
+    </div>
+</body>
+</html>
