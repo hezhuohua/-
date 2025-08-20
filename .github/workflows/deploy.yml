@@ -1,0 +1,72 @@
+name: 部署永续合约预测系统到GitHub Pages
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+
+    - name: 设置Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: 设置Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: 安装Python依赖
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: 创建部署目录和优化文件
+      run: |
+        mkdir -p dist
+
+        # 复制主要文件
+        cp index.html dist/
+        cp README.md dist/ 2>/dev/null || true
+
+        # 复制资源文件夹（如果存在）
+        cp -r backend dist/ 2>/dev/null || true
+        cp -r assets dist/ 2>/dev/null || true
+        cp -r images dist/ 2>/dev/null || true
+        cp -r css dist/ 2>/dev/null || true
+        cp -r js dist/ 2>/dev/null || true
+
+        # 创建404页面（重定向到主页）
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>永续合约预测系统</title>
+            <script>
+                window.location.href = "/";
+            </script>
+        </head>
+        <body>
+            <p>正在跳转到主页...</p>
+        </body>
+        </html>' > dist/404.html
+
+        # 创建部署信息文件
+        echo "部署时间: $(date)" > dist/deploy-info.txt
+        echo "提交ID: ${{ github.sha }}" >> dist/deploy-info.txt
+
+    - name: 部署到GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        # cname: your-domain.com  # 如果有自定义域名，取消注释并填写
