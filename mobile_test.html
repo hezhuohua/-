@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>移动端测试 - 永续合约预测系统</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 10px;
+                color: #333;
+            }
+
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+            }
+
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px 15px;
+                text-align: center;
+                position: relative;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 5px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .header p {
+                font-size: 0.85rem;
+                opacity: 0.9;
+                margin: 0;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .test-section {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .test-section h2 {
+                color: #333;
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+                font-weight: 600;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 6px;
+            }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 500;
+                color: #555;
+                font-size: 0.9rem;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e1e5e9;
+                border-radius: 8px;
+                font-size: 16px;
+                /* 防止iOS缩放 */
+                transition: all 0.3s ease;
+                background: #f8f9fa;
+                min-height: 44px;
+                /* 触摸优化 */
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #667eea;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 14px 20px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                min-height: 44px;
+                /* 触摸优化 */
+            }
+
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            .btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .result-section {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-top: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                display: none;
+            }
+
+            .result-section.show {
+                display: block;
+                animation: slideIn 0.4s ease;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(15px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .result-item {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 12px;
+                margin-bottom: 8px;
+                border-left: 3px solid #667eea;
+            }
+
+            .result-item h3 {
+                color: #333;
+                font-size: 1rem;
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            .result-item p {
+                color: #666;
+                font-size: 0.85rem;
+                line-height: 1.4;
+                margin: 0;
+            }
+
+            .loading {
+                text-align: center;
+                padding: 20px;
+                color: #666;
+            }
+
+            .spinner {
+                display: inline-block;
+                width: 18px;
+                height: 18px;
+                border: 2px solid #f3f3f3;
+                border-top: 2px solid #667eea;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-right: 8px;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .error {
+                background: #fee;
+                border: 1px solid #fcc;
+                color: #c33;
+                padding: 12px;
+                border-radius: 8px;
+                margin-top: 12px;
+                font-size: 0.85rem;
+            }
+
+            .success {
+                background: #efe;
+                border: 1px solid #cfc;
+                color: #3c3;
+                padding: 12px;
+                border-radius: 8px;
+                margin-top: 12px;
+                font-size: 0.85rem;
+            }
+
+            .device-info {
+                background: #e3f2fd;
+                border: 1px solid #bbdefb;
+                color: #1976d2;
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                font-size: 0.8rem;
+            }
+
+            .device-info h3 {
+                margin-bottom: 5px;
+                font-size: 0.9rem;
+            }
+
+            .device-info p {
+                margin: 2px 0;
+            }
+
+            /* 横屏优化 */
+            @media (orientation: landscape) and (max-height: 500px) {
+                .header {
+                    padding: 10px 15px;
+                }
+
+                .header h1 {
+                    font-size: 1.2rem;
+                    margin-bottom: 2px;
+                }
+
+                .main-content {
+                    padding: 10px;
+                }
+
+                .test-section {
+                    padding: 10px;
+                    margin-bottom: 10px;
+                }
+            }
+
+            /* 超小屏幕优化 */
+            @media (max-width: 360px) {
+                .header h1 {
+                    font-size: 1.3rem;
+                }
+
+                .test-section h2 {
+                    font-size: 1.1rem;
+                }
+
+                .form-control {
+                    padding: 10px;
+                }
+
+                .btn {
+                    padding: 12px 15px;
+                }
+            }
+
+            /* 高分辨率屏幕优化 */
+            @media (-webkit-min-device-pixel-ratio: 2),
+            (min-resolution: 192dpi) {
+                .form-control {
+                    border-width: 1px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📱 移动端测试</h1>
+                <p>永续合约预测系统 - 移动端优化版本</p>
+            </div>
+
+            <div class="main-content">
+                <div class="device-info">
+                    <h3>📊 设备信息</h3>
+                    <p>屏幕宽度: <span id="screenWidth"></span>px</p>
+                    <p>屏幕高度: <span id="screenHeight"></span>px</p>
+                    <p>设备像素比: <span id="pixelRatio"></span></p>
+                    <p>用户代理: <span id="userAgent"></span></p>
+                </div>
+
+                <div class="test-section">
+                    <h2>🎯 快速测试</h2>
+                    <div class="form-group">
+                        <label for="testSymbol">交易对:</label>
+                        <input type="text" id="testSymbol" class="form-control" placeholder="BTCUSDT" value="BTCUSDT">
+                    </div>
+                    <div class="form-group">
+                        <label for="testTimeframe">时间框架:</label>
+                        <select id="testTimeframe" class="form-control">
+                            <option value="1h" selected>1小时</option>
+                            <option value="4h">4小时</option>
+                            <option value="1d">1天</option>
+                        </select>
+                    </div>
+                    <button id="testBtn" class="btn">🚀 快速预测</button>
+                </div>
+
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    正在分析数据...
+                </div>
+
+                <div id="resultSection" class="result-section">
+                    <h2>📈 测试结果</h2>
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 显示设备信息
+            document.getElementById('screenWidth').textContent = window.screen.width;
+            document.getElementById('screenHeight').textContent = window.screen.height;
+            document.getElementById('pixelRatio').textContent = window.devicePixelRatio;
+            document.getElementById('userAgent').textContent = navigator.userAgent.substring(0, 50) + '...';
+
+            // 快速测试功能
+            document.getElementById('testBtn').addEventListener('click', async function () {
+                const button = this;
+                const loading = document.getElementById('loading');
+                const resultSection = document.getElementById('resultSection');
+                const resultContent = document.getElementById('resultContent');
+
+                const formData = {
+                    symbol: document.getElementById('testSymbol').value,
+                    timeframe: document.getElementById('testTimeframe').value,
+                    limit: 50,
+                    prediction_hours: 24,
+                    confidence_level: 95
+                };
+
+                // 显示加载状态
+                button.disabled = true;
+                button.textContent = '分析中...';
+                loading.style.display = 'block';
+                resultSection.classList.remove('show');
+
+                try {
+                    // 模拟API调用
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+
+                    // 模拟结果数据
+                    const mockResult = {
+                        symbol: formData.symbol,
+                        current_price: 45000 + Math.random() * 5000,
+                        predicted_price: 45000 + Math.random() * 5000,
+                        price_change: (Math.random() - 0.5) * 2000,
+                        trend: Math.random() > 0.5 ? 'bullish' : 'bearish',
+                        confidence: 85 + Math.random() * 10,
+                        recommendation: '基于技术分析，建议谨慎操作',
+                        risk_level: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)],
+                        analysis_summary: '移动端测试成功！UI响应良好，触摸体验流畅。'
+                    };
+
+                    displayResults(mockResult);
+                    resultSection.classList.add('show');
+
+                } catch (error) {
+                    console.error('测试失败:', error);
+                    showError('测试失败: ' + error.message);
+                } finally {
+                    // 恢复按钮状态
+                    button.disabled = false;
+                    button.textContent = '🚀 快速预测';
+                    loading.style.display = 'none';
+                }
+            });
+
+            function displayResults(data) {
+                const resultContent = document.getElementById('resultContent');
+
+                let html = '';
+
+                html += `
+                <div class="result-item">
+                    <h3>💰 当前价格</h3>
+                    <p>${data.symbol}: $${data.current_price.toFixed(2)}</p>
+                </div>
+            `;
+
+                html += `
+                <div class="result-item">
+                    <h3>🎯 预测价格</h3>
+                    <p>24小时后: $${data.predicted_price.toFixed(2)}</p>
+                </div>
+            `;
+
+                const changePercent = ((data.price_change / data.current_price) * 100).toFixed(2);
+                const changeIcon = data.price_change >= 0 ? '📈' : '📉';
+
+                html += `
+                <div class="result-item">
+                    <h3>${changeIcon} 价格变化</h3>
+                    <p>预期变化: $${data.price_change.toFixed(2)} (${changePercent}%)</p>
+                </div>
+            `;
+
+                const trendIcon = data.trend === 'bullish' ? '🚀' : '🐻';
+                const trendText = data.trend === 'bullish' ? '看涨趋势' : '看跌趋势';
+
+                html += `
+                <div class="result-item">
+                    <h3>${trendIcon} 市场趋势</h3>
+                    <p>${trendText}</p>
+                </div>
+            `;
+
+                html += `
+                <div class="result-item">
+                    <h3>🎯 预测置信度</h3>
+                    <p>${data.confidence.toFixed(1)}%</p>
+                </div>
+            `;
+
+                html += `
+                <div class="result-item">
+                    <h3>💡 交易建议</h3>
+                    <p>${data.recommendation}</p>
+                </div>
+            `;
+
+                const riskIcons = {
+                    'low': '🟢',
+                    'medium': '🟡',
+                    'high': '🔴'
+                };
+                const riskTexts = {
+                    'low': '低风险',
+                    'medium': '中等风险',
+                    'high': '高风险'
+                };
+
+                html += `
+                <div class="result-item">
+                    <h3>⚠️ 风险等级</h3>
+                    <p>${riskIcons[data.risk_level]} ${riskTexts[data.risk_level]}</p>
+                </div>
+            `;
+
+                html += `
+                <div class="result-item">
+                    <h3>📊 分析摘要</h3>
+                    <p>${data.analysis_summary}</p>
+                </div>
+            `;
+
+                resultContent.innerHTML = html;
+            }
+
+            function showError(message) {
+                const resultSection = document.getElementById('resultSection');
+                const resultContent = document.getElementById('resultContent');
+
+                resultContent.innerHTML = `
+                <div class="error">
+                    <strong>❌ 错误</strong><br>
+                    ${message}
+                </div>
+            `;
+                resultSection.classList.add('show');
+            }
+
+            // 添加触摸反馈
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('touchstart', function () {
+                    this.style.transform = 'scale(0.98)';
+                });
+
+                btn.addEventListener('touchend', function () {
+                    this.style.transform = '';
+                });
+            });
+
+            // 防止双击缩放
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // 键盘支持
+            document.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('testBtn').click();
+                }
+            });
+        </script>
+    </body>
+
+</html>
