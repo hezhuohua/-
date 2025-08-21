@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"  # 后端API
+      - "8080:8080"  # 前端界面
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      - ./static:/app/static
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_URL=sqlite:///./crypto_prediction.db
+      - DEBUG=true
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - crypto-network
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - crypto-network
+
+volumes:
+  redis_data:
+
+networks:
+  crypto-network:
+    driver: bridge

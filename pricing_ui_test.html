@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>定价卡片UI优化测试</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .header {
+                text-align: center;
+                color: white;
+                margin-bottom: 40px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .header p {
+                font-size: 1.1rem;
+                opacity: 0.9;
+            }
+
+            /* CSS变量定义 */
+            :root {
+                --bg-primary: #f5f7fa;
+                --bg-secondary: #ffffff;
+                --bg-tertiary: #f8f9fa;
+                --text-primary: #333333;
+                --text-secondary: #6c757d;
+                --border-color: #e9ecef;
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                --panel-bg: #ffffff;
+                --hover-bg: #f8f9fa;
+            }
+
+            /* 黑夜模式 */
+            [data-theme="dark"] {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --bg-tertiary: #3a3a3a;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --border-color: #404040;
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                --gradient-primary: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+                --panel-bg: #2d2d2d;
+                --hover-bg: #3a3a3a;
+            }
+
+            .plans-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+
+            .plan-card {
+                border: 2px solid var(--border-color);
+                border-radius: 12px;
+                padding: 2rem;
+                text-align: center;
+                transition: all 0.3s;
+                cursor: pointer;
+                background: var(--bg-secondary);
+                color: var(--text-primary);
+                box-shadow: var(--shadow);
+            }
+
+            .plan-card:hover {
+                border-color: #667eea;
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
+            }
+
+            .plan-card.recommended {
+                border-color: #667eea;
+                background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+                position: relative;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            }
+
+            .plan-card.recommended::before {
+                content: "推荐";
+                position: absolute;
+                top: -10px;
+                right: 20px;
+                background: var(--gradient-primary);
+                color: white;
+                padding: 0.25rem 0.75rem;
+                border-radius: 15px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            }
+
+            .plan-header h4 {
+                font-size: 1.4rem;
+                margin-bottom: 0.8rem;
+                color: var(--text-primary);
+                font-weight: 700;
+            }
+
+            .price {
+                margin-bottom: 1.5rem;
+            }
+
+            .amount {
+                font-size: 2.5rem;
+                font-weight: bold;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .period {
+                color: var(--text-secondary);
+                font-weight: 500;
+                font-size: 1.1rem;
+            }
+
+            .features {
+                list-style: none;
+                margin: 1.5rem 0;
+            }
+
+            .features li {
+                padding: 0.6rem 0;
+                border-bottom: 1px solid var(--border-color);
+                color: var(--text-primary);
+                font-weight: 500;
+            }
+
+            .features li:last-child {
+                border-bottom: none;
+            }
+
+            .features li::before {
+                content: "✓";
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-weight: bold;
+                margin-right: 0.5rem;
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-decoration: none;
+                display: inline-block;
+                text-align: center;
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .btn-primary {
+                background: var(--gradient-primary);
+                color: white;
+                font-weight: 600;
+                border: none;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-outline {
+                background: transparent;
+                border: 2px solid #667eea;
+                color: #667eea;
+            }
+
+            .btn-outline:hover {
+                background: #667eea;
+                color: white;
+            }
+
+            .theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 255, 255, 0.2);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                padding: 12px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                backdrop-filter: blur(10px);
+            }
+
+            .theme-toggle:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+            .comparison {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 15px;
+                padding: 20px;
+                margin-top: 40px;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .comparison h3 {
+                color: white;
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 1.5rem;
+            }
+
+            .comparison ul {
+                color: white;
+                margin-left: 20px;
+                line-height: 1.8;
+            }
+
+            @media (max-width: 768px) {
+                .plans-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+
+                .plan-card {
+                    padding: 1.5rem;
+                }
+
+                .header h1 {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            🌙
+        </button>
+
+        <div class="container">
+            <div class="header">
+                <h1>🎨 定价卡片UI优化测试</h1>
+                <p>体验与整体UI风格一致的现代化设计</p>
+            </div>
+
+            <div class="plans-grid">
+                <!-- 基础版 -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h4>基础版</h4>
+                    </div>
+                    <div class="price">
+                        <div class="amount">¥99</div>
+                        <div class="period">/月</div>
+                    </div>
+                    <ul class="features">
+                        <li>200次/日预测</li>
+                        <li>基础技术指标</li>
+                        <li>7x24小时服务</li>
+                    </ul>
+                    <button class="btn btn-outline">选择基础版</button>
+                </div>
+
+                <!-- 专业版 -->
+                <div class="plan-card recommended">
+                    <div class="plan-header">
+                        <h4>专业版</h4>
+                    </div>
+                    <div class="price">
+                        <div class="amount">¥299</div>
+                        <div class="period">/月</div>
+                    </div>
+                    <ul class="features">
+                        <li>500次/日预测</li>
+                        <li>全部技术指标</li>
+                        <li>高级市场分析</li>
+                        <li>优先客服</li>
+                    </ul>
+                    <button class="btn btn-primary">选择专业版</button>
+                </div>
+
+                <!-- 旗舰版 -->
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h4>旗舰版</h4>
+                    </div>
+                    <div class="price">
+                        <div class="amount">¥599</div>
+                        <div class="period">/月</div>
+                    </div>
+                    <ul class="features">
+                        <li>无限次预测</li>
+                        <li>全部功能</li>
+                        <li>专属客服</li>
+                        <li>API接口</li>
+                    </ul>
+                    <button class="btn btn-outline">选择旗舰版</button>
+                </div>
+            </div>
+
+            <div class="comparison">
+                <h3>🎯 优化亮点</h3>
+                <ul>
+                    <li><strong>统一色彩风格</strong>：使用CSS变量确保与整体UI一致</li>
+                    <li><strong>渐变价格显示</strong>：价格文字使用主题渐变色</li>
+                    <li><strong>智能推荐标识</strong>：推荐标签使用主题渐变背景</li>
+                    <li><strong>优化功能列表</strong>：勾选图标使用主题渐变色</li>
+                    <li><strong>增强阴影效果</strong>：卡片阴影与主题色调协调</li>
+                    <li><strong>响应式设计</strong>：完美适配各种屏幕尺寸</li>
+                    <li><strong>暗色主题支持</strong>：自动适应明暗主题切换</li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            // 主题切换功能
+            function toggleTheme() {
+                const body = document.body;
+                const themeToggle = document.querySelector('.theme-toggle');
+
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.removeAttribute('data-theme');
+                    themeToggle.innerHTML = '🌙';
+                    themeToggle.title = '切换到暗色主题';
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    themeToggle.innerHTML = '☀️';
+                    themeToggle.title = '切换到亮色主题';
+                }
+            }
+
+            // 卡片交互效果
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    // 移除其他卡片的选中状态
+                    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                    // 添加当前卡片的选中状态
+                    this.classList.add('selected');
+                });
+            });
+
+            // 按钮点击效果
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+
+                    // 创建涟漪效果
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+
+                    this.style.position = 'relative';
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // 添加涟漪动画CSS
+            const style = document.createElement('style');
+            style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+            document.head.appendChild(style);
+        </script>
+    </body>
+
+</html>

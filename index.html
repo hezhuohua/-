@@ -87,6 +87,8 @@
                 display: flex;
                 gap: 2rem;
                 align-items: center;
+                flex-wrap: wrap;
+                justify-content: flex-end;
             }
 
             .nav-item {
@@ -94,6 +96,12 @@
                 padding: 0.5rem 1rem;
                 border-radius: 5px;
                 transition: background 0.3s;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
             }
 
             .nav-item:hover {
@@ -136,6 +144,8 @@
                 font-weight: 600;
                 transition: all 0.3s ease;
                 cursor: pointer;
+                white-space: nowrap;
+                min-width: fit-content;
             }
 
             .data-source-indicator.loading {
@@ -155,6 +165,29 @@
                 background: rgba(220, 53, 69, 0.2);
                 color: #dc3545;
                 border: 1px solid rgba(220, 53, 69, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .data-source-indicator.mock::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                animation: shimmer 2s infinite;
+            }
+
+            @keyframes shimmer {
+                0% {
+                    left: -100%;
+                }
+
+                100% {
+                    left: 100%;
+                }
             }
 
             .data-source-text {
@@ -633,18 +666,20 @@
                 cursor: pointer;
                 background: var(--bg-secondary);
                 color: var(--text-primary);
+                box-shadow: var(--shadow);
             }
 
             .plan-card:hover {
                 border-color: #667eea;
                 transform: translateY(-5px);
-                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15);
             }
 
             .plan-card.recommended {
                 border-color: #667eea;
-                background: linear-gradient(135deg, #f8f9ff 0%, #e6f0ff 100%);
+                background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
                 position: relative;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
             }
 
             .plan-card.recommended::before {
@@ -652,16 +687,20 @@
                 position: absolute;
                 top: -10px;
                 right: 20px;
-                background: #667eea;
+                background: var(--gradient-primary);
                 color: white;
                 padding: 0.25rem 0.75rem;
                 border-radius: 15px;
                 font-size: 0.8rem;
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             }
 
             .plan-header h4 {
-                font-size: 1.3rem;
-                margin-bottom: 0.5rem;
+                font-size: 1.4rem;
+                margin-bottom: 0.8rem;
+                color: var(--text-primary);
+                font-weight: 700;
             }
 
             .price {
@@ -671,11 +710,15 @@
             .amount {
                 font-size: 2rem;
                 font-weight: bold;
-                color: #667eea;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
 
             .period {
-                color: #6c757d;
+                color: var(--text-secondary);
+                font-weight: 500;
             }
 
             .features {
@@ -684,8 +727,10 @@
             }
 
             .features li {
-                padding: 0.5rem 0;
-                border-bottom: 1px solid #f0f0f0;
+                padding: 0.6rem 0;
+                border-bottom: 1px solid var(--border-color);
+                color: var(--text-primary);
+                font-weight: 500;
             }
 
             .features li:last-child {
@@ -694,9 +739,13 @@
 
             .features li::before {
                 content: "✓";
-                color: #28a745;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
                 font-weight: bold;
                 margin-right: 0.5rem;
+                font-size: 1.1rem;
             }
 
             /* 按钮样式 */
@@ -715,11 +764,14 @@
             .btn-primary {
                 background: var(--gradient-primary);
                 color: white;
+                font-weight: 600;
+                border: none;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             }
 
             .btn-primary:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
             }
 
             .btn-outline {
@@ -741,11 +793,44 @@
                 }
 
                 .navbar {
-                    padding: 1rem;
+                    padding: 0.5rem;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .logo {
+                    font-size: 1.2rem;
+                    justify-content: center;
                 }
 
                 .nav-menu {
-                    gap: 1rem;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    width: 100%;
+                }
+
+                .nav-item {
+                    padding: 0.4rem 0.8rem;
+                    font-size: 0.9rem;
+                    min-width: auto;
+                    text-align: center;
+                }
+
+                .data-source-indicator {
+                    padding: 0.4rem 0.8rem;
+                    font-size: 0.8rem;
+                    min-width: auto;
+                    justify-content: center;
+                }
+
+                .data-source-text {
+                    font-size: 0.75rem;
+                }
+
+                .theme-toggle {
+                    width: 36px;
+                    height: 36px;
                 }
 
                 .main-content {
@@ -769,6 +854,53 @@
 
                 .search-input:focus {
                     width: 100%;
+                }
+            }
+
+            /* 超小屏幕优化 */
+            @media (max-width: 480px) {
+                .navbar {
+                    padding: 0.3rem;
+                }
+
+                .logo {
+                    font-size: 1.1rem;
+                }
+
+                .nav-menu {
+                    gap: 0.3rem;
+                }
+
+                .nav-item {
+                    padding: 0.3rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .data-source-indicator {
+                    padding: 0.3rem 0.6rem;
+                    font-size: 0.75rem;
+                }
+
+                .data-source-text {
+                    font-size: 0.7rem;
+                }
+
+                .theme-toggle {
+                    width: 32px;
+                    height: 32px;
+                }
+            }
+
+            /* 横屏模式优化 */
+            @media (max-width: 768px) and (orientation: landscape) {
+                .navbar {
+                    flex-direction: row;
+                    padding: 0.5rem 1rem;
+                }
+
+                .nav-menu {
+                    flex-wrap: nowrap;
+                    gap: 0.8rem;
                 }
             }
 
@@ -1438,12 +1570,57 @@
                     gap: 1.5rem;
                 }
 
+                .timer-info-item {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow: hidden;
+                }
+
+                .price-display {
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 0.5rem 0;
+                    padding: 0.75rem;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                }
+
                 .price-value {
-                    font-size: 1.5rem;
+                    font-size: 1.4rem;
+                    word-break: break-all;
+                    overflow-wrap: break-word;
                 }
 
                 .price-label {
                     font-size: 0.8rem;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            /* 小屏幕移动端进一步优化 */
+            @media (max-width: 480px) {
+                .timer-info {
+                    gap: 1rem;
+                }
+
+                .price-display {
+                    padding: 0.5rem;
+                    margin: 0.25rem 0;
+                }
+
+                .price-value {
+                    font-size: 1.2rem;
+                }
+
+                .price-label {
+                    font-size: 0.75rem;
+                    margin-bottom: 0.25rem;
+                }
+
+                .timer-info-item {
+                    padding: 0.5rem;
                 }
             }
 
@@ -1535,6 +1712,9 @@
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 backdrop-filter: blur(10px);
                 transition: all 0.3s ease;
+                width: 100%;
+                box-sizing: border-box;
+                overflow: hidden;
             }
 
             .price-display:hover {
@@ -1559,6 +1739,9 @@
                 text-transform: uppercase;
                 letter-spacing: 1px;
                 font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .price-value {
@@ -1567,6 +1750,9 @@
                 font-family: 'Courier New', monospace;
                 text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
                 animation: priceGlow 2s infinite;
+                word-break: break-all;
+                overflow-wrap: break-word;
+                line-height: 1.2;
             }
 
             .price-value.price-up {
@@ -2301,6 +2487,17 @@
                 padding: 0.4rem 0.8rem;
                 font-size: 0.85rem;
                 border-radius: 6px;
+            }
+
+            .btn-info {
+                background: #17a2b8;
+                color: white;
+                border: 1px solid #17a2b8;
+            }
+
+            .btn-info:hover {
+                background: #138496;
+                border-color: #138496;
             }
 
             .martingale-settings {
@@ -3229,6 +3426,229 @@
                                     </div>
                                 </div>
 
+                                <!-- 交易策略选择模块 -->
+                                <div
+                                    style="margin: 2rem 0; padding: 1.5rem; background: rgba(102, 126, 234, 0.05); border-radius: 12px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                                    <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                                        <i class="fas fa-robot"></i> 交易策略选择
+                                    </h4>
+                                    <div
+                                        style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(102, 126, 234, 0.1); border-radius: 8px; border-left: 4px solid #667eea;">
+                                        <div
+                                            style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+                                            <strong>策略说明：</strong>
+                                        </div>
+                                        <div
+                                            style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">
+                                            <strong>均线交叉策略：</strong>基于短期和长期均线的交叉信号，结合RSI指标过滤，适合趋势明显的市场。<br>
+                                            <strong>动量反弹策略：</strong>识别超卖反弹机会，结合价格跌幅和成交量确认，适合震荡或超跌反弹行情。
+                                        </div>
+                                    </div>
+
+                                    <!-- 策略类型选择 -->
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <label
+                                            style="font-weight: 600; margin-bottom: 0.5rem; display: block;">选择交易策略：</label>
+                                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                            <label
+                                                style="display: flex; align-items: center; cursor: pointer; padding: 0.75rem 1rem; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 8px; transition: all 0.3s ease;">
+                                                <input type="radio" v-model="selectedStrategy" value="ma_cross"
+                                                    style="margin-right: 0.5rem;">
+                                                <div>
+                                                    <div style="font-weight: 600;">均线交叉策略</div>
+                                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">适合趋势行情
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label
+                                                style="display: flex; align-items: center; cursor: pointer; padding: 0.75rem 1rem; background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 8px; transition: all 0.3s ease;">
+                                                <input type="radio" v-model="selectedStrategy" value="momentum"
+                                                    style="margin-right: 0.5rem;">
+                                                <div>
+                                                    <div style="font-weight: 600;">动量反弹策略</div>
+                                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">适合震荡反弹
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- 策略参数设置 -->
+                                    <div v-if="selectedStrategy" style="margin-bottom: 1.5rem;">
+                                        <h5 style="margin-bottom: 1rem; color: var(--text-primary);">策略参数设置</h5>
+
+                                        <!-- 均线交叉策略参数 -->
+                                        <div v-if="selectedStrategy === 'ma_cross'"
+                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">短期均线周期</label>
+                                                <input type="number" v-model.number="strategyParams.maCross.shortPeriod"
+                                                    min="3" max="20" step="1"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 5-10日</div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">长期均线周期</label>
+                                                <input type="number" v-model.number="strategyParams.maCross.longPeriod"
+                                                    min="15" max="50" step="1"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 20-30日</div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">RSI阈值</label>
+                                                <input type="number"
+                                                    v-model.number="strategyParams.maCross.rsiThreshold" min="20"
+                                                    max="80" step="5"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 30-70</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 动量反弹策略参数 -->
+                                        <div v-if="selectedStrategy === 'momentum'"
+                                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">超卖RSI阈值</label>
+                                                <input type="number"
+                                                    v-model.number="strategyParams.momentum.oversoldRsi" min="20"
+                                                    max="40" step="1"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 25-35</div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">跌幅阈值(%)</label>
+                                                <input type="number"
+                                                    v-model.number="strategyParams.momentum.dropThreshold" min="5"
+                                                    max="30" step="1"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 8-15%</div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">反弹确认天数</label>
+                                                <input type="number"
+                                                    v-model.number="strategyParams.momentum.confirmationDays" min="1"
+                                                    max="5" step="1"
+                                                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary);">
+                                                <div
+                                                    style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    推荐: 2-3天</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 策略分析按钮 -->
+                                    <div v-if="selectedStrategy" style="margin-top: 1rem; text-align: center;">
+                                        <button @click="analyzeStrategy" class="btn btn-outline"
+                                            style="margin-right: 1rem;">
+                                            <i class="fas fa-brain"></i> 分析策略
+                                        </button>
+                                        <button @click="clearStrategyAnalysis" class="btn btn-outline"
+                                            v-if="strategyAnalysis">
+                                            <i class="fas fa-times"></i> 清除分析
+                                        </button>
+                                        <div
+                                            style="margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                                            <label
+                                                style="display: flex; align-items: center; cursor: pointer; font-size: 0.9rem;">
+                                                <input type="checkbox" v-model="autoStrategyAnalysis"
+                                                    @change="toggleAutoAnalysis" style="margin-right: 0.5rem;">
+                                                自动策略分析
+                                            </label>
+                                            <span
+                                                style="font-size: 0.8rem; color: var(--text-secondary);">每5分钟自动分析</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI策略分析结果 -->
+                                    <div v-if="selectedStrategy && strategyAnalysis"
+                                        style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                        <h6 style="margin-bottom: 0.75rem; color: var(--text-primary);">
+                                            <i class="fas fa-brain"></i> AI策略分析
+                                        </h6>
+                                        <div style="font-size: 0.9rem; line-height: 1.5; color: var(--text-primary);">
+                                            {{ strategyAnalysis.summary }}
+                                        </div>
+                                        <div v-if="strategyAnalysis.recommendation"
+                                            style="margin-top: 0.75rem; padding: 0.75rem; background: rgba(34, 197, 94, 0.1); border-radius: 6px; border-left: 4px solid #22c55e;">
+                                            <strong style="color: #22c55e;">AI建议：</strong> {{
+                                            strategyAnalysis.recommendation }}
+                                        </div>
+                                        <div v-if="strategyAnalysis.riskLevel"
+                                            style="margin-top: 0.5rem; font-size: 0.85rem;">
+                                            <span style="color: var(--text-secondary);">风险等级：</span>
+                                            <span :style="{ color: getRiskLevelColor(strategyAnalysis.riskLevel) }">
+                                                {{ getRiskLevelText(strategyAnalysis.riskLevel) }}
+                                            </span>
+                                        </div>
+
+                                        <!-- 策略信号展示 -->
+                                        <div v-if="strategyAnalysis.signals"
+                                            style="margin-top: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 6px;">
+                                            <h6
+                                                style="margin-bottom: 0.75rem; color: var(--text-primary); font-size: 0.9rem;">
+                                                <i class="fas fa-chart-line"></i> 策略信号
+                                            </h6>
+                                            <div
+                                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem;">
+                                                <div v-if="selectedStrategy === 'ma_cross'" style="text-align: center;">
+                                                    <div
+                                                        style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                                                        均线状态</div>
+                                                    <div
+                                                        style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                        {{ strategyAnalysis.signals.goldenCross ? '🟢 金叉' :
+                                                        strategyAnalysis.signals.deathCross ? '🔴 死叉' : '⚪ 盘整' }}
+                                                    </div>
+                                                </div>
+                                                <div style="text-align: center;">
+                                                    <div
+                                                        style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                                                        RSI</div>
+                                                    <div
+                                                        style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                        {{ strategyAnalysis.signals.rsi?.toFixed(1) || '--' }}
+                                                    </div>
+                                                </div>
+                                                <div v-if="selectedStrategy === 'ma_cross'" style="text-align: center;">
+                                                    <div
+                                                        style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                                                        趋势强度</div>
+                                                    <div
+                                                        style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                        {{ strategyAnalysis.signals.trendStrength?.toFixed(2) || '--'
+                                                        }}%
+                                                    </div>
+                                                </div>
+                                                <div v-if="selectedStrategy === 'momentum'" style="text-align: center;">
+                                                    <div
+                                                        style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                                                        价格变化</div>
+                                                    <div
+                                                        style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                        {{ strategyAnalysis.signals.priceChange?.toFixed(2) || '--' }}%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <button class="btn btn-primary" @click="makePrediction"
                                     :disabled="predicting || !canPredict" style="margin-top: 2rem;">
                                     <span v-if="predicting" class="loading"></span>
@@ -3243,6 +3663,46 @@
                             <!-- 预测结果展示 -->
                             <div v-if="latestPrediction" style="margin-top: 2rem;">
                                 <h4>最新预测结果</h4>
+
+                                <!-- 策略信号概览 -->
+                                <div v-if="selectedStrategy && strategySignals"
+                                    style="margin-bottom: 1.5rem; padding: 1rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 12px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                                    <h5
+                                        style="margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-robot"></i> 策略信号概览
+                                    </h5>
+                                    <div
+                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                                        <div v-if="strategySignals.maCross"
+                                            style="text-align: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                            <div
+                                                style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                                均线交叉策略</div>
+                                            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;"
+                                                :style="{ color: strategySignals.maCross.signal === 'BUY' ? '#22c55e' : strategySignals.maCross.signal === 'SELL' ? '#ef4444' : '#6b7280' }">
+                                                {{ strategySignals.maCross.signal }}
+                                            </div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">强度: {{
+                                                strategySignals.maCross.strength?.toFixed(2) || '--' }}%</div>
+                                        </div>
+                                        <div v-if="strategySignals.momentum"
+                                            style="text-align: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                            <div
+                                                style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                                动量反弹策略</div>
+                                            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;"
+                                                :style="{ color: strategySignals.momentum.signal === 'BUY' ? '#22c55e' : '#6b7280' }">
+                                                {{ strategySignals.momentum.signal }}
+                                            </div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">强度: {{
+                                                strategySignals.momentum.strength?.toFixed(2) || '--' }}%</div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); text-align: center;">
+                                        <i class="fas fa-info-circle"></i> 策略信号与AI预测结果结合，提供更全面的交易参考
+                                    </div>
+                                </div>
 
                                 <!-- 预测倒计时 -->
                                 <div class="prediction-timer" :class="{ 'expired': isPredictionExpired() }">
@@ -3335,6 +3795,52 @@
                                                 <div class="result-stat-value">{{ predictionResult.confidence }}%</div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- 策略整合分析 -->
+                                <div v-if="selectedStrategy && strategyAnalysis"
+                                    style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05)); border-radius: 12px; border: 1px solid rgba(102, 126, 234, 0.2);">
+                                    <h5
+                                        style="margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-link"></i> 策略与预测整合分析
+                                    </h5>
+                                    <div
+                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                        <div
+                                            style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                            <div
+                                                style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                                策略信号</div>
+                                            <div
+                                                style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                {{ getStrategySignalText() }}
+                                            </div>
+                                        </div>
+                                        <div
+                                            style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                            <div
+                                                style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                                AI预测</div>
+                                            <div
+                                                style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                {{ getPredictionSummary() }}
+                                            </div>
+                                        </div>
+                                        <div
+                                            style="padding: 1rem; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                                            <div
+                                                style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                                                综合建议</div>
+                                            <div
+                                                style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">
+                                                {{ getCombinedRecommendation() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="font-size: 0.9rem; color: var(--text-secondary); text-align: center; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+                                        <i class="fas fa-lightbulb"></i> {{ getStrategyInsight() }}
                                     </div>
                                 </div>
 
@@ -3440,6 +3946,12 @@
                                             </button>
                                             <button @click="resetMartingale" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-redo"></i> 重置
+                                            </button>
+                                            <button @click="resetMartingaleCompletely()" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i> 完全重置
+                                            </button>
+                                            <button @click="debugMartingaleStatus()" class="btn btn-info btn-sm">
+                                                <i class="fas fa-bug"></i> 调试
                                             </button>
                                         </div>
                                     </div>
@@ -4027,7 +4539,29 @@
                                 buttonText: '选择旗舰版',
                                 recommended: false
                             }
-                        ]
+                        ],
+
+                        // 交易策略相关
+                        selectedStrategy: null,
+                        strategyParams: {
+                            maCross: {
+                                shortPeriod: 5,
+                                longPeriod: 20,
+                                rsiThreshold: 50
+                            },
+                            momentum: {
+                                oversoldRsi: 30,
+                                dropThreshold: 10,
+                                confirmationDays: 3
+                            }
+                        },
+                        strategyAnalysis: null,
+                        strategySignals: {
+                            maCross: null,
+                            momentum: null
+                        },
+                        autoAnalysisInterval: null,
+                        autoStrategyAnalysis: false
                     }
                 },
 
@@ -4056,6 +4590,9 @@
                     this.initPredictionStats();
                     this.loadSavedLoginInfo();
                     this.loadMartingaleData();
+
+                    // 初始化策略相关功能
+                    this.initStrategyFeatures();
 
                     // 启动定期更新真实数据
                     this.startRealDataUpdates();
@@ -4444,6 +4981,11 @@
                         this.predicting = true;
 
                         try {
+                            // 如果选择了策略，先进行策略分析
+                            if (this.selectedStrategy) {
+                                this.analyzeStrategy();
+                            }
+
                             // 获取选定交易所的数据
                             const exchangeData = this.marketData[this.predictionSymbol]?.[this.selectedExchange];
                             if (!exchangeData) {
@@ -4482,7 +5024,9 @@
                                 predictions: predictions,
                                 symbol: this.predictionSymbol,
                                 startPrice: exchangeData.price,
-                                startTime: Date.now()
+                                startTime: Date.now(),
+                                strategy: this.selectedStrategy,
+                                strategySignals: this.strategySignals
                             };
 
                             // 重置预测结果显示
@@ -5956,15 +6500,17 @@
                         }
 
                         const currentAmount = this.martingaleSettings.currentAmount;
-                        this.martingaleSettings.totalInvested += currentAmount;
 
                         if (isWin) {
                             // 预测成功 - 停止复投
+                            // 先计算总投入（包括当前轮次）
+                            const totalInvestedThisRound = this.martingaleSettings.totalInvested + currentAmount;
+
                             // 获得回报 = 投注金额 * 2（1:1赔率）
                             const totalReturn = currentAmount * 2;
 
                             // 重新计算总盈亏：总回报 - 总投入
-                            this.martingaleSettings.totalProfit = totalReturn - this.martingaleSettings.totalInvested;
+                            this.martingaleSettings.totalProfit = totalReturn - totalInvestedThisRound;
 
                             this.martingaleSettings.consecutiveLosses = 0;
                             this.martingaleSettings.status = 'success';
@@ -5977,7 +6523,7 @@
                                 result: 'win',
                                 profit: this.martingaleSettings.totalProfit,
                                 totalReturn: totalReturn,
-                                totalInvested: this.martingaleSettings.totalInvested,
+                                totalInvested: totalInvestedThisRound,
                                 timestamp: Date.now()
                             });
 
@@ -5988,6 +6534,9 @@
                             this.resetMartingaleRound();
                         } else {
                             // 预测失败 - 准备下一轮复投
+                            // 失败时，先累加总投入
+                            this.martingaleSettings.totalInvested += currentAmount;
+
                             // 失败时，总盈亏 = 0 - 总投入（因为没有任何回报）
                             this.martingaleSettings.totalProfit = -this.martingaleSettings.totalInvested;
                             this.martingaleSettings.consecutiveLosses++;
@@ -6026,6 +6575,36 @@
                         this.martingaleSettings.currentMultiplier = 1;
                         this.martingaleSettings.status = 'waiting';
                         this.martingaleSettings.isInProgress = false;
+                        // 注意：不重置总投入和总盈亏，保持历史记录
+                    },
+
+                    // 完全重置复投系统（包括总投入和总盈亏）
+                    resetMartingaleCompletely() {
+                        this.martingaleSettings.currentRound = 0;
+                        this.martingaleSettings.currentAmount = 0;
+                        this.martingaleSettings.totalInvested = 0;
+                        this.martingaleSettings.totalProfit = 0;
+                        this.martingaleSettings.consecutiveLosses = 0;
+                        this.martingaleSettings.nextRoundAmount = this.martingaleSettings.baseAmount;
+                        this.martingaleSettings.currentMultiplier = 1;
+                        this.martingaleSettings.status = 'waiting';
+                        this.martingaleSettings.isInProgress = false;
+                        this.martingaleSettings.history = [];
+                        this.martingaleSettings.lastResult = null;
+                        this.saveMartingaleData();
+                        this.showMessage('复投系统已完全重置', 'info');
+                    },
+
+                    // 调试方法：显示当前复投状态
+                    debugMartingaleStatus() {
+                        console.log('=== 复投状态调试信息 ===');
+                        console.log('当前轮数:', this.martingaleSettings.currentRound);
+                        console.log('当前投注:', this.martingaleSettings.currentAmount);
+                        console.log('总投入:', this.martingaleSettings.totalInvested);
+                        console.log('总盈亏:', this.martingaleSettings.totalProfit);
+                        console.log('状态:', this.martingaleSettings.status);
+                        console.log('是否进行中:', this.martingaleSettings.isInProgress);
+                        console.log('========================');
                     },
 
                     prepareNextMartingaleRound() {
@@ -6282,6 +6861,440 @@
                         } else {
                             document.documentElement.removeAttribute('data-theme');
                         }
+                    },
+
+                    // 交易策略相关方法
+                    selectStrategy(strategy) {
+                        this.selectedStrategy = strategy;
+                    },
+
+                    getRiskLevelColor(riskLevel) {
+                        switch (riskLevel) {
+                            case 'low': return '#28a745';
+                            case 'medium': return '#ffc107';
+                            case 'high': return '#dc3545';
+                            default: return '#6c757d';
+                        }
+                    },
+
+                    getRiskLevelText(riskLevel) {
+                        switch (riskLevel) {
+                            case 'low': return '低风险';
+                            case 'medium': return '中风险';
+                            case 'high': return '高风险';
+                            default: return '未知风险';
+                        }
+                    },
+
+                    // 策略参数设置
+                    setStrategyParams() {
+                        // 这里可以添加策略参数设置的逻辑
+                        console.log('策略参数设置:', this.strategyParams);
+                    },
+
+                    // AI策略分析
+                    analyzeStrategy() {
+                        if (!this.selectedStrategy) return;
+
+                        console.log('AI策略分析:', this.selectedStrategy, this.strategyParams);
+
+                        // 获取当前市场数据
+                        const currentPrice = this.getCurrentPrice();
+                        const marketData = this.marketData[this.selectedSymbol]?.[this.selectedExchange];
+
+                        if (!marketData || !currentPrice) {
+                            this.strategyAnalysis = {
+                                summary: '无法获取市场数据，请检查网络连接',
+                                recommendation: '请稍后重试',
+                                riskLevel: 'unknown'
+                            };
+                            return;
+                        }
+
+                        let analysis = {};
+
+                        if (this.selectedStrategy === 'ma_cross') {
+                            analysis = this.analyzeMACrossStrategy(currentPrice, marketData);
+                        } else if (this.selectedStrategy === 'momentum') {
+                            analysis = this.analyzeMomentumStrategy(currentPrice, marketData);
+                        }
+
+                        this.strategyAnalysis = analysis;
+
+                        // 生成策略信号
+                        this.generateStrategySignals();
+                    },
+
+                    // 均线交叉策略分析
+                    analyzeMACrossStrategy(currentPrice, marketData) {
+                        const { shortPeriod, longPeriod, rsiThreshold } = this.strategyParams.maCross;
+
+                        // 计算均线（模拟数据）
+                        const shortMA = this.calculateMovingAverage(currentPrice, shortPeriod);
+                        const longMA = this.calculateMovingAverage(currentPrice, longPeriod);
+                        const rsi = this.calculateRSI(currentPrice, marketData);
+
+                        // 判断均线交叉
+                        const isGoldenCross = shortMA > longMA;
+                        const isDeathCross = shortMA < longMA;
+
+                        // 计算趋势强度
+                        const trendStrength = Math.abs(shortMA - longMA) / longMA * 100;
+
+                        // AI增强分析
+                        let summary = '';
+                        let recommendation = '';
+                        let riskLevel = 'medium';
+
+                        if (isGoldenCross && rsi > rsiThreshold) {
+                            summary = `短期均线(${shortPeriod}日)已上穿长期均线(${longPeriod}日)，形成金叉信号。RSI为${rsi.toFixed(1)}，处于${rsi > 70 ? '超买' : '正常'}区间。`;
+                            recommendation = '趋势向上，建议关注买入机会，但需注意风险控制。';
+                            riskLevel = rsi > 70 ? 'high' : 'medium';
+                        } else if (isDeathCross && rsi < rsiThreshold) {
+                            summary = `短期均线(${shortPeriod}日)已下穿长期均线(${longPeriod}日)，形成死叉信号。RSI为${rsi.toFixed(1)}，处于${rsi < 30 ? '超卖' : '正常'}区间。`;
+                            recommendation = '趋势向下，建议观望或考虑减仓。';
+                            riskLevel = rsi < 30 ? 'medium' : 'high';
+                        } else {
+                            summary = `均线处于${isGoldenCross ? '多头' : '空头'}排列，RSI为${rsi.toFixed(1)}。趋势强度：${trendStrength.toFixed(2)}%。`;
+                            recommendation = '市场处于盘整状态，建议等待明确信号。';
+                            riskLevel = 'low';
+                        }
+
+                        return {
+                            summary,
+                            recommendation,
+                            riskLevel,
+                            signals: {
+                                goldenCross: isGoldenCross,
+                                deathCross: isDeathCross,
+                                rsi: rsi,
+                                trendStrength: trendStrength,
+                                shortMA: shortMA,
+                                longMA: longMA
+                            }
+                        };
+                    },
+
+                    // 动量反弹策略分析
+                    analyzeMomentumStrategy(currentPrice, marketData) {
+                        const { oversoldRsi, dropThreshold, confirmationDays } = this.strategyParams.momentum;
+
+                        // 计算技术指标
+                        const rsi = this.calculateRSI(currentPrice, marketData);
+                        const priceChange = this.calculatePriceChange(currentPrice, marketData);
+                        const volumeChange = this.calculateVolumeChange(marketData);
+
+                        // 判断超卖条件
+                        const isOversold = rsi < oversoldRsi;
+                        const hasSignificantDrop = Math.abs(priceChange) > dropThreshold;
+                        const hasVolumeIncrease = volumeChange > 0.2; // 成交量增加20%
+
+                        // AI增强分析
+                        let summary = '';
+                        let recommendation = '';
+                        let riskLevel = 'medium';
+
+                        if (isOversold && hasSignificantDrop) {
+                            if (hasVolumeIncrease) {
+                                summary = `RSI为${rsi.toFixed(1)}，处于超卖区间。价格已下跌${Math.abs(priceChange).toFixed(2)}%，成交量增加${(volumeChange * 100).toFixed(1)}%。`;
+                                recommendation = '超卖反弹信号强烈，建议关注反弹机会，设置止损位。';
+                                riskLevel = 'medium';
+                            } else {
+                                summary = `RSI为${rsi.toFixed(1)}，处于超卖区间。价格已下跌${Math.abs(priceChange).toFixed(2)}%，但成交量未明显放大。`;
+                                recommendation = '超卖信号存在，但需等待成交量确认，建议谨慎操作。';
+                                riskLevel = 'high';
+                            }
+                        } else if (isOversold) {
+                            summary = `RSI为${rsi.toFixed(1)}，处于超卖区间，但价格跌幅${Math.abs(priceChange).toFixed(2)}%未达到阈值。`;
+                            recommendation = '超卖程度不足，建议继续观望。';
+                            riskLevel = 'low';
+                        } else {
+                            summary = `RSI为${rsi.toFixed(1)}，未处于超卖区间。当前价格变化：${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}%。`;
+                            recommendation = '市场未出现超卖信号，建议等待更好的入场机会。';
+                            riskLevel = 'low';
+                        }
+
+                        return {
+                            summary,
+                            recommendation,
+                            riskLevel,
+                            signals: {
+                                isOversold,
+                                hasSignificantDrop,
+                                hasVolumeIncrease,
+                                rsi,
+                                priceChange,
+                                volumeChange
+                            }
+                        };
+                    },
+
+                    // 计算移动平均线
+                    calculateMovingAverage(currentPrice, period) {
+                        // 模拟历史价格数据计算均线
+                        const basePrice = currentPrice;
+                        let sum = 0;
+
+                        for (let i = 0; i < period; i++) {
+                            // 模拟历史价格，添加一些随机波动
+                            const historicalPrice = basePrice * (1 + (Math.random() - 0.5) * 0.1);
+                            sum += historicalPrice;
+                        }
+
+                        return sum / period;
+                    },
+
+                    // 计算RSI指标
+                    calculateRSI(currentPrice, marketData) {
+                        // 模拟RSI计算
+                        const basePrice = marketData?.price || currentPrice;
+                        const priceChange = ((currentPrice - basePrice) / basePrice) * 100;
+
+                        // 基于价格变化计算RSI
+                        if (priceChange > 0) {
+                            return Math.min(100, 50 + priceChange * 2);
+                        } else {
+                            return Math.max(0, 50 + priceChange * 2);
+                        }
+                    },
+
+                    // 计算价格变化
+                    calculatePriceChange(currentPrice, marketData) {
+                        const basePrice = marketData?.price || currentPrice;
+                        return ((currentPrice - basePrice) / basePrice) * 100;
+                    },
+
+                    // 计算成交量变化
+                    calculateVolumeChange(marketData) {
+                        // 模拟成交量变化
+                        return (Math.random() - 0.5) * 0.4; // -20% 到 +20%
+                    },
+
+                    // 生成策略信号
+                    generateStrategySignals() {
+                        if (!this.strategyAnalysis) return;
+
+                        const signals = this.strategyAnalysis.signals;
+
+                        if (this.selectedStrategy === 'ma_cross') {
+                            this.strategySignals.maCross = {
+                                signal: signals.goldenCross ? 'BUY' : signals.deathCross ? 'SELL' : 'HOLD',
+                                strength: signals.trendStrength,
+                                rsi: signals.rsi,
+                                timestamp: Date.now()
+                            };
+                        } else if (this.selectedStrategy === 'momentum') {
+                            this.strategySignals.momentum = {
+                                signal: signals.isOversold && signals.hasSignificantDrop ? 'BUY' : 'HOLD',
+                                strength: Math.abs(signals.priceChange),
+                                rsi: signals.rsi,
+                                timestamp: Date.now()
+                            };
+                        }
+                    },
+
+                    // 策略信号变化监听
+                    watchStrategySignals() {
+                        // 监听策略信号变化，可以用于自动交易或提醒
+                        if (this.strategySignals.maCross) {
+                            console.log('均线交叉策略信号:', this.strategySignals.maCross);
+                        }
+                        if (this.strategySignals.momentum) {
+                            console.log('动量反弹策略信号:', this.strategySignals.momentum);
+                        }
+                    },
+
+                    // 清除策略分析
+                    clearStrategyAnalysis() {
+                        this.strategyAnalysis = null;
+                        this.strategySignals.maCross = null;
+                        this.strategySignals.momentum = null;
+                        console.log('策略分析已清除');
+                    },
+
+                    // 策略参数验证
+                    validateStrategyParams() {
+                        if (!this.selectedStrategy) return false;
+
+                        if (this.selectedStrategy === 'ma_cross') {
+                            const { shortPeriod, longPeriod } = this.strategyParams.maCross;
+                            if (shortPeriod >= longPeriod) {
+                                alert('短期均线周期必须小于长期均线周期');
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    },
+
+                    // 自动策略分析（定时执行）
+                    startAutoStrategyAnalysis() {
+                        if (this.autoAnalysisInterval) {
+                            clearInterval(this.autoAnalysisInterval);
+                        }
+
+                        // 每5分钟自动分析一次策略
+                        this.autoAnalysisInterval = setInterval(() => {
+                            if (this.selectedStrategy && this.validateStrategyParams()) {
+                                this.analyzeStrategy();
+                            }
+                        }, 5 * 60 * 1000);
+                    },
+
+                    // 停止自动策略分析
+                    stopAutoStrategyAnalysis() {
+                        if (this.autoAnalysisInterval) {
+                            clearInterval(this.autoAnalysisInterval);
+                            this.autoAnalysisInterval = null;
+                        }
+                    },
+
+                    // 切换自动策略分析
+                    toggleAutoAnalysis() {
+                        if (this.autoStrategyAnalysis) {
+                            this.startAutoStrategyAnalysis();
+                            console.log('自动策略分析已启动');
+                        } else {
+                            this.stopAutoStrategyAnalysis();
+                            console.log('自动策略分析已停止');
+                        }
+                    },
+
+                    // 策略整合分析方法
+                    getStrategySignalText() {
+                        if (!this.selectedStrategy || !this.strategySignals) return '无策略信号';
+
+                        if (this.selectedStrategy === 'ma_cross' && this.strategySignals.maCross) {
+                            const signal = this.strategySignals.maCross.signal;
+                            return signal === 'BUY' ? '🟢 买入信号' : signal === 'SELL' ? '🔴 卖出信号' : '⚪ 观望信号';
+                        } else if (this.selectedStrategy === 'momentum' && this.strategySignals.momentum) {
+                            const signal = this.strategySignals.momentum.signal;
+                            return signal === 'BUY' ? '🟢 反弹信号' : '⚪ 等待信号';
+                        }
+
+                        return '无策略信号';
+                    },
+
+                    getPredictionSummary() {
+                        if (!this.latestPrediction) return '无预测数据';
+
+                        const timeframes = Object.keys(this.latestPrediction);
+                        const upCount = timeframes.filter(tf => this.latestPrediction[tf].direction === 'up').length;
+                        const downCount = timeframes.filter(tf => this.latestPrediction[tf].direction === 'down').length;
+
+                        if (upCount > downCount) {
+                            return `📈 偏上涨 (${upCount}/${timeframes.length})`;
+                        } else if (downCount > upCount) {
+                            return `📉 偏下跌 (${downCount}/${timeframes.length})`;
+                        } else {
+                            return `➡️ 中性 (${upCount}/${timeframes.length})`;
+                        }
+                    },
+
+                    getCombinedRecommendation() {
+                        if (!this.selectedStrategy || !this.strategyAnalysis || !this.latestPrediction) {
+                            return '需要更多数据';
+                        }
+
+                        const strategySignal = this.getStrategySignalText();
+                        const predictionSummary = this.getPredictionSummary();
+
+                        // 策略信号与AI预测的一致性分析
+                        const isConsistent = this.isStrategyPredictionConsistent();
+
+                        if (isConsistent) {
+                            return '🎯 信号一致，建议执行';
+                        } else {
+                            return '⚠️ 信号分歧，建议谨慎';
+                        }
+                    },
+
+                    getStrategyInsight() {
+                        if (!this.selectedStrategy || !this.strategyAnalysis) {
+                            return '请先选择策略并进行分析';
+                        }
+
+                        const strategy = this.selectedStrategy;
+                        const analysis = this.strategyAnalysis;
+
+                        if (strategy === 'ma_cross') {
+                            if (analysis.signals?.goldenCross) {
+                                return '均线金叉信号确认，趋势向上，建议关注买入机会，但需注意RSI超买风险';
+                            } else if (analysis.signals?.deathCross) {
+                                return '均线死叉信号确认，趋势向下，建议观望或减仓，关注RSI超卖反弹机会';
+                            } else {
+                                return '均线处于盘整状态，建议等待明确趋势信号';
+                            }
+                        } else if (strategy === 'momentum') {
+                            if (analysis.signals?.isOversold && analysis.signals?.hasSignificantDrop) {
+                                return '超卖反弹信号强烈，建议关注反弹机会，设置合理止损位';
+                            } else if (analysis.signals?.isOversold) {
+                                return 'RSI超卖但跌幅不足，建议等待更好的入场机会';
+                            } else {
+                                return '未出现超卖信号，建议继续观望或寻找其他机会';
+                            }
+                        }
+
+                        return '策略分析完成，请结合市场情况做出交易决策';
+                    },
+
+                    // 判断策略信号与AI预测是否一致
+                    isStrategyPredictionConsistent() {
+                        if (!this.selectedStrategy || !this.strategySignals || !this.latestPrediction) {
+                            return false;
+                        }
+
+                        const strategy = this.selectedStrategy;
+                        const signals = this.strategySignals;
+                        const prediction = this.latestPrediction;
+
+                        if (strategy === 'ma_cross' && signals.maCross) {
+                            const strategyDirection = signals.maCross.signal === 'BUY' ? 'up' : 'down';
+                            const predictionDirection = this.getPredictionDirection(prediction);
+                            return strategyDirection === predictionDirection;
+                        } else if (strategy === 'momentum' && signals.momentum) {
+                            const strategyDirection = signals.momentum.signal === 'BUY' ? 'up' : 'neutral';
+                            const predictionDirection = this.getPredictionDirection(prediction);
+                            return strategyDirection === predictionDirection || predictionDirection === 'neutral';
+                        }
+
+                        return false;
+                    },
+
+                    // 获取预测的主要方向
+                    getPredictionDirection(prediction) {
+                        if (!prediction) return 'neutral';
+
+                        const timeframes = Object.keys(prediction);
+                        const upCount = timeframes.filter(tf => prediction[tf].direction === 'up').length;
+                        const downCount = timeframes.filter(tf => prediction[tf].direction === 'down').length;
+
+                        if (upCount > downCount) return 'up';
+                        if (downCount > upCount) return 'down';
+                        return 'neutral';
+                    },
+
+                    // 初始化策略相关功能
+                    initStrategyFeatures() {
+                        console.log('初始化交易策略功能...');
+
+                        // 设置默认策略参数
+                        this.strategyParams.maCross = {
+                            shortPeriod: 5,
+                            longPeriod: 20,
+                            rsiThreshold: 50
+                        };
+
+                        this.strategyParams.momentum = {
+                            oversoldRsi: 30,
+                            dropThreshold: 10,
+                            confirmationDays: 3
+                        };
+
+                        // 启动策略信号监听
+                        this.watchStrategySignals();
+
+                        console.log('交易策略功能初始化完成');
                     }
                 }
             }).mount('#app');
@@ -6593,6 +7606,82 @@
                 box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
             }
         </style>
+
+        <!-- 移动端触摸优化脚本 -->
+        <script>
+            // 移动端触摸优化
+            document.addEventListener('DOMContentLoaded', function () {
+                // 防止双击缩放
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+
+                // 触摸反馈优化
+                const touchElements = document.querySelectorAll('.nav-item, .data-source-indicator, .theme-toggle');
+                touchElements.forEach(element => {
+                    element.addEventListener('touchstart', function () {
+                        this.style.transform = 'scale(0.98)';
+                        this.style.transition = 'transform 0.1s ease';
+                    });
+
+                    element.addEventListener('touchend', function () {
+                        this.style.transform = '';
+                        this.style.transition = '';
+                    });
+                });
+
+                // 移动端视口优化
+                if (window.innerWidth <= 768) {
+                    const viewport = document.querySelector('meta[name="viewport"]');
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0');
+                    }
+                }
+
+                // 键盘支持
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' && document.activeElement.classList.contains('nav-item')) {
+                        document.activeElement.click();
+                    }
+                });
+
+                // 移动端滚动优化
+                let isScrolling = false;
+                document.addEventListener('touchmove', function () {
+                    isScrolling = true;
+                    setTimeout(() => {
+                        isScrolling = false;
+                    }, 100);
+                });
+
+                // 优化触摸事件
+                document.addEventListener('touchstart', function () {
+                    if (isScrolling) return;
+                    // 触摸开始处理
+                }, { passive: true });
+            });
+
+            // 移动端性能优化
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function () {
+                    // 可以在这里注册Service Worker
+                });
+            }
+
+            // 移动端网络状态检测
+            window.addEventListener('online', function () {
+                console.log('网络已连接');
+            });
+
+            window.addEventListener('offline', function () {
+                console.log('网络已断开');
+            });
+        </script>
     </body>
 
 </html>

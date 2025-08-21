@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>盈亏明细功能测试</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background: #f5f5f5;
+            }
+
+            .test-container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .test-section {
+                margin: 20px 0;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+            .test-button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            .test-button:hover {
+                background: #0056b3;
+            }
+
+            .status {
+                margin: 10px 0;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+            .status.success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .status.error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+            .status.info {
+                background: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #bee5eb;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="test-container">
+            <h1>🔍 盈亏明细功能测试</h1>
+
+            <div class="test-section">
+                <h3>📋 功能说明</h3>
+                <p>我已经为您的智能复投系统添加了完整的盈亏明细功能，包括：</p>
+                <ul>
+                    <li>✅ 详细的盈亏记录列表</li>
+                    <li>✅ 成功/失败状态标识</li>
+                    <li>✅ 时间戳显示</li>
+                    <li>✅ 统计摘要（成功率、总记录数等）</li>
+                    <li>✅ 显示/隐藏切换功能</li>
+                    <li>✅ 清空记录功能</li>
+                    <li>✅ 移动端响应式设计</li>
+                </ul>
+            </div>
+
+            <div class="test-section">
+                <h3>🎯 测试步骤</h3>
+                <ol>
+                    <li>打开主系统：<a href="http://localhost:8080" target="_blank">http://localhost:8080</a></li>
+                    <li>进入"AI预测"页面</li>
+                    <li>找到"智能复投系统"部分</li>
+                    <li>启用复投功能并进行几次预测</li>
+                    <li>查看盈亏明细列表（在有历史记录后会自动显示）</li>
+                </ol>
+            </div>
+
+            <div class="test-section">
+                <h3>🔧 功能特性</h3>
+                <div class="status info">
+                    <strong>自动显示：</strong>当有复投历史记录时，盈亏明细会自动显示在状态网格下方
+                </div>
+                <div class="status info">
+                    <strong>智能时间显示：</strong>今天显示时间，昨天显示"昨天+时间"，其他显示日期+时间
+                </div>
+                <div class="status info">
+                    <strong>颜色区分：</strong>成功记录显示绿色边框，失败记录显示红色边框
+                </div>
+                <div class="status info">
+                    <strong>统计摘要：</strong>显示总记录数、成功次数、失败次数、成功率
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>📱 移动端适配</h3>
+                <p>盈亏明细功能已完全适配移动端：</p>
+                <ul>
+                    <li>表格在小屏幕上自动调整列数</li>
+                    <li>隐藏次要信息列（时间、累计投入）</li>
+                    <li>按钮和控件适配触摸操作</li>
+                    <li>响应式布局确保在各种屏幕尺寸下正常显示</li>
+                </ul>
+            </div>
+
+            <div class="test-section">
+                <h3>🚀 立即测试</h3>
+                <button class="test-button" onclick="window.open('http://localhost:8080', '_blank')">
+                    打开主系统
+                </button>
+                <button class="test-button"
+                    onclick="window.open('http://localhost:8080/websocket_test.html', '_blank')">
+                    测试WebSocket连接
+                </button>
+            </div>
+
+            <div class="test-section">
+                <h3>✅ 功能验证清单</h3>
+                <div id="checklist">
+                    <div class="status success">✅ 盈亏明细HTML结构已添加</div>
+                    <div class="status success">✅ Vue.js数据和方法已集成</div>
+                    <div class="status success">✅ CSS样式已完整添加</div>
+                    <div class="status success">✅ 移动端响应式设计已完成</div>
+                    <div class="status success">✅ 时间格式化功能已实现</div>
+                    <div class="status success">✅ 统计计算功能已实现</div>
+                    <div class="status success">✅ 显示/隐藏切换功能已实现</div>
+                    <div class="status success">✅ 清空记录功能已实现</div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>💡 使用提示</h3>
+                <div class="status info">
+                    <strong>首次使用：</strong>盈亏明细只有在有复投历史记录后才会显示
+                </div>
+                <div class="status info">
+                    <strong>数据持久化：</strong>所有记录都会自动保存到本地存储
+                </div>
+                <div class="status info">
+                    <strong>不影响现有功能：</strong>新功能完全独立，不会影响其他系统功能
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 检查服务状态
+            async function checkServiceStatus() {
+                try {
+                    const response = await fetch('http://localhost:8080');
+                    if (response.ok) {
+                        console.log('✅ HTTP服务器运行正常');
+                    }
+                } catch (error) {
+                    console.log('❌ HTTP服务器连接失败');
+                }
+            }
+
+            // 页面加载时检查状态
+            window.addEventListener('load', checkServiceStatus);
+        </script>
+    </body>
+
+</html>

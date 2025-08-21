@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>移动端导航修复测试</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                color: #333;
+            }
+
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+                margin: 10px;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px 15px;
+                text-align: center;
+                position: relative;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 5px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .header p {
+                font-size: 0.85rem;
+                opacity: 0.9;
+                margin: 0;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .test-section {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .test-section h2 {
+                color: #333;
+                font-size: 1.2rem;
+                margin-bottom: 12px;
+                font-weight: 600;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 6px;
+            }
+
+            .nav-demo {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .nav-container {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: white;
+            }
+
+            .nav-menu {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .nav-item {
+                cursor: pointer;
+                padding: 0.4rem 0.8rem;
+                border-radius: 5px;
+                transition: background 0.3s;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+                color: white;
+                font-size: 0.9rem;
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-item:hover,
+            .nav-item.active {
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .data-source-indicator {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.4rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                white-space: nowrap;
+                min-width: fit-content;
+                background: rgba(220, 53, 69, 0.2);
+                color: #dc3545;
+                border: 1px solid rgba(220, 53, 69, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .data-source-indicator::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                animation: shimmer 2s infinite;
+            }
+
+            @keyframes shimmer {
+                0% {
+                    left: -100%;
+                }
+
+                100% {
+                    left: 100%;
+                }
+            }
+
+            .theme-toggle {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                padding: 0.5rem;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .theme-toggle:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: scale(1.1);
+            }
+
+            .test-info {
+                background: #e3f2fd;
+                border: 1px solid #bbdefb;
+                color: #1976d2;
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+                font-size: 0.9rem;
+            }
+
+            .test-info h3 {
+                margin-bottom: 8px;
+                color: #1565c0;
+            }
+
+            .test-info ul {
+                margin-left: 20px;
+            }
+
+            .test-info li {
+                margin-bottom: 4px;
+            }
+
+            .btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                min-height: 44px;
+            }
+
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+            /* 移动端优化 */
+            @media (max-width: 768px) {
+                .nav-container {
+                    gap: 0.8rem;
+                }
+
+                .nav-menu {
+                    gap: 0.4rem;
+                }
+
+                .nav-item {
+                    padding: 0.3rem 0.6rem;
+                    font-size: 0.8rem;
+                }
+
+                .data-source-indicator {
+                    padding: 0.3rem 0.6rem;
+                    font-size: 0.75rem;
+                }
+
+                .theme-toggle {
+                    width: 32px;
+                    height: 32px;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .header h1 {
+                    font-size: 1.3rem;
+                }
+
+                .nav-item {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+
+                .data-source-indicator {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.7rem;
+                }
+            }
+
+            /* 横屏优化 */
+            @media (max-width: 768px) and (orientation: landscape) {
+                .nav-container {
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+
+                .nav-menu {
+                    flex-wrap: nowrap;
+                    gap: 0.6rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📱 移动端导航修复测试</h1>
+                <p>验证导航菜单在移动端的显示效果</p>
+            </div>
+
+            <div class="main-content">
+                <div class="test-info">
+                    <h3>🔧 修复内容</h3>
+                    <ul>
+                        <li>✅ 导航菜单响应式布局</li>
+                        <li>✅ 数据源指示器移动端适配</li>
+                        <li>✅ 触摸目标大小优化（44px最小高度）</li>
+                        <li>✅ 触摸反馈和防误触</li>
+                        <li>✅ 超小屏幕和横屏模式支持</li>
+                    </ul>
+                </div>
+
+                <div class="test-section">
+                    <h2>🎯 导航菜单测试</h2>
+                    <div class="nav-demo">
+                        <div class="nav-container">
+                            <div class="logo">
+                                <i class="fas fa-chart-line"></i>
+                                永续合约预测系统
+                            </div>
+
+                            <div class="nav-menu">
+                                <div class="nav-item active">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    交易仪表盘
+                                </div>
+                                <div class="nav-item">
+                                    <i class="fas fa-crystal-ball"></i>
+                                    AI预测
+                                </div>
+                                <div class="nav-item">
+                                    <i class="fas fa-crown"></i>
+                                    会员中心
+                                </div>
+                                <div class="data-source-indicator">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    模拟数据
+                                </div>
+                                <button class="theme-toggle">
+                                    <i class="fas fa-moon"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h2>📱 测试说明</h2>
+                    <p><strong>测试步骤：</strong></p>
+                    <ol>
+                        <li>在手机上访问此页面</li>
+                        <li>检查导航菜单是否正常显示</li>
+                        <li>验证"模拟数据"红色警告框是否完整</li>
+                        <li>测试触摸操作是否流畅</li>
+                        <li>尝试横屏和竖屏切换</li>
+                    </ol>
+
+                    <p><strong>预期效果：</strong></p>
+                    <ul>
+                        <li>导航菜单在移动端垂直排列</li>
+                        <li>所有元素都有合适的触摸目标大小</li>
+                        <li>"模拟数据"警告框完整显示</li>
+                        <li>触摸反馈流畅自然</li>
+                    </ul>
+                </div>
+
+                <div class="test-section">
+                    <h2>🚀 快速测试</h2>
+                    <button class="btn" onclick="testNavigation()">
+                        🧪 测试导航功能
+                    </button>
+                    <div id="testResult" style="margin-top: 15px; padding: 10px; border-radius: 8px; display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 测试导航功能
+            function testNavigation() {
+                const result = document.getElementById('testResult');
+                const navItems = document.querySelectorAll('.nav-item');
+                const dataSource = document.querySelector('.data-source-indicator');
+
+                let testResults = [];
+
+                // 测试导航项
+                navItems.forEach((item, index) => {
+                    const rect = item.getBoundingClientRect();
+                    const isTouchable = rect.height >= 44 && rect.width >= 44;
+                    testResults.push(`${index + 1}. ${item.textContent.trim()}: ${isTouchable ? '✅ 触摸目标合适' : '❌ 触摸目标过小'}`);
+                });
+
+                // 测试数据源指示器
+                const dataRect = dataSource.getBoundingClientRect();
+                const dataTouchable = dataRect.height >= 44 && dataRect.width >= 44;
+                testResults.push(`数据源指示器: ${dataTouchable ? '✅ 触摸目标合适' : '❌ 触摸目标过小'}`);
+
+                // 显示结果
+                result.style.display = 'block';
+                result.style.background = '#e8f5e8';
+                result.style.border = '1px solid #4caf50';
+                result.style.color = '#2e7d32';
+                result.innerHTML = '<strong>测试结果：</strong><br>' + testResults.join('<br>');
+            }
+
+            // 触摸反馈优化
+            document.addEventListener('DOMContentLoaded', function () {
+                const touchElements = document.querySelectorAll('.nav-item, .data-source-indicator, .theme-toggle');
+
+                touchElements.forEach(element => {
+                    element.addEventListener('touchstart', function () {
+                        this.style.transform = 'scale(0.98)';
+                        this.style.transition = 'transform 0.1s ease';
+                    });
+
+                    element.addEventListener('touchend', function () {
+                        this.style.transform = '';
+                        this.style.transition = '';
+                    });
+                });
+
+                // 防止双击缩放
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', function (event) {
+                    const now = (new Date()).getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                }, false);
+            });
+
+            // 模拟点击事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    // 移除其他项的active状态
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    // 添加当前项的active状态
+                    this.classList.add('active');
+                });
+            });
+        </script>
+    </body>
+
+</html>
