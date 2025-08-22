@@ -1055,6 +1055,44 @@
                 transform: none !important;
                 box-shadow: none !important;
             }
+
+            /* 更多页面样式 */
+            .more-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .more-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+                background: rgba(17, 17, 42, 0.8);
+                border: 1px solid var(--tech-blue);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .more-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            }
+
+            .more-icon {
+                font-size: 2rem;
+                color: var(--tech-blue);
+                margin-bottom: 0.5rem;
+            }
+
+            .more-label {
+                font-size: 0.9rem;
+                color: var(--tech-text-secondary);
+                font-family: 'Orbitron', monospace;
+            }
         </style>
     </head>
 
@@ -2852,6 +2890,33 @@
             </div>
         </div>
 
+        <!-- 更多页面 -->
+        <div id="morePage" class="page" style="display: none;">
+            <div class="tech-panel glow">
+                <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <i class="fas fa-ellipsis-h"></i> 更多功能
+                </h3>
+                <div class="more-grid">
+                    <div class="more-item" id="moreRecordsBtn">
+                        <i class="fas fa-clipboard-list more-icon"></i>
+                        <span class="more-label">交易记录</span>
+                    </div>
+                    <div class="more-item" id="moreSettingsBtn">
+                        <i class="fas fa-cog more-icon"></i>
+                        <span class="more-label">设置</span>
+                    </div>
+                    <div class="more-item" id="moreProfitBtn">
+                        <i class="fas fa-chart-pie more-icon"></i>
+                        <span class="more-label">分润</span>
+                    </div>
+                    <div class="more-item" id="moreDepositBtn">
+                        <i class="fas fa-wallet more-icon"></i>
+                        <span class="more-label">入金</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 底部导航栏 -->
         <nav class="bottom-navbar">
             <div class="bottom-nav-container">
@@ -2871,21 +2936,9 @@
                     <i class="fas fa-shield-alt bottom-nav-icon"></i>
                     <span class="bottom-nav-label">风险管理</span>
                 </div>
-                <div class="bottom-nav-item" id="bottomRecordsBtn">
-                    <i class="fas fa-clipboard-list bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">交易记录</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomSettingsBtn">
-                    <i class="fas fa-cog bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">设置</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomProfitBtn">
-                    <i class="fas fa-chart-pie bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">分润</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomDepositBtn">
-                    <i class="fas fa-wallet bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">入金</span>
+                <div class="bottom-nav-item" id="bottomMoreBtn">
+                    <i class="fas fa-ellipsis-h bottom-nav-icon"></i>
+                    <span class="bottom-nav-label">更多</span>
                 </div>
             </div>
         </nav>
@@ -2910,8 +2963,11 @@
                 records: document.getElementById('recordsPage'),
                 settings: document.getElementById('settingsPage'),
                 profit: document.getElementById('profitPage'),
-                deposit: document.getElementById('depositPage')
+                deposit: document.getElementById('depositPage'),
+                more: document.getElementById('morePage')
             };
+
+
 
             const elements = {
                 connectionStatus: document.getElementById('connectionStatus'),
@@ -2966,10 +3022,7 @@
                 reinvest: document.getElementById('bottomReinvestBtn'),
                 backtest: document.getElementById('bottomBacktestBtn'),
                 risk: document.getElementById('bottomRiskBtn'),
-                records: document.getElementById('bottomRecordsBtn'),
-                settings: document.getElementById('bottomSettingsBtn'),
-                profit: document.getElementById('bottomProfitBtn'),
-                deposit: document.getElementById('bottomDepositBtn')
+                more: document.getElementById('bottomMoreBtn')
             };
 
             // 初始化
@@ -3684,14 +3737,17 @@
                 navButtons.login.addEventListener('click', () => showPage('login'));
 
                 // 底部导航按钮事件
-                bottomNavButtons.dashboard.addEventListener('click', () => showPage('dashboard'));
-                bottomNavButtons.reinvest.addEventListener('click', () => showPage('reinvest'));
-                bottomNavButtons.backtest.addEventListener('click', () => showPage('backtest'));
-                bottomNavButtons.risk.addEventListener('click', () => showPage('risk'));
-                bottomNavButtons.records.addEventListener('click', () => showPage('records'));
-                bottomNavButtons.settings.addEventListener('click', () => showPage('settings'));
-                bottomNavButtons.profit.addEventListener('click', () => showPage('profit'));
-                bottomNavButtons.deposit.addEventListener('click', () => showPage('deposit'));
+                Object.keys(bottomNavButtons).forEach(pageName => {
+                    if (bottomNavButtons[pageName]) {
+                        bottomNavButtons[pageName].addEventListener('click', () => showPage(pageName));
+                    }
+                });
+
+                // "更多"页面内的按钮事件
+                document.getElementById('moreRecordsBtn').addEventListener('click', () => showPage('records'));
+                document.getElementById('moreSettingsBtn').addEventListener('click', () => showPage('settings'));
+                document.getElementById('moreProfitBtn').addEventListener('click', () => showPage('profit'));
+                document.getElementById('moreDepositBtn').addEventListener('click', () => showPage('deposit'));
 
                 // 预测按钮事件
                 elements.predictBtn.addEventListener('click', startPrediction);
