@@ -311,6 +311,35 @@
                 font-size: 1.2rem;
                 color: var(--tech-blue);
                 text-shadow: 0 0 5px rgba(0, 243, 255, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            /* 连接状态指示器 */
+            .connection-indicator {
+                display: inline-block;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                margin-right: 0.5rem;
+                animation: pulse 2s infinite;
+            }
+
+            .connection-indicator.connected {
+                background-color: var(--tech-success);
+                box-shadow: 0 0 10px var(--tech-success);
+            }
+
+            .connection-indicator.connecting {
+                background-color: var(--tech-warning);
+                box-shadow: 0 0 10px var(--tech-warning);
+            }
+
+            .connection-indicator.disconnected {
+                background-color: var(--tech-danger);
+                box-shadow: 0 0 10px var(--tech-danger);
             }
 
             /* 预测结果 */
@@ -1100,7 +1129,12 @@
 
                 <div class="tech-panel glow">
                     <div class="status-display">
+                        <span class="connection-indicator connecting"></span>
                         <span id="connectionStatus">📡 连接状态: <span id="statusText">连接中...</span></span>
+                        <button id="reconnectBtn" class="tech-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;"
+                            title="手动重连">
+                            <i class="fas fa-sync-alt"></i> 重连
+                        </button>
                     </div>
                 </div>
 
@@ -1120,6 +1154,11 @@
                             <option value="BNBUSDT">BNB/USDT</option>
                             <option value="SOLUSDT">SOL/USDT</option>
                             <option value="XRPUSDT">XRP/USDT</option>
+                            <option value="ADAUSDT">ADA/USDT</option>
+                            <option value="DOGEUSDT">DOGE/USDT</option>
+                            <option value="DOTUSDT">DOT/USDT</option>
+                            <option value="LINKUSDT">LINK/USDT</option>
+                            <option value="MATICUSDT">MATIC/USDT</option>
                         </select>
                     </div>
 
@@ -2944,10 +2983,40 @@
                 // 立即获取实时价格
                 updateRealTimeData();
 
-                showNotification('系统初始化完成', 'success');
+                // 设置默认交易对
+                const defaultSymbol = 'BTCUSDT';
+                elements.symbolSelector.dataset.previousSymbol = defaultSymbol;
+
+                // 初始化图表数据
+                setTimeout(() => {
+                    updateChartForSymbol(defaultSymbol);
+                }, 2000);
+
+                showNotification('系统初始化完成，已连接到币安实时数据', 'success');
 
                 // 设置默认页面为仪表盘
                 showPage('dashboard');
+            });
+
+            // 页面卸载时清理资源
+            window.addEventListener('beforeunload', function () {
+                closeWebSocket();
+            });
+
+            // 页面隐藏时暂停心跳，显示时恢复
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    // 页面隐藏时暂停心跳
+                    if (heartbeatInterval) {
+                        clearInterval(heartbeatInterval);
+                        heartbeatInterval = null;
+                    }
+                } else {
+                    // 页面显示时恢复心跳
+                    if (isConnected && !heartbeatInterval) {
+                        startHeartbeat();
+                    }
+                }
             });
 
             // 初始化图表
@@ -3052,62 +3121,300 @@
             }
 
 
-            const reconnectInterval = 5000; // 5秒后重连
+            // WebSocket连接管理
+            let reconnectAttempts = 0;
+            let maxReconnectAttempts = 15;
+            let reconnectInterval = 3000;
+            let heartbeatInterval = null;
             let reconnectTimeout = null;
+            let dataUpdateInterval = null;
+            let lastHeartbeatTime = 0;
+            let connectionStartTime = 0;
 
             // 更新连接状态的UI
             function updateConnectionStatus(status, color) {
                 elements.statusText.textContent = status;
                 elements.statusText.style.color = color;
+
+                // 更新连接指示器
+                const indicator = document.querySelector('.connection-indicator');
+                if (indicator) {
+                    indicator.className = 'connection-indicator';
+                    if (status.includes('已连接')) {
+                        indicator.classList.add('connected');
+                    } else if (status.includes('连接中')) {
+                        indicator.classList.add('connecting');
+                    } else {
+                        indicator.classList.add('disconnected');
+                    }
+                }
             }
 
-            // 连接WebSocket
+            // 连接WebSocket - 使用币安官方最新稳定接口
             function connectWebSocket() {
-                // 清除之前的重连定时器
+                // 清除之前的连接和定时器
+                cleanupWebSocket();
+
+                try {
+                    // 使用币安官方最新WebSocket接口 - 支持所有交易对
+                    const streams = [
+                        'btcusdt@ticker', 'btcusdt@kline_1m',
+                        'ethusdt@ticker', 'ethusdt@kline_1m',
+                        'bnbusdt@ticker', 'bnbusdt@kline_1m',
+                        'solusdt@ticker', 'solusdt@kline_1m',
+                        'xrpusdt@ticker', 'xrpusdt@kline_1m',
+                        'adausdt@ticker', 'adausdt@kline_1m',
+                        'dogeusdt@ticker', 'dogeusdt@kline_1m',
+                        'dotusdt@ticker', 'dotusdt@kline_1m',
+                        'linkusdt@ticker', 'linkusdt@kline_1m',
+                        'maticusdt@ticker', 'maticusdt@kline_1m'
+                    ].join('/');
+
+                    // 使用币安官方推荐的WebSocket URL
+                    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+
+                    // 添加连接超时处理
+                    const connectionTimeout = setTimeout(() => {
+                        if (ws && ws.readyState === WebSocket.CONNECTING) {
+                            console.log('WebSocket连接超时，关闭连接');
+                            ws.close();
+                        }
+                    }, 10000); // 10秒连接超时
+
+                    ws = new WebSocket(wsUrl);
+                    connectionStartTime = Date.now();
+
+                    updateConnectionStatus('连接中...', 'var(--tech-warning)');
+
+                    ws.onopen = function () {
+                        clearTimeout(connectionTimeout);
+                        isConnected = true;
+                        reconnectAttempts = 0; // 重置重连次数
+                        updateConnectionStatus('已连接', 'var(--tech-success)');
+                        showNotification('币安实时数据连接成功', 'success');
+
+                        // 启动心跳检测
+                        startHeartbeat();
+
+                        // 启动数据更新
+                        startDataUpdates();
+                    };
+
+                    function startDataUpdates() {
+                        // 确保只启动一个定时器
+                        if (window.dataUpdateInterval) {
+                            clearInterval(window.dataUpdateInterval);
+                        }
+
+                        window.dataUpdateInterval = setInterval(() => {
+                            if (isConnected) {
+                                updatePredictionPanel();
+                                updateIndicators();
+                                updateReinvestData();
+                            }
+                        }, 5000); // 每5秒更新一次辅助数据
+
+                        // 发送连接确认消息
+                        sendHeartbeat();
+                    };
+
+                    ws.onmessage = function (event) {
+                        try {
+                            // 处理心跳响应
+                            if (event.data === 'pong' || event.data.includes('pong')) {
+                                console.log('收到心跳响应');
+                                lastHeartbeatTime = Date.now();
+                                return;
+                            }
+
+                            // 处理行情数据
+                            const message = JSON.parse(event.data);
+
+                            if (message.data) {
+                                const data = message.data;
+
+                                // 处理ticker数据 - 支持所有交易对
+                                if (data.s && data.c && data.P) {
+                                    const symbol = data.s.toLowerCase();
+                                    const symbolMap = {
+                                        'btcusdt': 'btc',
+                                        'ethusdt': 'eth',
+                                        'bnbusdt': 'bnb',
+                                        'solusdt': 'sol',
+                                        'xrpusdt': 'xrp',
+                                        'adausdt': 'ada',
+                                        'dogeusdt': 'doge',
+                                        'dotusdt': 'dot',
+                                        'linkusdt': 'link',
+                                        'maticusdt': 'matic'
+                                    };
+
+                                    if (symbolMap[symbol]) {
+                                        updatePrice(symbolMap[symbol], data.c, data.P);
+                                    }
+                                }
+
+                                // 处理K线数据 - 支持所有交易对
+                                if (data.s && data.k) {
+                                    const kline = data.k;
+                                    const symbol = data.s.toLowerCase();
+                                    const closePrice = parseFloat(kline.c);
+
+                                    // 支持所有交易对的K线数据
+                                    const supportedSymbols = [
+                                        'btcusdt', 'ethusdt', 'bnbusdt', 'solusdt',
+                                        'xrpusdt', 'adausdt', 'dogeusdt', 'dotusdt',
+                                        'linkusdt', 'maticusdt'
+                                    ];
+
+                                    if (supportedSymbols.includes(symbol)) {
+                                        updateChartWithKlineData(symbol, closePrice, kline);
+                                    }
+                                }
+                            }
+                        } catch (error) {
+                            console.error('处理WebSocket消息失败:', error);
+                        }
+                    };
+
+                    ws.onclose = function (event) {
+                        clearTimeout(connectionTimeout);
+                        isConnected = false;
+                        updateConnectionStatus('已断开', 'var(--tech-danger)');
+
+                        // 清理定时器
+                        cleanupTimers();
+
+                        // 根据关闭代码判断是否需要重连
+                        if (event.code === 1000 || event.code === 1001) {
+                            // 正常关闭，不重连
+                            console.log('WebSocket正常关闭');
+                            return;
+                        }
+
+                        // 异常关闭，尝试重连
+                        if (reconnectAttempts < maxReconnectAttempts) {
+                            reconnectAttempts++;
+                            const delay = Math.min(reconnectInterval * Math.pow(1.2, reconnectAttempts - 1), 30000);
+
+                            showNotification(`行情数据连接已断开，${Math.round(delay / 1000)}秒后进行第${reconnectAttempts}次重连...`, 'warning');
+
+                            reconnectTimeout = setTimeout(() => {
+                                connectWebSocket();
+                            }, delay);
+                        } else {
+                            showNotification('WebSocket重连失败，请刷新页面重试', 'error');
+                            updateConnectionStatus('连接失败', 'var(--tech-danger)');
+                        }
+                    };
+
+                    ws.onerror = function (error) {
+                        console.error('WebSocket 错误:', error);
+                        updateConnectionStatus('连接错误', 'var(--tech-danger)');
+                        // 不在这里关闭连接，让onclose处理重连逻辑
+                    };
+
+                } catch (error) {
+                    console.error('创建WebSocket连接失败:', error);
+                    updateConnectionStatus('连接失败', 'var(--tech-danger)');
+
+                    // 延迟重连
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        setTimeout(() => {
+                            connectWebSocket();
+                        }, reconnectInterval);
+                    }
+                }
+            }
+
+            // 启动心跳检测
+            function startHeartbeat() {
+                heartbeatInterval = setInterval(() => {
+                    if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
+                        // 检查连接时间，如果超过5分钟没有心跳响应，重新连接
+                        if (lastHeartbeatTime > 0 && Date.now() - lastHeartbeatTime > 300000) {
+                            console.log('心跳超时，重新连接');
+                            ws.close();
+                            return;
+                        }
+                        sendHeartbeat();
+                    }
+                }, 30000); // 每30秒发送一次心跳
+            }
+
+            // 发送心跳
+            function sendHeartbeat() {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    try {
+                        ws.send(JSON.stringify({ method: 'ping', id: Date.now() }));
+                        lastHeartbeatTime = Date.now();
+                    } catch (error) {
+                        console.error('发送心跳失败:', error);
+                        // 心跳失败，关闭连接触发重连
+                        ws.close();
+                    }
+                }
+            }
+
+            // 启动数据更新
+            function startDataUpdates() {
+                dataUpdateInterval = setInterval(() => {
+                    if (isConnected) {
+                        updateRealTimeData();
+                        updatePredictionPanel();
+                        updateIndicators();
+                        updateReinvestData();
+                    }
+                }, 5000);
+            }
+
+            // 清理WebSocket连接
+            function cleanupWebSocket() {
+                if (ws) {
+                    ws.close();
+                    ws = null;
+                }
+                cleanupTimers();
+            }
+
+            // 清理定时器
+            function cleanupTimers() {
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                    heartbeatInterval = null;
+                }
+                if (dataUpdateInterval) {
+                    clearInterval(dataUpdateInterval);
+                    dataUpdateInterval = null;
+                }
                 if (reconnectTimeout) {
                     clearTimeout(reconnectTimeout);
+                    reconnectTimeout = null;
                 }
-
-                const streams = ['btcusdt@ticker', 'ethusdt@ticker'].join('/');
-                const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
-                ws = new WebSocket(wsUrl);
-
-                updateConnectionStatus('连接中...', 'var(--tech-warning)');
-
-                ws.onopen = function () {
-                    isConnected = true;
-                    updateConnectionStatus('已连接', 'var(--tech-success)');
-                    showNotification('币安行情数据连接成功', 'success');
-                };
-
-                ws.onmessage = function (event) {
-                    const message = JSON.parse(event.data);
-                    if (message.data && message.data.s) {
-                        const symbol = message.data.s.toLowerCase();
-                        if (symbol === 'btcusdt') {
-                            updatePrice('btc', message.data.c, message.data.P);
-                        } else if (symbol === 'ethusdt') {
-                            updatePrice('eth', message.data.c, message.data.P);
-                        }
-                    }
-                };
-
-                ws.onclose = function () {
-                    isConnected = false;
-                    updateConnectionStatus('已断开', 'var(--tech-danger)');
-                    showNotification('行情数据连接已断开，5秒后尝试重连...', 'warning');
-                    // 使用定时器进行重连，避免立即重连导致浏览器卡死
-                    reconnectTimeout = setTimeout(connectWebSocket, reconnectInterval);
-                };
-
-                ws.onerror = function (error) {
-                    console.error('WebSocket 错误:', error);
-                    updateConnectionStatus('连接错误', 'var(--tech-danger)');
-                    ws.close(); // 这会触发onclose，然后进行重连
-                };
             }
 
-            // 更新价格UI
+            // 手动重连WebSocket
+            function reconnectWebSocket() {
+                if (reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                    reconnectTimeout = null;
+                }
+                reconnectAttempts = 0;
+                connectWebSocket();
+            }
+
+            // 关闭WebSocket连接
+            function closeWebSocket() {
+                if (ws) {
+                    ws.close(1000, '用户主动关闭');
+                }
+                cleanupTimers();
+                isConnected = false;
+                updateConnectionStatus('已关闭', 'var(--tech-text-secondary)');
+            }
+
+            // 更新价格UI - 支持所有交易对
             function updatePrice(coin, price, changePercent) {
                 const priceElement = document.getElementById(`${coin}Price`);
                 const changeElement = document.getElementById(`${coin}Change`);
@@ -3119,6 +3426,7 @@
 
                     priceElement.textContent = `$${newPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
+                    // 价格变化动画
                     if (newPrice > currentPrice) {
                         priceElement.classList.add('price-up');
                         priceElement.classList.remove('price-down');
@@ -3134,43 +3442,76 @@
                     const change = parseFloat(changePercent);
                     changeElement.textContent = `${change >= 0 ? '↗' : '↘'} ${Math.abs(change).toFixed(2)}%`;
                     changeElement.style.color = change >= 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+
+                    // 更新连接状态指示器
+                    updateConnectionStatus('connected');
                 }
             }
 
-            // 获取实时加密货币价格
+            // 获取实时加密货币价格 - 使用币安官方最新API
             async function fetchRealTimePrices() {
                 try {
                     // 更新价格状态为加载中
                     updatePriceStatus('loading');
 
-                    // 使用CoinGecko免费API获取实时价格
-                    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true');
+                    // 使用币安官方REST API获取所有交易对的实时价格
+                    const symbols = [
+                        'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT',
+                        'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT',
+                        'LINKUSDT', 'MATICUSDT'
+                    ];
 
-                    if (!response.ok) {
-                        throw new Error('网络请求失败');
+                    const symbolMap = {
+                        'BTCUSDT': 'btc',
+                        'ETHUSDT': 'eth',
+                        'BNBUSDT': 'bnb',
+                        'SOLUSDT': 'sol',
+                        'XRPUSDT': 'xrp',
+                        'ADAUSDT': 'ada',
+                        'DOGEUSDT': 'doge',
+                        'DOTUSDT': 'dot',
+                        'LINKUSDT': 'link',
+                        'MATICUSDT': 'matic'
+                    };
+
+                    // 并行获取所有交易对的价格数据
+                    const pricePromises = symbols.map(symbol =>
+                        fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
+                    );
+
+                    const responses = await Promise.all(pricePromises);
+
+                    // 检查所有响应是否成功
+                    const failedResponses = responses.filter(response => !response.ok);
+                    if (failedResponses.length > 0) {
+                        throw new Error(`币安API请求失败: ${failedResponses.length}个请求失败`);
                     }
 
-                    const data = await response.json();
+                    // 解析所有价格数据
+                    const priceData = await Promise.all(responses.map(response => response.json()));
 
-                    // 更新BTC价格
-                    if (data.bitcoin) {
-                        const btcPrice = data.bitcoin.usd;
-                        const btcChangePercent = data.bitcoin.usd_24h_change;
+                    // 更新所有交易对的价格显示
+                    priceData.forEach(data => {
+                        const symbol = data.symbol;
+                        const shortSymbol = symbolMap[symbol];
 
-                        elements.btcPrice.textContent = '$' + btcPrice.toLocaleString();
-                        elements.btcChange.textContent = btcChangePercent > 0 ? '↗ ' + btcChangePercent.toFixed(2) + '%' : '↘ ' + Math.abs(btcChangePercent).toFixed(2) + '%';
-                        elements.btcChange.style.color = btcChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
-                    }
+                        if (shortSymbol && elements[`${shortSymbol}Price`] && elements[`${shortSymbol}Change`]) {
+                            const price = parseFloat(data.lastPrice);
+                            const changePercent = parseFloat(data.priceChangePercent);
 
-                    // 更新ETH价格
-                    if (data.ethereum) {
-                        const ethPrice = data.ethereum.usd;
-                        const ethChangePercent = data.ethereum.usd_24h_change;
+                            elements[`${shortSymbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
 
-                        elements.ethPrice.textContent = '$' + ethPrice.toLocaleString();
-                        elements.ethChange.textContent = ethChangePercent > 0 ? '↗ ' + ethChangePercent.toFixed(2) + '%' : '↘ ' + Math.abs(ethChangePercent).toFixed(2) + '%';
-                        elements.ethChange.style.color = ethChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
-                    }
+                            elements[`${shortSymbol}Change`].textContent = changePercent > 0 ?
+                                '↗ ' + changePercent.toFixed(2) + '%' :
+                                '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
+
+                            elements[`${shortSymbol}Change`].style.color = changePercent > 0 ?
+                                'var(--tech-success)' : 'var(--tech-danger)';
+                        }
+                    });
 
                     // 更新时间
                     const now = new Date();
@@ -3179,9 +3520,18 @@
                     // 更新价格状态为实时数据
                     updatePriceStatus('realtime');
 
+                    // 更新图表数据（使用当前选中的交易对）
+                    const selectedSymbol = elements.symbolSelector.value;
+                    if (selectedSymbol) {
+                        const selectedData = priceData.find(data => data.symbol === selectedSymbol);
+                        if (selectedData) {
+                            updateChartWithRealData(parseFloat(selectedData.lastPrice));
+                        }
+                    }
+
                     return true;
                 } catch (error) {
-                    console.error('获取实时价格失败:', error);
+                    console.error('获取币安实时价格失败:', error);
                     // 如果API调用失败，使用模拟数据作为备用
                     updateSimulatedPrices();
                     return false;
@@ -3380,6 +3730,12 @@
                     showNotification('正在刷新价格数据...', 'info');
                 });
 
+                // 手动重连按钮事件
+                document.getElementById('reconnectBtn').addEventListener('click', () => {
+                    reconnectWebSocket();
+                    showNotification('正在重新连接WebSocket...', 'info');
+                });
+
                 // 登录按钮事件
                 document.getElementById('loginSubmit').addEventListener('click', handleLogin);
 
@@ -3390,8 +3746,29 @@
                 });
 
                 // 交易对选择事件
-                elements.symbolSelector.addEventListener('change', updateChartData);
-                elements.timeframeSelector.addEventListener('change', updateChartData);
+                elements.symbolSelector.addEventListener('change', function () {
+                    const newSymbol = this.value;
+                    const oldSymbol = this.dataset.previousSymbol;
+
+                    // 取消订阅旧交易对
+                    if (oldSymbol) {
+                        unsubscribeFromSymbol(oldSymbol);
+                    }
+
+                    // 订阅新交易对
+                    subscribeToSymbol(newSymbol);
+
+                    // 更新图表
+                    updateChartForSymbol(newSymbol);
+
+                    // 保存当前选择
+                    this.dataset.previousSymbol = newSymbol;
+                });
+
+                elements.timeframeSelector.addEventListener('change', function () {
+                    const symbol = elements.symbolSelector.value;
+                    updateChartForSymbol(symbol);
+                });
 
                 // 买入卖出信号按钮
                 elements.buySignal.addEventListener('click', () => handleTradeSignal('buy'));
@@ -3631,6 +4008,194 @@
                 if (chart) {
                     chart.data.labels = generateTimeLabels();
                     chart.data.datasets[0].data = generateMockData();
+                    chart.update();
+                }
+            }
+
+            // 动态订阅WebSocket数据流
+            function subscribeToSymbol(symbol) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    const subscribeMessage = {
+                        method: 'SUBSCRIBE',
+                        params: [
+                            `${symbol.toLowerCase()}@ticker`,
+                            `${symbol.toLowerCase()}@kline_1m`
+                        ],
+                        id: Date.now()
+                    };
+
+                    try {
+                        ws.send(JSON.stringify(subscribeMessage));
+                        console.log(`已订阅 ${symbol} 数据流`);
+                    } catch (error) {
+                        console.error('订阅数据流失败:', error);
+                    }
+                }
+            }
+
+            // 取消订阅WebSocket数据流
+            function unsubscribeFromSymbol(symbol) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    const unsubscribeMessage = {
+                        method: 'UNSUBSCRIBE',
+                        params: [
+                            `${symbol.toLowerCase()}@ticker`,
+                            `${symbol.toLowerCase()}@kline_1m`
+                        ],
+                        id: Date.now()
+                    };
+
+                    try {
+                        ws.send(JSON.stringify(unsubscribeMessage));
+                        console.log(`已取消订阅 ${symbol} 数据流`);
+                    } catch (error) {
+                        console.error('取消订阅数据流失败:', error);
+                    }
+                }
+            }
+
+            // 使用真实数据更新图表
+            function updateChartWithRealData(btcPrice, ethPrice) {
+                if (chart) {
+                    // 获取当前选中的交易对
+                    const selectedSymbol = elements.symbolSelector.value;
+                    let currentPrice = btcPrice; // 默认BTC
+
+                    if (selectedSymbol === 'ETHUSDT') {
+                        currentPrice = ethPrice;
+                    }
+
+                    // 更新图表数据
+                    const newData = chart.data.datasets[0].data;
+                    newData.push(currentPrice);
+
+                    // 保持最近100个数据点
+                    if (newData.length > 100) {
+                        newData.shift();
+                    }
+
+                    // 更新时间标签
+                    const now = new Date();
+                    const timeLabel = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                    chart.data.labels.push(timeLabel);
+
+                    if (chart.data.labels.length > 100) {
+                        chart.data.labels.shift();
+                    }
+
+                    // 更新数据集标签
+                    chart.data.datasets[0].label = selectedSymbol;
+
+                    chart.update('none'); // 使用 'none' 模式提高性能
+                }
+            }
+
+            // 使用K线数据更新图表
+            function updateChartWithKlineData(symbol, closePrice, kline) {
+                if (chart) {
+                    // 获取当前选中的交易对
+                    const selectedSymbol = elements.symbolSelector.value;
+                    const symbolMap = {
+                        'btcusdt': 'BTCUSDT',
+                        'ethusdt': 'ETHUSDT',
+                        'bnbusdt': 'BNBUSDT',
+                        'solusdt': 'SOLUSDT',
+                        'xrpusdt': 'XRPUSDT',
+                        'adausdt': 'ADAUSDT',
+                        'dogeusdt': 'DOGEUSDT',
+                        'dotusdt': 'DOTUSDT',
+                        'linkusdt': 'LINKUSDT',
+                        'maticusdt': 'MATICUSDT'
+                    };
+
+                    // 只更新当前选中的交易对
+                    if (symbolMap[symbol] === selectedSymbol) {
+                        // 更新图表数据
+                        const newData = chart.data.datasets[0].data;
+                        newData.push(closePrice);
+
+                        // 保持最近100个数据点
+                        if (newData.length > 100) {
+                            newData.shift();
+                        }
+
+                        // 更新时间标签
+                        const klineTime = new Date(kline.t);
+                        const timeLabel = klineTime.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                        chart.data.labels.push(timeLabel);
+
+                        if (chart.data.labels.length > 100) {
+                            chart.data.labels.shift();
+                        }
+
+                        // 更新数据集标签
+                        chart.data.datasets[0].label = selectedSymbol;
+
+                        // 根据价格变化更新颜色
+                        if (newData.length > 1) {
+                            const prevPrice = newData[newData.length - 2];
+                            if (closePrice > prevPrice) {
+                                chart.data.datasets[0].borderColor = '#28a745';
+                                chart.data.datasets[0].backgroundColor = 'rgba(40, 167, 69, 0.1)';
+                            } else if (closePrice < prevPrice) {
+                                chart.data.datasets[0].borderColor = '#dc3545';
+                                chart.data.datasets[0].backgroundColor = 'rgba(220, 53, 69, 0.1)';
+                            } else {
+                                chart.data.datasets[0].borderColor = '#00f3ff';
+                                chart.data.datasets[0].backgroundColor = 'rgba(0, 243, 255, 0.1)';
+                            }
+                        }
+
+                        chart.update('none'); // 使用 'none' 模式提高性能
+                    }
+                }
+            }
+
+            // 根据交易对更新图表
+            async function updateChartForSymbol(symbol) {
+                if (!chart) return;
+
+                try {
+                    // 获取历史K线数据
+                    const timeframe = elements.timeframeSelector.value;
+                    const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${timeframe}&limit=100`);
+
+                    if (!response.ok) {
+                        throw new Error('获取历史数据失败');
+                    }
+
+                    const klines = await response.json();
+
+                    // 处理数据
+                    const labels = [];
+                    const data = [];
+
+                    klines.forEach(kline => {
+                        const time = new Date(kline[0]);
+                        labels.push(time.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }));
+                        data.push(parseFloat(kline[4])); // 收盘价
+                    });
+
+                    // 更新图表
+                    chart.data.labels = labels;
+                    chart.data.datasets[0].data = data;
+                    chart.data.datasets[0].label = symbol;
+
+                    // 重置颜色
+                    chart.data.datasets[0].borderColor = '#00f3ff';
+                    chart.data.datasets[0].backgroundColor = 'rgba(0, 243, 255, 0.1)';
+
+                    chart.update();
+
+                    showNotification(`${symbol} 图表数据已更新`, 'success');
+                } catch (error) {
+                    console.error('更新图表失败:', error);
+                    showNotification('图表数据更新失败，使用模拟数据', 'warning');
+
+                    // 使用模拟数据作为备用
+                    chart.data.labels = generateTimeLabels();
+                    chart.data.datasets[0].data = generateMockData();
+                    chart.data.datasets[0].label = symbol;
                     chart.update();
                 }
             }
