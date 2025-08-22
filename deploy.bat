@@ -1,38 +1,34 @@
 @echo off
 chcp 65001 >nul
-echo 🚀 开始部署永续合约预测系统...
+echo ========================================
+echo 🚀 永续合约预测系统 - 自动部署脚本
+echo ========================================
 echo.
 
 echo 📋 检查Git状态...
 git status
 echo.
 
-echo 📦 添加文件到Git...
-git add .
+echo 🔄 拉取最新代码...
+git pull origin master
 echo.
 
-set /p commit_message="💬 请输入提交信息 (按Enter使用默认信息): "
-if "%commit_message%"=="" (
-    for /f "tokens=1-4 delims=/ " %%a in ('date /t') do set mydate=%%c-%%a-%%b
-    for /f "tokens=1-2 delims=: " %%a in ('time /t') do set mytime=%%a:%%b
-    set commit_message=更新永续合约预测系统 - !mydate! !mytime!
+echo 📦 检查依赖...
+if not exist "node_modules" (
+    echo 📥 安装Node.js依赖...
+    npm install
+) else (
+    echo ✅ 依赖已存在
 )
-
-echo.
-echo 💾 提交更改...
-git commit -m "%commit_message%"
 echo.
 
-echo 🌐 推送到GitHub...
-git push origin master
+echo 🌐 启动开发服务器...
+echo 服务器将在以下地址启动：
+echo - 本地访问: http://127.0.0.1:8088
+echo - 局域网访问: http://192.168.101.202:8088
+echo - 外部访问: http://198.18.0.1:8088
+echo.
+echo 按 Ctrl+C 停止服务器
 echo.
 
-echo ✅ 部署完成！
-echo 🔗 GitHub仓库: https://github.com/hezhuohua/-
-echo 🌐 GitHub Pages: https://hezhuohua.github.io/-
-echo ⏰ 请等待1-2分钟让GitHub Actions完成自动部署
-echo.
-echo 📊 您可以在以下链接查看部署状态:
-echo https://github.com/hezhuohua/-/actions
-echo.
-pause
+npx http-server -p 8088 -o

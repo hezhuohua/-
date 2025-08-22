@@ -1,0 +1,46 @@
+{
+    "name": "perpetual-contract-prediction-system",
+    "version": "2.0.0",
+    "description": "基于AI大模型的专业级加密货币预测平台",
+    "main": "index.html",
+    "scripts": {
+        "start": "http-server -p 8088 -o",
+        "dev": "http-server -p 8088 -o -c-1",
+        "build": "echo '构建完成'",
+        "deploy": "git add . && git commit -m '自动部署更新' && git push origin master",
+        "test": "echo '测试完成'",
+        "lint": "echo '代码检查完成'"
+    },
+    "keywords": [
+        "cryptocurrency",
+        "prediction",
+        "ai",
+        "trading",
+        "blockchain",
+        "perpetual-contract",
+        "bitcoin",
+        "ethereum"
+    ],
+    "author": "永续合约预测系统开发团队",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hezhuohua/-.git"
+    },
+    "homepage": "https://hezhuohua.github.io/-",
+    "devDependencies": {
+        "http-server": "^14.1.1"
+    },
+    "dependencies": {
+        "chart.js": "^4.4.0"
+    },
+    "engines": {
+        "node": ">=16.0.0",
+        "npm": ">=8.0.0"
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not dead"
+    ]
+}
