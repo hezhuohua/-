@@ -544,6 +544,26 @@
                 }
             }
 
+            /* 移动端动画优化 */
+            @media (max-width: 768px) {
+
+                .tech-panel::before,
+                .prediction-card::before {
+                    animation: none;
+                    /* 禁用扫描线动画 */
+                }
+
+                .glow {
+                    animation: none;
+                    /* 禁用辉光动画 */
+                }
+
+                .pulse {
+                    animation: none;
+                    /* 禁用脉冲动画 */
+                }
+            }
+
             /* 触摸设备优化 */
             @media (hover: none) and (pointer: coarse) {
                 .tech-btn:hover {
@@ -3332,11 +3352,13 @@
                 // 隐藏所有页面
                 Object.values(pages).forEach(page => {
                     page.style.display = 'none';
+                    page.classList.remove('active-page');
                 });
 
                 // 显示选中的页面
                 if (pages[pageName]) {
                     pages[pageName].style.display = 'block';
+                    pages[pageName].classList.add('active-page');
                 }
 
                 // 更新顶部导航按钮状态
