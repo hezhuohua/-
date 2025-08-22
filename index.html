@@ -3053,6 +3053,7 @@
 
 
             const reconnectInterval = 5000; // 5秒后重连
+            let reconnectTimeout = null;
 
             // 更新连接状态的UI
             function updateConnectionStatus(status, color) {
@@ -3062,36 +3063,41 @@
 
             // 连接WebSocket
             function connectWebSocket() {
-                // 使用一个公共的测试WebSocket服务进行演示
-                ws = new WebSocket('wss://socketsbay.com/wss/v2/1/demo/');
+                // 清除之前的重连定时器
+                if (reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                }
+
+                const streams = ['btcusdt@ticker', 'ethusdt@ticker'].join('/');
+                const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
+                ws = new WebSocket(wsUrl);
 
                 updateConnectionStatus('连接中...', 'var(--tech-warning)');
 
                 ws.onopen = function () {
                     isConnected = true;
                     updateConnectionStatus('已连接', 'var(--tech-success)');
-                    showNotification('WebSocket连接成功', 'success');
-                    // 模拟定期接收数据
-                    setInterval(() => {
-                        if (isConnected) {
-                            updateRealTimeData();
-                            updatePredictionPanel();
-                            updateIndicators();
-                            updateReinvestData();
-                        }
-                    }, 5000);
+                    showNotification('币安行情数据连接成功', 'success');
                 };
 
                 ws.onmessage = function (event) {
-                    // 在真实应用中，这里会处理从服务器收到的真实数据
-                    console.log('收到消息:', event.data);
+                    const message = JSON.parse(event.data);
+                    if (message.data && message.data.s) {
+                        const symbol = message.data.s.toLowerCase();
+                        if (symbol === 'btcusdt') {
+                            updatePrice('btc', message.data.c, message.data.P);
+                        } else if (symbol === 'ethusdt') {
+                            updatePrice('eth', message.data.c, message.data.P);
+                        }
+                    }
                 };
 
                 ws.onclose = function () {
                     isConnected = false;
                     updateConnectionStatus('已断开', 'var(--tech-danger)');
-                    showNotification('WebSocket连接已断开，5秒后尝试重连...', 'warning');
-                    setTimeout(connectWebSocket, reconnectInterval); // 自动重连
+                    showNotification('行情数据连接已断开，5秒后尝试重连...', 'warning');
+                    // 使用定时器进行重连，避免立即重连导致浏览器卡死
+                    reconnectTimeout = setTimeout(connectWebSocket, reconnectInterval);
                 };
 
                 ws.onerror = function (error) {
@@ -3099,6 +3105,36 @@
                     updateConnectionStatus('连接错误', 'var(--tech-danger)');
                     ws.close(); // 这会触发onclose，然后进行重连
                 };
+            }
+
+            // 更新价格UI
+            function updatePrice(coin, price, changePercent) {
+                const priceElement = document.getElementById(`${coin}Price`);
+                const changeElement = document.getElementById(`${coin}Change`);
+
+                if (priceElement && changeElement) {
+                    const currentPriceText = priceElement.textContent.replace(/[^0-9.-]+/g, "");
+                    const currentPrice = parseFloat(currentPriceText);
+                    const newPrice = parseFloat(price);
+
+                    priceElement.textContent = `$${newPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                    if (newPrice > currentPrice) {
+                        priceElement.classList.add('price-up');
+                        priceElement.classList.remove('price-down');
+                    } else if (newPrice < currentPrice) {
+                        priceElement.classList.add('price-down');
+                        priceElement.classList.remove('price-up');
+                    }
+
+                    setTimeout(() => {
+                        priceElement.classList.remove('price-up', 'price-down');
+                    }, 500);
+
+                    const change = parseFloat(changePercent);
+                    changeElement.textContent = `${change >= 0 ? '↗' : '↘'} ${Math.abs(change).toFixed(2)}%`;
+                    changeElement.style.color = change >= 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+                }
             }
 
             // 获取实时加密货币价格
