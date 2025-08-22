@@ -1,149 +1,64 @@
-# 永续合约预测系统
+# 🚀 永续合约预测系统
 
-基于AI的加密货币永续合约价格预测系统，提供实时价格预测、用户管理和支付功能。
+基于AI大模型的专业级加密货币预测平台
 
-## 功能特性
+## 🌟 功能特性
 
-- 🔮 AI驱动的价格预测
-- 👥 用户注册和认证系统
-- 💳 支付和订单管理
-- 📊 实时数据可视化
-- 🔒 安全认证和权限控制
-- 📱 响应式Web界面
+- **实时交易图表**: 支持多种交易对和时间周期
+- **AI智能预测**: 基于LSTM、Transformer等先进模型
+- **市场数据分析**: 恐慌贪婪指数、波动率、成交量分析
+- **交易信号**: 实时买入/卖出信号提示
+- **会员中心**: 会员等级管理、续费、邀请好友
+- **用户系统**: 登录注册功能
 
-## 技术架构
+## 🚀 快速启动
 
-### 后端
-- **FastAPI**: 高性能异步Web框架
-- **SQLAlchemy**: ORM数据库操作
-- **Redis**: 缓存和会话管理
-- **JWT**: 用户认证
-- **WebSocket**: 实时数据推送
+### 方法一：使用批处理文件（推荐）
+双击运行 `start-server.bat` 文件
 
-### 前端
-- **Dash**: 数据可视化框架
-- **Bootstrap**: 响应式UI组件
-- **Plotly**: 交互式图表
-- **WebSocket**: 实时数据更新
+### 方法二：使用PowerShell脚本
+右键点击 `start-server.ps1` 选择"使用PowerShell运行"
 
-### AI/ML
-- **Scikit-learn**: 机器学习算法
-- **Pandas/Numpy**: 数据处理
-- **Matplotlib/Seaborn**: 数据可视化
-
-## 快速开始
-
-### 环境要求
-- Python 3.8+
-- Redis 6.0+
-- SQLite 3.x
-
-### 安装依赖
+### 方法三：手动启动
 ```bash
-pip install -r requirements.txt
+npx http-server -p 8088 -o
 ```
 
-### 环境配置
-1. 复制 `.env.example` 为 `.env`
-2. 修改配置参数
+## 🌐 访问地址
 
-### 启动服务
-```bash
-# 启动Redis
-redis-server
+启动成功后，在浏览器中访问：
+**http://localhost:8088**
 
-# 启动后端
-cd backend
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+## 📱 系统要求
 
-# 启动前端
-cd frontend
-python app.py
-```
+- Node.js 14.0 或更高版本
+- 现代浏览器（Chrome、Firefox、Safari、Edge）
 
-## 项目结构
+## 🎯 使用说明
 
-```
-├── backend/                 # 后端服务
-│   ├── main.py             # 主应用入口
-│   ├── models.py           # 数据模型
-│   ├── schemas.py          # 数据验证
-│   ├── auth.py             # 认证模块
-│   ├── database.py         # 数据库配置
-│   ├── exchange_manager.py # 交易所数据管理
-│   ├── prediction_service.py # 预测服务
-│   ├── payment_service.py  # 支付服务
-│   └── rate_limiter.py    # 速率限制
-├── frontend/               # 前端应用
-│   ├── app.py             # Dash应用入口
-│   ├── components/        # UI组件
-│   └── assets/            # 静态资源
-├── static/                 # 静态文件
-├── uploads/                # 上传文件
-├── logs/                   # 日志文件
-├── requirements.txt        # Python依赖
-└── README.md              # 项目说明
-```
+1. **仪表盘**: 查看实时交易图表和交易信号
+2. **AI预测**: 选择预测模型和周期进行智能分析
+3. **市场数据**: 查看各种市场指数和数据分析
+4. **会员中心**: 管理会员信息和功能
+5. **登录**: 用户登录和注册
 
-## API文档
+## 🔧 技术栈
 
-启动后端服务后，访问以下地址查看API文档：
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- **前端**: HTML5, CSS3, JavaScript (ES6+)
+- **图表**: TradingView Lightweight Charts
+- **样式**: 科技感蓝光主题
+- **服务器**: Node.js http-server
 
-## 主要功能模块
+## 📝 注意事项
 
-### 1. 用户管理
-- 用户注册/登录
-- JWT token认证
-- 用户信息管理
+- 当前版本为演示版本，部分功能为模拟数据
+- 实际交易请谨慎操作，注意风险控制
+- 建议在Chrome浏览器中使用以获得最佳体验
 
-### 2. 预测服务
-- 实时价格数据获取
-- AI模型预测
-- 预测结果展示
+## 🛠️ 开发说明
 
-### 3. 支付系统
-- 订单创建
-- 支付处理
-- 使用记录
+如需修改代码，请编辑 `index.html` 文件，保存后刷新浏览器即可看到效果。
 
-### 4. 数据可视化
-- 价格走势图
-- 预测结果对比
-- 实时数据更新
+---
 
-## 开发说明
-
-### 代码规范
-- 使用Black进行代码格式化
-- 遵循PEP 8编码规范
-- 添加适当的类型注解
-
-### 测试
-```bash
-# 运行测试
-pytest
-
-# 代码覆盖率
-pytest --cov=.
-```
-
-### 部署
-- 使用Gunicorn作为WSGI服务器
-- 配置Nginx反向代理
-- 使用Supervisor管理进程
-
-## 许可证
-
-MIT License
-
-## 贡献
-
-欢迎提交Issue和Pull Request！
-
-## 联系方式
-
-如有问题，请通过以下方式联系：
-- 提交GitHub Issue
-- 发送邮件至项目维护者
+**⚠️ 风险提示**: 加密货币交易存在高风险，请根据自身情况谨慎投资。

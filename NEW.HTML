@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技感蓝光计数器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap');
+        
+        :root {
+            --tech-blue: #00f3ff;
+            --tech-blue-dark: #008b91;
+            --tech-purple: #8a2be2;
+            --tech-bg: #0a0a1a;
+            --tech-panel: #11112a;
+        }
+        
+        body {
+            background: var(--tech-bg);
+            font-family: 'Exo 2', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
+        }
+        
+        .tech-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .counter-display {
+            background: var(--tech-panel);
+            border: 2px solid var(--tech-blue);
+            box-shadow: 
+                0 0 15px rgba(0, 243, 255, 0.5),
+                inset 0 0 10px rgba(0, 243, 255, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .counter-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--tech-blue), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        .counter-value {
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--tech-blue);
+            text-shadow: 
+                0 0 10px rgba(0, 243, 255, 0.7),
+                0 0 20px rgba(0, 243, 255, 0.5);
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-btn {
+            background: var(--tech-panel);
+            border: 1px solid var(--tech-blue);
+            color: var(--tech-blue);
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 
+                0 0 15px rgba(0, 243, 255, 0.7),
+                0 0 30px rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tech-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .tech-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(30deg);
+            transition: all 0.6s;
+        }
+        
+        .tech-btn:hover::after {
+            left: 120%;
+        }
+        
+        .panel {
+            background: var(--tech-panel);
+            border: 1px solid var(--tech-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 
+                0 0 20px rgba(0, 243, 255, 0.3),
+                inset 0 0 15px rgba(0, 243, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .panel-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .panel-header h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(90deg, var(--tech-blue), var(--tech-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        .panel-header::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--tech-blue), transparent);
+            margin: 0.5rem auto;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .history {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
+        }
+        
+        .history h3 {
+            color: var(--tech-blue);
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .history-item {
+            padding: 0.3rem 0.5rem;
+            margin: 0.2rem 0;
+            background: rgba(0, 243, 255, 0.1);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5); }
+            50% { text-shadow: 0 0 15px rgba(0, 243, 255, 0.9), 0 0 30px rgba(0, 243, 255, 0.7); }
+            100% { text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .glow {
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { 
+                box-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+            }
+            to { 
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.9), 0 0 30px rgba(138, 43, 226, 0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="panel glow">
+        <div class="panel-header">
+            <h1 class="tech-font">TECH COUNTER</h1>
+            <p>科技感蓝光计数器</p>
+        </div>
+        
+        <div class="counter-display">
+            <div class="counter-value tech-font pulse" id="counter">0</div>
+        </div>
+        
+        <div class="controls">
+            <button class="tech-btn" id="decrement">
+                <i class="fas fa-minus"></i> 减少
+            </button>
+            <button class="tech-btn" id="reset">
+                <i class="fas fa-sync-alt"></i> 重置
+            </button>
+            <button class="tech-btn" id="increment">
+                <i class="fas fa-plus"></i> 增加
+            </button>
+        </div>
+        
+        <div class="history">
+            <h3><i class="fas fa-history"></i> 操作历史</h3>
+            <div class="history-list" id="historyList">
+                <div class="history-item">计数器已初始化</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        const counterElement = document.getElementById('counter');
+        const historyList = document.getElementById('historyList');
+        
+        // 添加历史记录
+        function addHistory(action, value) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.textContent = `[${timeString}] ${action}: ${value}`;
+            historyList.prepend(historyItem);
+            
+            // 限制历史记录数量
+            if (historyList.children.length > 20) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+        
+        // 更新计数器显示
+        function updateCounter() {
+            counterElement.textContent = count.toString().padStart(3, '0');
+            counterElement.classList.add('pulse');
+            setTimeout(() => {
+                counterElement.classList.remove('pulse');
+            }, 300);
+        }
+        
+        // 增加计数
+        document.getElementById('increment').addEventListener('click', () => {
+            count++;
+            updateCounter();
+            addHistory('增加', count);
+        });
+        
+        // 减少计数
+        document.getElementById('decrement').addEventListener('click', () => {
+            count--;
+            updateCounter();
+            addHistory('减少', count);
+        });
+        
+        // 重置计数
+        document.getElementById('reset').addEventListener('click', () => {
+            count = 0;
+            updateCounter();
+            addHistory('重置', count);
+        });
+        
+        // 初始化
+        updateCounter();
+        addHistory('系统启动', count);
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m http.server:*)",
+      "Bash(start_server.bat:*)",
+      "Bash(python:*)",
+      "Bash(curl:*)",
+      "Bash(pip:*)",
+      "Bash(launch_system.bat:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
