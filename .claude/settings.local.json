@@ -9,7 +9,8 @@
       "Bash(python:*)",
       "Bash(curl:*)",
       "Bash(pip:*)",
-      "Bash(launch_system.bat:*)"
+      "Bash(launch_system.bat:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

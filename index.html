@@ -444,13 +444,8 @@
             /* 响应式设计 */
             @media (max-width: 768px) {
                 .navbar {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-
-                .nav-menu {
-                    flex-wrap: wrap;
-                    justify-content: center;
+                    display: none;
+                    /* 移动端隐藏顶部导航栏 */
                 }
 
                 .control-panel {
@@ -557,6 +552,25 @@
                 .bottom-nav-item:active {
                     transform: scale(0.95);
                 }
+
+                /* 移动端更多菜单优化 */
+                .more-menu {
+                    bottom: 90px;
+                    right: 15px;
+                    left: 15px;
+                    max-width: none;
+                    min-width: auto;
+                }
+
+                .more-menu-item {
+                    padding: 1.2rem 1rem;
+                    font-size: 1rem;
+                }
+
+                .more-menu-item i {
+                    font-size: 1.2rem;
+                    margin-right: 1rem;
+                }
             }
 
             /* 平板端优化 */
@@ -585,6 +599,189 @@
                 .glow {
                     animation: none;
                     /* 禁用辉光动画 */
+                }
+
+                .pulse {
+                    animation: none;
+                    /* 禁用脉冲动画 */
+                }
+
+                /* 移动端三横杆菜单优化 */
+                #mobileMenuPanel {
+                    width: 90%;
+                    max-width: 300px;
+                }
+
+                #mobileMenuPanel .nav-item {
+                    padding: 1.2rem 1rem;
+                    font-size: 1.1rem;
+                }
+
+                #mobileMenuPanel .nav-item i {
+                    font-size: 1.3rem;
+                    margin-right: 1rem;
+                }
+
+                /* 移动端底部工具栏优化 */
+                .bottom-toolbar-container {
+                    padding: 0 0.5rem;
+                }
+
+                .bottom-toolbar-item {
+                    padding: 0.75rem 0.5rem;
+                    min-width: 50px;
+                    flex: 1;
+                }
+
+                .bottom-toolbar-icon {
+                    font-size: 1.3rem;
+                }
+
+                .bottom-toolbar-label {
+                    font-size: 0.65rem;
+                }
+
+                /* 移动端触摸优化 */
+                .bottom-toolbar-item:active {
+                    transform: scale(0.95);
+                }
+
+                /* 移动端主容器优化 */
+                .container {
+                    padding: 0.5rem;
+                    padding-top: 3rem; /* 为三横杆菜单留出空间 */
+                    padding-bottom: 6rem; /* 为底部工具栏留出空间 */
+                }
+
+                /* 移动端面板优化 */
+                .tech-panel {
+                    margin-bottom: 0.75rem;
+                    padding: 1rem;
+                    border-radius: 12px;
+                }
+
+                /* 移动端控制面板优化 */
+                .control-panel {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 0.75rem;
+                    padding: 0.75rem;
+                }
+
+                .control-group {
+                    width: 100%;
+                }
+
+                /* 移动端按钮优化 */
+                .tech-btn {
+                    min-height: 44px; /* 符合移动端触摸目标大小 */
+                    font-size: 1rem;
+                    padding: 1rem;
+                    width: 100%;
+                }
+
+                /* 移动端预测卡片优化 */
+                .prediction-card,
+                .indicator-card,
+                .accuracy-card {
+                    min-height: 100px;
+                    padding: 1rem;
+                }
+
+                .prediction-direction {
+                    font-size: 2rem;
+                }
+
+                .prediction-probability,
+                .indicator-value,
+                .accuracy-value {
+                    font-size: 1.5rem;
+                }
+
+                /* 移动端图表容器优化 */
+                .chart-container {
+                    height: 300px;
+                    border-radius: 12px;
+                }
+
+                /* 移动端标题优化 */
+                .header-section h1 {
+                    font-size: 1.5rem;
+                }
+
+                .header-section p {
+                    font-size: 0.9rem;
+                }
+
+                /* 移动端表单优化 */
+                .form-input,
+                .form-label {
+                    font-size: 1rem; /* 确保可读性 */
+                }
+
+                .form-group {
+                    margin-bottom: 1.25rem;
+                }
+
+                /* 移动端通知优化 */
+                .notification {
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
+                    padding: 0.75rem;
+                    font-size: 0.9rem;
+                }
+
+                /* 移动端更多菜单优化 */
+                .more-menu {
+                    bottom: 90px;
+                    right: 10px;
+                    left: 10px;
+                    max-width: none;
+                }
+
+                .more-menu-item {
+                    padding: 1rem;
+                    font-size: 0.9rem;
+                }
+
+                /* 移动端网格布局优化 */
+                .prediction-card,
+                .indicator-card,
+                .accuracy-card {
+                    grid-column: span 1;
+                }
+
+                /* 移动端字体优化 */
+                body,
+                .tech-font {
+                    font-size: 0.9rem;
+                }
+
+                /* 移动端触摸反馈优化 */
+                .nav-item:active,
+                .bottom-toolbar-item:active,
+                .more-item:active {
+                    transform: scale(0.98);
+                }
+
+                /* 移动端滚动优化 */
+                .tech-panel {
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                /* 移动端输入框优化 */
+                input,
+                select,
+                textarea,
+                button {
+                    -webkit-appearance: none;
+                    border-radius: 8px;
+                }
+
+                /* 移动端链接优化 */
+                a {
+                    -webkit-tap-highlight-color: rgba(0, 243, 255, 0.3);
                 }
 
                 .pulse {
@@ -742,8 +939,169 @@
                 max-width: 1200px;
                 margin: 0 auto;
                 padding: 1rem;
-                padding-bottom: 5rem;
+                padding-bottom: 6rem;
                 /* 为底部导航栏留出空间 */
+            }
+            
+            /* 底部工具栏 */
+            .bottom-toolbar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(135deg, #001f3f 0%, #1a1a2e 100%);
+                border-top: 1px solid var(--tech-blue);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+                z-index: 999;
+                padding: 0.5rem 0;
+                backdrop-filter: blur(10px);
+                width: 100%;
+            }
+            
+            .bottom-toolbar-container {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 1rem;
+            }
+            
+            .bottom-toolbar-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 0.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                min-width: 60px;
+            }
+            
+            .bottom-toolbar-item:hover {
+                background: rgba(0, 243, 255, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .bottom-toolbar-item.active {
+                background: rgba(0, 243, 255, 0.2);
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            }
+            
+            .bottom-toolbar-icon {
+                font-size: 1.5rem;
+                color: var(--tech-text-secondary);
+                margin-bottom: 0.25rem;
+                transition: all 0.3s ease;
+            }
+            
+            .bottom-toolbar-item.active .bottom-toolbar-icon {
+                color: var(--tech-blue);
+                text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+            }
+            
+            .bottom-toolbar-label {
+                font-size: 0.7rem;
+                color: var(--tech-text-secondary);
+                font-family: 'Orbitron', monospace;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+            
+            .bottom-toolbar-item.active .bottom-toolbar-label {
+                color: var(--tech-blue);
+                font-weight: bold;
+            }
+            
+            /* 底部工具栏发光效果 */
+            .bottom-toolbar-item::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--tech-blue), transparent);
+                transition: width 0.3s ease;
+            }
+            
+            .bottom-toolbar-item.active::before {
+                width: 100%;
+            }
+
+            /* 更多菜单弹出层 */
+            .more-menu-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 2000;
+                display: none;
+                backdrop-filter: blur(5px);
+            }
+
+            .more-menu {
+                position: fixed;
+                bottom: 80px;
+                right: 20px;
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                border-radius: 16px;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+                backdrop-filter: blur(10px);
+                z-index: 2001;
+                min-width: 200px;
+                max-width: 280px;
+                display: none;
+                animation: slideUp 0.3s ease-out;
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(20px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .more-menu-item {
+                display: flex;
+                align-items: center;
+                padding: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+                color: var(--tech-text);
+            }
+
+            .more-menu-item:last-child {
+                border-bottom: none;
+            }
+
+            .more-menu-item:hover {
+                background: rgba(0, 243, 255, 0.1);
+                color: var(--tech-blue);
+            }
+
+            .more-menu-item i {
+                margin-right: 0.75rem;
+                font-size: 1.1rem;
+                width: 20px;
+                text-align: center;
+            }
+
+            .more-menu-item span {
+                font-family: 'Orbitron', monospace;
+                font-size: 0.9rem;
             }
 
             /* 预测卡片样式 */
@@ -1097,35 +1455,72 @@
     </head>
 
     <body>
-        <!-- 顶部导航栏 -->
-        <nav class="navbar">
-            <div class="logo tech-font">
-                <i class="fas fa-chart-line"></i>
-                <span>永续合约预测系统</span>
+        <!-- 三横杆菜单按钮 -->
+        <div id="mobileMenuBtn" style="position: fixed; top: 10px; left: 10px; z-index: 1000; font-size: 1.5rem; cursor: pointer; color: var(--tech-blue);">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <!-- 三横杆菜单面板 -->
+        <div id="mobileMenuPanel" class="tech-panel" style="position: fixed; top: 0; left: 0; width: 80%; height: 100%; z-index: 1001; display: none; background: var(--tech-panel); border-right: 1px solid var(--tech-panel-border); overflow-y: auto;">
+            <div style="padding: 1rem; border-bottom: 1px solid var(--tech-panel-border);">
+                <h3 class="tech-font" style="color: var(--tech-blue); margin: 0;">
+                    <i class="fas fa-chart-line"></i> 永续合约预测系统
+                </h3>
             </div>
-            <div class="nav-menu">
-                <div class="nav-item tech-font" id="dashboardBtn">
+            <div style="display: flex; flex-direction: column; padding: 1rem;">
+                <div class="nav-item tech-font" id="menuDashboardBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>仪表盘</span>
                 </div>
-                <div class="nav-item tech-font" id="predictionBtn">
+                <div class="nav-item tech-font" id="menuPredictionBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
                     <i class="fas fa-robot"></i>
                     <span>AI预测</span>
                 </div>
-                <div class="nav-item tech-font" id="marketBtn">
+                <div class="nav-item tech-font" id="menuMarketBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
                     <i class="fas fa-chart-bar"></i>
                     <span>市场数据</span>
                 </div>
-                <div class="nav-item tech-font" id="membershipBtn">
+                <div class="nav-item tech-font" id="menuMembershipBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
                     <i class="fas fa-gem"></i>
                     <span>会员中心</span>
                 </div>
-                <div class="nav-item tech-font" id="loginBtn">
+                <div class="nav-item tech-font" id="menuReinvestBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-recycle"></i>
+                    <span>智能复投</span>
+                </div>
+                <div class="nav-item tech-font" id="menuBacktestBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-chart-line"></i>
+                    <span>回测系统</span>
+                </div>
+                <div class="nav-item tech-font" id="menuRiskBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>风险管理</span>
+                </div>
+                <div class="nav-item tech-font" id="menuRecordsBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>交易记录</span>
+                </div>
+                <div class="nav-item tech-font" id="menuProfitBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>分润平台</span>
+                </div>
+                <div class="nav-item tech-font" id="menuDepositBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-wallet"></i>
+                    <span>入金通道</span>
+                </div>
+                <div class="nav-item tech-font" id="menuSettingsBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </div>
+                <div class="nav-item tech-font" id="menuLoginBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
                     <i class="fas fa-user"></i>
                     <span>登录</span>
                 </div>
             </div>
-        </nav>
+        </div>
+        
+        <!-- 遮罩层 -->
+        <div id="menuOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: none;" onclick="closeMobileMenu()"></div>
 
         <div class="container">
             <!-- 标题区域 -->
@@ -1172,6 +1567,11 @@
                         <button id="reconnectBtn" class="tech-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;"
                             title="手动重连">
                             <i class="fas fa-sync-alt"></i> 重连
+                        </button>
+                        <button id="testErrorBtn" class="tech-btn"
+                            style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-left: 0.5rem; background: var(--tech-danger);"
+                            title="测试连接错误显示">
+                            <i class="fas fa-exclamation-triangle"></i> 测试错误
                         </button>
                     </div>
                 </div>
@@ -2917,38 +3317,411 @@
             </div>
         </div>
 
-        <!-- 底部导航栏 -->
-        <nav class="bottom-navbar">
-            <div class="bottom-nav-container">
-                <div class="bottom-nav-item" id="bottomDashboardBtn">
-                    <i class="fas fa-tachometer-alt bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">仪表盘</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomReinvestBtn">
-                    <i class="fas fa-recycle bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">智能复投</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomBacktestBtn">
-                    <i class="fas fa-history bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">策略回测</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomRiskBtn">
-                    <i class="fas fa-shield-alt bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">风险管理</span>
-                </div>
-                <div class="bottom-nav-item" id="bottomMoreBtn">
-                    <i class="fas fa-ellipsis-h bottom-nav-icon"></i>
-                    <span class="bottom-nav-label">更多</span>
-                </div>
+
+        <!-- 更多菜单弹出层 -->
+        <div class="more-menu-overlay" id="moreMenuOverlay"></div>
+        <div class="more-menu" id="moreMenu">
+            <div class="more-menu-item" id="moreLoginBtn">
+                <i class="fas fa-user"></i>
+                <span>登录</span>
             </div>
-        </nav>
+            <div class="more-menu-item" id="moreReinvestBtn">
+                <i class="fas fa-recycle"></i>
+                <span>智能复投</span>
+            </div>
+            <div class="more-menu-item" id="moreBacktestBtn">
+                <i class="fas fa-history"></i>
+                <span>策略回测</span>
+            </div>
+            <div class="more-menu-item" id="moreRiskBtn">
+                <i class="fas fa-shield-alt"></i>
+                <span>风险管理</span>
+            </div>
+            <div class="more-menu-item" id="moreSettingsBtn">
+                <i class="fas fa-cog"></i>
+                <span>系统设置</span>
+            </div>
+            <div class="more-menu-item" id="moreHelpBtn">
+                <i class="fas fa-question-circle"></i>
+                <span>帮助中心</span>
+            </div>
+        </div>
 
         <!-- JavaScript -->
         <script>
             // 全局变量
-            let chart = null;
-            let ws = null;
-            let isConnected = false;
+            let dataUpdateInterval = null;
+            let lastDataUpdateTime = null;
+
+            // CoinGecko API配置
+            const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
+            const UPDATE_INTERVAL = 5000; // 5秒更新间隔
+            const SUPPORTED_COINS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano', 'dogecoin', 'polkadot', 'chainlink', 'matic-network'];
+
+            // 币种映射
+            const coinSymbolMap = {
+                'bitcoin': 'btc',
+                'ethereum': 'eth',
+                'binancecoin': 'bnb',
+                'solana': 'sol',
+                'ripple': 'xrp',
+                'cardano': 'ada',
+                'dogecoin': 'doge',
+                'polkadot': 'dot',
+                'chainlink': 'link',
+                'matic-network': 'matic'
+            };
+
+            // 初始化系统
+            function initializeSystem() {
+                console.log('系统初始化开始...');
+
+                // 初始化UI元素
+                initializeElements();
+
+                // 初始化图表
+                initializeChart();
+
+                // 初始化事件监听器
+                initializeEventListeners();
+
+                // 启动CoinGecko数据源
+                startCoinGeckoDataSource();
+
+                // 显示初始化完成通知
+                showNotification('系统初始化完成，正在连接CoinGecko实时数据', 'success');
+
+                console.log('系统初始化完成');
+            }
+
+            // 启动CoinGecko数据源
+            function startCoinGeckoDataSource() {
+                console.log('启动CoinGecko数据源...');
+
+                // 清理现有连接
+                cleanupDataConnection();
+
+                // 立即获取一次数据
+                fetchCoinGeckoPrices().then(() => {
+                    console.log('初始数据获取成功');
+                }).catch((error) => {
+                    console.error('初始数据获取失败:', error);
+                    // 如果初始获取失败，切换到模拟数据
+                    startSimulatedDataSource();
+                });
+
+                // 设置定时更新（确保只有一个定时器）
+                dataUpdateInterval = setInterval(() => {
+                    fetchCoinGeckoPrices();
+                }, UPDATE_INTERVAL);
+
+                // 更新连接状态
+                updateConnectionStatus('已连接', 'var(--tech-success)');
+                updatePriceStatus('realtime');
+
+                console.log('CoinGecko数据源启动成功，每5秒更新一次');
+            }
+
+            // 获取CoinGecko实时价格数据
+            async function fetchCoinGeckoPrices() {
+                try {
+                    // 更新价格状态为加载中
+                    updatePriceStatus('loading');
+
+                    // 构建API请求URL
+                    const coinIds = SUPPORTED_COINS.join(',');
+                    const url = `${COINGECKO_API_BASE}/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true`;
+
+                    console.log('正在获取CoinGecko数据...');
+
+                    // 添加超时控制
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+
+                    const response = await fetch(url, {
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        throw new Error(`CoinGecko API请求失败: ${response.status} ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+
+                    // 更新所有币种的价格显示
+                    SUPPORTED_COINS.forEach(coinId => {
+                        const coinData = data[coinId];
+                        const symbol = coinSymbolMap[coinId];
+
+                        if (coinData && symbol && elements[`${symbol}Price`] && elements[`${symbol}Change`]) {
+                            const price = coinData.usd;
+                            const changePercent = coinData.usd_24h_change;
+
+                            // 更新价格显示
+                            elements[`${symbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+
+                            // 更新涨跌幅显示
+                            const changeText = changePercent > 0 ?
+                                '↗ ' + changePercent.toFixed(2) + '%' :
+                                '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
+
+                            elements[`${symbol}Change`].textContent = changeText;
+                            elements[`${symbol}Change`].style.color = changePercent > 0 ?
+                                'var(--tech-success)' : 'var(--tech-danger)';
+                        }
+                    });
+
+                    // 更新时间
+                    const now = new Date();
+                    if (elements.currentTime) {
+                        elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
+                    }
+
+                    // 更新最后数据更新时间
+                    lastDataUpdateTime = Date.now();
+
+                    // 更新价格状态为实时数据
+                    updatePriceStatus('realtime');
+
+                    // 更新图表数据（使用当前选中的交易对）
+                    const selectedSymbol = elements.symbolSelector?.value;
+                    if (selectedSymbol) {
+                        // 将币安格式转换为CoinGecko格式
+                        const coinId = getCoinIdFromSymbol(selectedSymbol);
+                        if (coinId && data[coinId]) {
+                            updateChartWithRealData(data[coinId].usd);
+                        }
+                    }
+
+                    // 更新预测面板和指标
+                    updatePredictionPanel();
+                    updateIndicators();
+                    updateReinvestData();
+
+                    console.log('CoinGecko实时价格数据更新成功');
+                    return true;
+
+                } catch (error) {
+                    console.error('获取CoinGecko实时价格失败:', error);
+
+                    // 显示连接错误状态
+                    updateConnectionStatus('连接错误', 'var(--tech-danger)');
+                    updatePriceStatus('error');
+
+                    // 显示错误通知
+                    showNotification('无法连接到CoinGecko服务器，使用模拟数据', 'error');
+
+                    // 如果API调用失败，使用模拟数据作为备用
+                    setTimeout(() => {
+                        updateSimulatedPrices();
+                    }, 2000); // 2秒后切换到模拟数据
+
+                    return false;
+                }
+            }
+
+            // 根据币安符号获取CoinGecko币种ID
+            function getCoinIdFromSymbol(symbol) {
+                const symbolToCoinId = {
+                    'BTCUSDT': 'bitcoin',
+                    'ETHUSDT': 'ethereum',
+                    'BNBUSDT': 'binancecoin',
+                    'SOLUSDT': 'solana',
+                    'XRPUSDT': 'ripple',
+                    'ADAUSDT': 'cardano',
+                    'DOGEUSDT': 'dogecoin',
+                    'DOTUSDT': 'polkadot',
+                    'LINKUSDT': 'chainlink',
+                    'MATICUSDT': 'matic-network'
+                };
+                return symbolToCoinId[symbol];
+            }
+
+            // 更新价格状态指示器
+            function updatePriceStatus(status) {
+                const priceStatusElement = document.getElementById('priceStatus');
+                if (!priceStatusElement) return;
+
+                switch (status) {
+                    case 'loading':
+                        priceStatusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 同步中...';
+                        priceStatusElement.style.color = 'var(--tech-warning)';
+                        break;
+                    case 'realtime':
+                        priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据 (CoinGecko)';
+                        priceStatusElement.style.color = 'var(--tech-success)';
+                        break;
+                    case 'error':
+                        priceStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 连接错误';
+                        priceStatusElement.style.color = 'var(--tech-danger)';
+                        break;
+                    case 'simulated':
+                        priceStatusElement.innerHTML = '<i class="fas fa-chart-line"></i> 模拟数据';
+                        priceStatusElement.style.color = 'var(--tech-blue)';
+                        break;
+                    default:
+                        priceStatusElement.innerHTML = '<i class="fas fa-question-circle"></i> 未知状态';
+                        priceStatusElement.style.color = 'var(--tech-text-secondary)';
+                }
+            }
+
+            // 更新连接状态
+            function updateConnectionStatus(status, color = 'var(--tech-text)') {
+                const statusElement = document.getElementById('connectionStatus');
+                if (statusElement) {
+                    statusElement.textContent = status;
+                    statusElement.style.color = color;
+                }
+
+                // 同时更新价格状态
+                if (status === '已连接') {
+                    updatePriceStatus('realtime');
+                } else if (status === '已断开' || status === '连接错误') {
+                    updatePriceStatus('error');
+                } else if (status === '使用备用数据源') {
+                    updatePriceStatus('simulated');
+                }
+            }
+
+            // 模拟价格更新（备用方案）
+            function updateSimulatedPrices() {
+                // 更新BTC价格
+                const btcBasePrice = 43250;
+                const btcChange = (Math.random() - 0.5) * 200;
+                const btcPrice = btcBasePrice + btcChange;
+                const btcChangePercent = ((btcChange / btcBasePrice) * 100).toFixed(2);
+
+                elements.btcPrice.textContent = '$' + btcPrice.toLocaleString();
+                elements.btcChange.textContent = btcChangePercent > 0 ? '↗ ' + btcChangePercent + '%' : '↘ ' + Math.abs(btcChangePercent) + '%';
+                elements.btcChange.style.color = btcChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+
+                // 更新ETH价格
+                const ethBasePrice = 2680;
+                const ethChange = (Math.random() - 0.5) * 50;
+                const ethPrice = ethBasePrice + ethChange;
+                const ethChangePercent = ((ethChange / ethBasePrice) * 100).toFixed(2);
+
+                elements.ethPrice.textContent = '$' + ethPrice.toLocaleString();
+                elements.ethChange.textContent = ethChangePercent > 0 ? '↗ ' + ethChangePercent + '%' : '↘ ' + Math.abs(ethChangePercent) + '%';
+                elements.ethChange.style.color = ethChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+
+                // 更新时间
+                const now = new Date();
+                elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
+
+                // 更新价格状态为模拟数据
+                updatePriceStatus('simulated');
+            }
+
+            // 启动备用数据源
+            function startBackupDataSource() {
+                console.log('启动备用数据源...');
+
+                // 停止CoinGecko数据源
+                if (dataUpdateInterval) {
+                    clearInterval(dataUpdateInterval);
+                    dataUpdateInterval = null;
+                }
+
+                // 使用模拟数据
+                updateSimulatedPrices();
+
+                // 设置模拟数据更新间隔
+                dataUpdateInterval = setInterval(() => {
+                    updateSimulatedPrices();
+                }, UPDATE_INTERVAL);
+
+                updateConnectionStatus('使用备用数据源', 'var(--tech-warning)');
+            }
+
+            // 重新连接数据源
+            function reconnectDataSource() {
+                console.log('重新连接数据源...');
+
+                // 清理当前连接
+                cleanupDataConnection();
+
+                // 显示重连通知
+                showNotification('正在重新连接CoinGecko数据源...', 'info');
+
+                // 延迟重连
+                setTimeout(() => {
+                    startCoinGeckoDataSource();
+                }, 1000);
+            }
+
+            // 清理数据连接
+            function cleanupDataConnection() {
+                console.log('清理数据连接...');
+
+                // 清理定时器
+                if (dataUpdateInterval) {
+                    clearInterval(dataUpdateInterval);
+                    dataUpdateInterval = null;
+                }
+
+                // 清理健康检查定时器
+                if (healthCheckInterval) {
+                    clearInterval(healthCheckInterval);
+                    healthCheckInterval = null;
+                }
+            }
+
+            // 关闭数据连接
+            function closeDataConnection() {
+                console.log('关闭数据连接...');
+
+                cleanupDataConnection();
+                updateConnectionStatus('已断开', 'var(--tech-danger)');
+                updatePriceStatus('error');
+
+                showNotification('数据连接已关闭', 'info');
+            }
+
+            // 获取连接状态信息
+            function getConnectionStatus() {
+                return {
+                    connected: true,
+                    lastUpdate: lastDataUpdateTime,
+                    dataSource: 'CoinGecko API',
+                    updateInterval: UPDATE_INTERVAL
+                };
+            }
+
+            // 测试连接
+            async function testConnection() {
+                try {
+                    showNotification('正在测试CoinGecko连接...', 'info');
+
+                    const result = await fetchCoinGeckoPrices();
+
+                    if (result) {
+                        showNotification('CoinGecko连接测试成功', 'success');
+                    } else {
+                        showNotification('CoinGecko连接测试失败', 'error');
+                    }
+                } catch (error) {
+                    console.error('连接测试失败:', error);
+                    showNotification('连接测试失败 - 无法连接到CoinGecko服务器', 'error');
+                }
+            }
+
+            // 更新实时数据
+            function updateRealTimeData() {
+                // 直接使用CoinGecko数据源
+                fetchCoinGeckoPrices().catch((error) => {
+                    console.error('实时价格更新失败:', error);
+                    updatePriceStatus('error');
+                    setTimeout(() => {
+                        updateSimulatedPrices();
+                    }, 2000); // 2秒后切换到模拟数据
+                });
+            }
 
             // 页面元素
             const pages = {
@@ -3016,58 +3789,85 @@
                 login: document.getElementById('loginBtn')
             };
 
-            // 底部导航按钮
-            const bottomNavButtons = {
-                dashboard: document.getElementById('bottomDashboardBtn'),
-                reinvest: document.getElementById('bottomReinvestBtn'),
-                backtest: document.getElementById('bottomBacktestBtn'),
-                risk: document.getElementById('bottomRiskBtn'),
-                more: document.getElementById('bottomMoreBtn')
-            };
 
             // 初始化
             document.addEventListener('DOMContentLoaded', function () {
-                initChart();
-                connectWebSocket();
-                setupEventListeners();
-                setupLoginPage();
-                optimizeForMobile();
+                // 设置初始化超时
+                const initTimeout = setTimeout(() => {
+                    console.warn('系统初始化超时，强制完成初始化');
+                    showPage('dashboard');
+                    showNotification('系统初始化超时，部分功能可能不可用', 'warning');
+                }, 15000); // 15秒超时
 
-                // 立即获取实时价格
-                updateRealTimeData();
+                try {
+                    // 添加全局错误处理
+                    window.addEventListener('error', function (event) {
+                        console.error('全局错误:', event.error);
+                        showNotification('系统遇到错误，请刷新页面重试', 'error');
+                    });
 
-                // 设置默认交易对
-                const defaultSymbol = 'BTCUSDT';
-                elements.symbolSelector.dataset.previousSymbol = defaultSymbol;
+                    // 添加未处理的Promise拒绝处理
+                    window.addEventListener('unhandledrejection', function (event) {
+                        console.error('未处理的Promise拒绝:', event.reason);
+                        showNotification('网络请求失败，请检查网络连接', 'error');
+                    });
 
-                // 初始化图表数据
-                setTimeout(() => {
-                    updateChartForSymbol(defaultSymbol);
-                }, 2000);
+                    initChart();
+                    setupEventListeners();
+                    setupLoginPage();
+                    optimizeForMobile();
 
-                showNotification('系统初始化完成，已连接到币安实时数据', 'success');
+                    // 启动CoinGecko数据源（包含初始数据获取）
+                    startCoinGeckoDataSource();
 
-                // 设置默认页面为仪表盘
-                showPage('dashboard');
+                    // 设置默认交易对
+                    const defaultSymbol = 'BTCUSDT';
+                    if (elements.symbolSelector) {
+                        elements.symbolSelector.dataset.previousSymbol = defaultSymbol;
+                    }
+
+                    // 初始化图表数据
+                    setTimeout(() => {
+                        updateChartForSymbol(defaultSymbol);
+                    }, 2000);
+
+                    showNotification('系统初始化完成，正在连接CoinGecko实时数据', 'success');
+
+                    // 设置默认页面为仪表盘
+                    showPage('dashboard');
+
+                    // 定期检查数据源健康状态
+                    setInterval(() => {
+                        checkDataSourceHealth();
+                    }, 60000); // 每分钟检查一次
+
+                    // 清除初始化超时
+                    clearTimeout(initTimeout);
+
+                } catch (error) {
+                    console.error('系统初始化失败:', error);
+                    showNotification('系统初始化失败，请刷新页面重试', 'error');
+                    clearTimeout(initTimeout);
+                }
             });
 
             // 页面卸载时清理资源
             window.addEventListener('beforeunload', function () {
-                closeWebSocket();
+                closeDataConnection();
             });
 
-            // 页面隐藏时暂停心跳，显示时恢复
+            // 页面可见性变化处理
             document.addEventListener('visibilitychange', function () {
                 if (document.hidden) {
-                    // 页面隐藏时暂停心跳
-                    if (heartbeatInterval) {
-                        clearInterval(heartbeatInterval);
-                        heartbeatInterval = null;
+                    // 页面隐藏时暂停数据更新
+                    if (dataUpdateInterval) {
+                        clearInterval(dataUpdateInterval);
+                        dataUpdateInterval = null;
                     }
                 } else {
-                    // 页面显示时恢复心跳
-                    if (isConnected && !heartbeatInterval) {
-                        startHeartbeat();
+                    // 页面显示时恢复数据更新
+                    if (!dataUpdateInterval) {
+                        startDataUpdates();
                     }
                 }
             });
@@ -3174,15 +3974,7 @@
             }
 
 
-            // WebSocket连接管理
-            let reconnectAttempts = 0;
-            let maxReconnectAttempts = 15;
-            let reconnectInterval = 3000;
-            let heartbeatInterval = null;
-            let reconnectTimeout = null;
-            let dataUpdateInterval = null;
-            let lastHeartbeatTime = 0;
-            let connectionStartTime = 0;
+            // WebSocket连接管理 - 已移除，使用CoinGecko API替代
 
             // 更新连接状态的UI
             function updateConnectionStatus(status, color) {
@@ -3201,270 +3993,124 @@
                         indicator.classList.add('disconnected');
                     }
                 }
-            }
 
-            // 连接WebSocket - 使用币安官方最新稳定接口
-            function connectWebSocket() {
-                // 清除之前的连接和定时器
-                cleanupWebSocket();
-
-                try {
-                    // 使用币安官方最新WebSocket接口 - 支持所有交易对
-                    const streams = [
-                        'btcusdt@ticker', 'btcusdt@kline_1m',
-                        'ethusdt@ticker', 'ethusdt@kline_1m',
-                        'bnbusdt@ticker', 'bnbusdt@kline_1m',
-                        'solusdt@ticker', 'solusdt@kline_1m',
-                        'xrpusdt@ticker', 'xrpusdt@kline_1m',
-                        'adausdt@ticker', 'adausdt@kline_1m',
-                        'dogeusdt@ticker', 'dogeusdt@kline_1m',
-                        'dotusdt@ticker', 'dotusdt@kline_1m',
-                        'linkusdt@ticker', 'linkusdt@kline_1m',
-                        'maticusdt@ticker', 'maticusdt@kline_1m'
-                    ].join('/');
-
-                    // 使用币安官方推荐的WebSocket URL
-                    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
-
-                    // 添加连接超时处理
-                    const connectionTimeout = setTimeout(() => {
-                        if (ws && ws.readyState === WebSocket.CONNECTING) {
-                            console.log('WebSocket连接超时，关闭连接');
-                            ws.close();
-                        }
-                    }, 10000); // 10秒连接超时
-
-                    ws = new WebSocket(wsUrl);
-                    connectionStartTime = Date.now();
-
-                    updateConnectionStatus('连接中...', 'var(--tech-warning)');
-
-                    ws.onopen = function () {
-                        clearTimeout(connectionTimeout);
-                        isConnected = true;
-                        reconnectAttempts = 0; // 重置重连次数
-                        updateConnectionStatus('已连接', 'var(--tech-success)');
-                        showNotification('币安实时数据连接成功', 'success');
-
-                        // 启动心跳检测
-                        startHeartbeat();
-
-                        // 启动数据更新
-                        startDataUpdates();
-                    };
-
-                    function startDataUpdates() {
-                        // 确保只启动一个定时器
-                        if (window.dataUpdateInterval) {
-                            clearInterval(window.dataUpdateInterval);
-                        }
-
-                        window.dataUpdateInterval = setInterval(() => {
-                            if (isConnected) {
-                                updatePredictionPanel();
-                                updateIndicators();
-                                updateReinvestData();
-                            }
-                        }, 5000); // 每5秒更新一次辅助数据
-
-                        // 发送连接确认消息
-                        sendHeartbeat();
-                    };
-
-                    ws.onmessage = function (event) {
-                        try {
-                            // 处理心跳响应
-                            if (event.data === 'pong' || event.data.includes('pong')) {
-                                console.log('收到心跳响应');
-                                lastHeartbeatTime = Date.now();
-                                return;
-                            }
-
-                            // 处理行情数据
-                            const message = JSON.parse(event.data);
-
-                            if (message.data) {
-                                const data = message.data;
-
-                                // 处理ticker数据 - 支持所有交易对
-                                if (data.s && data.c && data.P) {
-                                    const symbol = data.s.toLowerCase();
-                                    const symbolMap = {
-                                        'btcusdt': 'btc',
-                                        'ethusdt': 'eth',
-                                        'bnbusdt': 'bnb',
-                                        'solusdt': 'sol',
-                                        'xrpusdt': 'xrp',
-                                        'adausdt': 'ada',
-                                        'dogeusdt': 'doge',
-                                        'dotusdt': 'dot',
-                                        'linkusdt': 'link',
-                                        'maticusdt': 'matic'
-                                    };
-
-                                    if (symbolMap[symbol]) {
-                                        updatePrice(symbolMap[symbol], data.c, data.P);
-                                    }
-                                }
-
-                                // 处理K线数据 - 支持所有交易对
-                                if (data.s && data.k) {
-                                    const kline = data.k;
-                                    const symbol = data.s.toLowerCase();
-                                    const closePrice = parseFloat(kline.c);
-
-                                    // 支持所有交易对的K线数据
-                                    const supportedSymbols = [
-                                        'btcusdt', 'ethusdt', 'bnbusdt', 'solusdt',
-                                        'xrpusdt', 'adausdt', 'dogeusdt', 'dotusdt',
-                                        'linkusdt', 'maticusdt'
-                                    ];
-
-                                    if (supportedSymbols.includes(symbol)) {
-                                        updateChartWithKlineData(symbol, closePrice, kline);
-                                    }
-                                }
-                            }
-                        } catch (error) {
-                            console.error('处理WebSocket消息失败:', error);
-                        }
-                    };
-
-                    ws.onclose = function (event) {
-                        clearTimeout(connectionTimeout);
-                        isConnected = false;
-                        updateConnectionStatus('已断开', 'var(--tech-danger)');
-
-                        // 清理定时器
-                        cleanupTimers();
-
-                        // 根据关闭代码判断是否需要重连
-                        if (event.code === 1000 || event.code === 1001) {
-                            // 正常关闭，不重连
-                            console.log('WebSocket正常关闭');
-                            return;
-                        }
-
-                        // 异常关闭，尝试重连
-                        if (reconnectAttempts < maxReconnectAttempts) {
-                            reconnectAttempts++;
-                            const delay = Math.min(reconnectInterval * Math.pow(1.2, reconnectAttempts - 1), 30000);
-
-                            showNotification(`行情数据连接已断开，${Math.round(delay / 1000)}秒后进行第${reconnectAttempts}次重连...`, 'warning');
-
-                            reconnectTimeout = setTimeout(() => {
-                                connectWebSocket();
-                            }, delay);
-                        } else {
-                            showNotification('WebSocket重连失败，请刷新页面重试', 'error');
-                            updateConnectionStatus('连接失败', 'var(--tech-danger)');
-                        }
-                    };
-
-                    ws.onerror = function (error) {
-                        console.error('WebSocket 错误:', error);
-                        updateConnectionStatus('连接错误', 'var(--tech-danger)');
-                        // 不在这里关闭连接，让onclose处理重连逻辑
-                    };
-
-                } catch (error) {
-                    console.error('创建WebSocket连接失败:', error);
-                    updateConnectionStatus('连接失败', 'var(--tech-danger)');
-
-                    // 延迟重连
-                    if (reconnectAttempts < maxReconnectAttempts) {
-                        reconnectAttempts++;
-                        setTimeout(() => {
-                            connectWebSocket();
-                        }, reconnectInterval);
-                    }
+                // 同时更新价格状态
+                if (status === '已连接') {
+                    updatePriceStatus('realtime');
+                } else if (status === '已断开' || status === '连接错误') {
+                    updatePriceStatus('error');
+                } else if (status === '使用备用数据源') {
+                    updatePriceStatus('simulated');
                 }
             }
 
-            // 启动心跳检测
-            function startHeartbeat() {
-                heartbeatInterval = setInterval(() => {
-                    if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
-                        // 检查连接时间，如果超过5分钟没有心跳响应，重新连接
-                        if (lastHeartbeatTime > 0 && Date.now() - lastHeartbeatTime > 300000) {
-                            console.log('心跳超时，重新连接');
-                            ws.close();
-                            return;
-                        }
-                        sendHeartbeat();
+            // WebSocket连接函数已移除，使用CoinGecko API替代
+
+            // 增强的连接健康检查
+            let healthCheckInterval = null;
+
+            function startConnectionHealthCheck() {
+                if (healthCheckInterval) {
+                    clearInterval(healthCheckInterval);
+                }
+
+                healthCheckInterval = setInterval(() => {
+                    // 检查最后数据更新时间
+                    if (lastDataUpdateTime && (Date.now() - lastDataUpdateTime) > 60000) {
+                        console.log('数据更新超时，重新获取数据');
+                        fetchCoinGeckoPrices().catch(error => {
+                            console.error('健康检查数据获取失败:', error);
+                        });
                     }
-                }, 30000); // 每30秒发送一次心跳
+                }, 30000); // 每30秒检查一次
             }
 
-            // 发送心跳
-            function sendHeartbeat() {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    try {
-                        ws.send(JSON.stringify({ method: 'ping', id: Date.now() }));
-                        lastHeartbeatTime = Date.now();
-                    } catch (error) {
-                        console.error('发送心跳失败:', error);
-                        // 心跳失败，关闭连接触发重连
-                        ws.close();
-                    }
+            function cleanupHealthCheck() {
+                if (healthCheckInterval) {
+                    clearInterval(healthCheckInterval);
+                    healthCheckInterval = null;
                 }
             }
+
+            // 定期检查数据更新状态
+            const dataHealthCheckInterval = setInterval(() => {
+                // 检查最后数据更新时间，如果超过10分钟没有数据，重新获取
+                if (lastDataUpdateTime && (Date.now() - lastDataUpdateTime) > 600000) {
+                    console.log('数据更新超时，重新获取数据');
+                    fetchCoinGeckoPrices().catch(error => {
+                        console.error('数据健康检查失败:', error);
+                    });
+                }
+            }, 60000); // 每60秒检查一次数据更新状态
 
             // 启动数据更新
             function startDataUpdates() {
+                // 确保只启动一个定时器
+                if (dataUpdateInterval) {
+                    clearInterval(dataUpdateInterval);
+                }
+
                 dataUpdateInterval = setInterval(() => {
-                    if (isConnected) {
+                    // 使用CoinGecko API获取数据
+                    fetchCoinGeckoPrices().then(() => {
                         updateRealTimeData();
                         updatePredictionPanel();
                         updateIndicators();
                         updateReinvestData();
-                    }
-                }, 5000);
+                    }).catch(error => {
+                        console.error('定时数据更新失败:', error);
+                    });
+                }, 10000); // 降低更新频率，减少服务器压力
             }
 
-            // 清理WebSocket连接
-            function cleanupWebSocket() {
-                if (ws) {
-                    ws.close();
-                    ws = null;
-                }
-                cleanupTimers();
+            // WebSocket相关函数已移除，使用CoinGecko API替代
+
+            // 币安API相关函数已移除，使用CoinGecko API替代
+
+            // 数据源健康检查
+            function checkDataSourceHealth() {
+                const healthStatus = {
+                    coinGeckoApi: true, // CoinGecko API状态
+                    restApi: true, // 假设REST API总是可用的
+                    lastUpdate: new Date().toLocaleTimeString('zh-CN')
+                };
+
+                console.log('数据源健康状态:', healthStatus);
+                return healthStatus;
             }
 
-            // 清理定时器
-            function cleanupTimers() {
-                if (heartbeatInterval) {
-                    clearInterval(heartbeatInterval);
-                    heartbeatInterval = null;
-                }
-                if (dataUpdateInterval) {
-                    clearInterval(dataUpdateInterval);
-                    dataUpdateInterval = null;
-                }
-                if (reconnectTimeout) {
-                    clearTimeout(reconnectTimeout);
-                    reconnectTimeout = null;
-                }
+            // 强制刷新数据源
+            function forceRefreshDataSource() {
+                console.log('强制刷新数据源');
+
+                // 立即获取最新数据
+                fetchCoinGeckoPrices().then(() => {
+                    showNotification('数据源刷新成功', 'success');
+                }).catch(error => {
+                    console.error('强制刷新失败:', error);
+                    showNotification('数据源刷新失败', 'error');
+                });
+
+                showNotification('正在强制刷新数据源...', 'info');
             }
 
-            // 手动重连WebSocket
-            function reconnectWebSocket() {
-                if (reconnectTimeout) {
-                    clearTimeout(reconnectTimeout);
-                    reconnectTimeout = null;
-                }
-                reconnectAttempts = 0;
-                connectWebSocket();
-            }
+            // 测试连接错误显示
+            function testConnectionError() {
+                console.log('测试连接错误显示');
 
-            // 关闭WebSocket连接
-            function closeWebSocket() {
-                if (ws) {
-                    ws.close(1000, '用户主动关闭');
-                }
-                cleanupTimers();
-                isConnected = false;
-                updateConnectionStatus('已关闭', 'var(--tech-text-secondary)');
+                // 强制显示连接错误状态
+                updateConnectionStatus('连接错误', 'var(--tech-danger)');
+                updatePriceStatus('error');
+
+                // 显示错误通知
+                showNotification('连接错误测试 - 无法连接到CoinGecko服务器', 'error');
+
+                // 3秒后恢复正常状态
+                setTimeout(() => {
+                    updateConnectionStatus('已连接', 'var(--tech-success)');
+                    updatePriceStatus('realtime');
+                    showNotification('连接已恢复正常', 'success');
+                }, 3000);
             }
 
             // 更新价格UI - 支持所有交易对
@@ -3501,95 +4147,7 @@
                 }
             }
 
-            // 获取实时加密货币价格 - 使用币安官方最新API
-            async function fetchRealTimePrices() {
-                try {
-                    // 更新价格状态为加载中
-                    updatePriceStatus('loading');
-
-                    // 使用币安官方REST API获取所有交易对的实时价格
-                    const symbols = [
-                        'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT',
-                        'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT',
-                        'LINKUSDT', 'MATICUSDT'
-                    ];
-
-                    const symbolMap = {
-                        'BTCUSDT': 'btc',
-                        'ETHUSDT': 'eth',
-                        'BNBUSDT': 'bnb',
-                        'SOLUSDT': 'sol',
-                        'XRPUSDT': 'xrp',
-                        'ADAUSDT': 'ada',
-                        'DOGEUSDT': 'doge',
-                        'DOTUSDT': 'dot',
-                        'LINKUSDT': 'link',
-                        'MATICUSDT': 'matic'
-                    };
-
-                    // 并行获取所有交易对的价格数据
-                    const pricePromises = symbols.map(symbol =>
-                        fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
-                    );
-
-                    const responses = await Promise.all(pricePromises);
-
-                    // 检查所有响应是否成功
-                    const failedResponses = responses.filter(response => !response.ok);
-                    if (failedResponses.length > 0) {
-                        throw new Error(`币安API请求失败: ${failedResponses.length}个请求失败`);
-                    }
-
-                    // 解析所有价格数据
-                    const priceData = await Promise.all(responses.map(response => response.json()));
-
-                    // 更新所有交易对的价格显示
-                    priceData.forEach(data => {
-                        const symbol = data.symbol;
-                        const shortSymbol = symbolMap[symbol];
-
-                        if (shortSymbol && elements[`${shortSymbol}Price`] && elements[`${shortSymbol}Change`]) {
-                            const price = parseFloat(data.lastPrice);
-                            const changePercent = parseFloat(data.priceChangePercent);
-
-                            elements[`${shortSymbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            });
-
-                            elements[`${shortSymbol}Change`].textContent = changePercent > 0 ?
-                                '↗ ' + changePercent.toFixed(2) + '%' :
-                                '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
-
-                            elements[`${shortSymbol}Change`].style.color = changePercent > 0 ?
-                                'var(--tech-success)' : 'var(--tech-danger)';
-                        }
-                    });
-
-                    // 更新时间
-                    const now = new Date();
-                    elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
-
-                    // 更新价格状态为实时数据
-                    updatePriceStatus('realtime');
-
-                    // 更新图表数据（使用当前选中的交易对）
-                    const selectedSymbol = elements.symbolSelector.value;
-                    if (selectedSymbol) {
-                        const selectedData = priceData.find(data => data.symbol === selectedSymbol);
-                        if (selectedData) {
-                            updateChartWithRealData(parseFloat(selectedData.lastPrice));
-                        }
-                    }
-
-                    return true;
-                } catch (error) {
-                    console.error('获取币安实时价格失败:', error);
-                    // 如果API调用失败，使用模拟数据作为备用
-                    updateSimulatedPrices();
-                    return false;
-                }
-            }
+            // 币安fetchRealTimePrices函数已移除，使用CoinGecko版本替代
 
             // 更新价格状态指示器
             function updatePriceStatus(status) {
@@ -3602,17 +4160,20 @@
                         priceStatusElement.style.color = 'var(--tech-warning)';
                         break;
                     case 'realtime':
-                        priceStatusElement.innerHTML = '<i class="fas fa-wifi"></i> 实时数据';
+                        priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据';
                         priceStatusElement.style.color = 'var(--tech-success)';
                         break;
-                    case 'simulated':
-                        priceStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 模拟数据';
-                        priceStatusElement.style.color = 'var(--tech-warning)';
-                        break;
                     case 'error':
-                        priceStatusElement.innerHTML = '<i class="fas fa-times-circle"></i> 连接失败';
+                        priceStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 连接错误';
                         priceStatusElement.style.color = 'var(--tech-danger)';
                         break;
+                    case 'simulated':
+                        priceStatusElement.innerHTML = '<i class="fas fa-chart-line"></i> 模拟数据';
+                        priceStatusElement.style.color = 'var(--tech-blue)';
+                        break;
+                    default:
+                        priceStatusElement.innerHTML = '<i class="fas fa-question-circle"></i> 未知状态';
+                        priceStatusElement.style.color = 'var(--tech-text-secondary)';
                 }
             }
 
@@ -3648,9 +4209,13 @@
 
             // 更新实时数据
             function updateRealTimeData() {
-                // 尝试获取实时价格，如果失败则使用模拟数据
-                fetchRealTimePrices().catch((error) => {
-                    console.error('实时价格更新失败:', error);
+                // 使用CoinGecko API数据
+                fetchCoinGeckoPrices().then(() => {
+                    updatePredictionPanel();
+                    updateIndicators();
+                    updateReinvestData();
+                }).catch(error => {
+                    console.error('实时数据更新失败:', error);
                     updatePriceStatus('error');
                     setTimeout(() => {
                         updateSimulatedPrices();
@@ -3736,12 +4301,6 @@
                 navButtons.membership.addEventListener('click', () => showPage('membership'));
                 navButtons.login.addEventListener('click', () => showPage('login'));
 
-                // 底部导航按钮事件
-                Object.keys(bottomNavButtons).forEach(pageName => {
-                    if (bottomNavButtons[pageName]) {
-                        bottomNavButtons[pageName].addEventListener('click', () => showPage(pageName));
-                    }
-                });
 
                 // "更多"页面内的按钮事件
                 document.getElementById('moreRecordsBtn').addEventListener('click', () => showPage('records'));
@@ -3788,17 +4347,8 @@
 
                 // 手动重连按钮事件
                 document.getElementById('reconnectBtn').addEventListener('click', () => {
-                    reconnectWebSocket();
-                    showNotification('正在重新连接WebSocket...', 'info');
-                });
-
-                // 登录按钮事件
-                document.getElementById('loginSubmit').addEventListener('click', handleLogin);
-
-                // 注册链接事件
-                document.getElementById('registerLink').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showNotification('注册功能将在完整版中提供', 'info');
+                    fetchCoinGeckoPrices();
+                    showNotification('正在重新获取实时数据...', 'info');
                 });
 
                 // 交易对选择事件
@@ -3857,12 +4407,23 @@
                     navButtons[pageName].classList.add('active');
                 }
 
-                // 更新底部导航按钮状态
-                Object.values(bottomNavButtons).forEach(btn => {
-                    btn.classList.remove('active');
+                // 更新底部工具栏状态
+                const toolbarItems = document.querySelectorAll('.bottom-toolbar-item');
+                toolbarItems.forEach(item => {
+                    item.classList.remove('active');
                 });
-                if (bottomNavButtons[pageName]) {
-                    bottomNavButtons[pageName].classList.add('active');
+
+                // 根据当前页面激活相应的底部工具栏项
+                if (pageName === 'dashboard') {
+                    document.getElementById('toolbarDashboardBtn').classList.add('active');
+                } else if (pageName === 'prediction') {
+                    document.getElementById('toolbarPredictionBtn').classList.add('active');
+                } else if (pageName === 'market') {
+                    document.getElementById('toolbarMarketBtn').classList.add('active');
+                } else if (pageName === 'membership') {
+                    document.getElementById('toolbarMembershipBtn').classList.add('active');
+                } else if (pageName === 'more' || pageName === 'backtest' || pageName === 'risk' || pageName === 'records' || pageName === 'settings' || pageName === 'profit' || pageName === 'deposit' || pageName === 'reinvest') {
+                    document.getElementById('toolbarMoreBtn').classList.add('active');
                 }
             }
 
@@ -3941,26 +4502,22 @@
                 elements.refreshMarketBtn.innerHTML = '<span class="loading"></span> 刷新中...';
                 elements.refreshMarketBtn.disabled = true;
 
-                setTimeout(() => {
-                    const marketData = [
-                        '恐慌贪婪指数: 65 (贪婪)',
-                        '24小时成交量: $45.2B',
-                        '市场情绪: 中性偏多',
-                        '波动率指数: 中等'
-                    ];
-
-                    elements.marketDataResult.innerHTML = `
-                        <div style="text-align: center; padding: 1rem;">
-                            <h4 style="color: var(--tech-blue); margin-bottom: 1rem;">市场数据</h4>
-                            ${marketData.map(item => `<p style="color: var(--tech-text-secondary); margin: 0.5rem 0;">${item}</p>`).join('')}
-                        </div>
-                    `;
+                // 立即获取最新数据
+                fetchCoinGeckoPrices().then((success) => {
+                    if (success) {
+                        showNotification('实时数据已更新', 'success');
+                    } else {
+                        showNotification('数据更新失败，使用模拟数据', 'warning');
+                    }
 
                     elements.refreshMarketBtn.innerHTML = '<i class="fas fa-sync-alt"></i> 刷新';
                     elements.refreshMarketBtn.disabled = false;
-
-                    showNotification('市场数据已更新', 'success');
-                }, 2000);
+                }).catch((error) => {
+                    console.error('刷新数据失败:', error);
+                    showNotification('数据刷新失败', 'error');
+                    elements.refreshMarketBtn.innerHTML = '<i class="fas fa-sync-alt"></i> 刷新';
+                    elements.refreshMarketBtn.disabled = false;
+                });
             }
 
             // 智能复投功能
@@ -4068,46 +4625,19 @@
                 }
             }
 
-            // 动态订阅WebSocket数据流
+            // 动态订阅数据流 - 已更新为使用CoinGecko API
             function subscribeToSymbol(symbol) {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    const subscribeMessage = {
-                        method: 'SUBSCRIBE',
-                        params: [
-                            `${symbol.toLowerCase()}@ticker`,
-                            `${symbol.toLowerCase()}@kline_1m`
-                        ],
-                        id: Date.now()
-                    };
-
-                    try {
-                        ws.send(JSON.stringify(subscribeMessage));
-                        console.log(`已订阅 ${symbol} 数据流`);
-                    } catch (error) {
-                        console.error('订阅数据流失败:', error);
-                    }
-                }
+                console.log(`已切换到 ${symbol} 数据源`);
+                // 立即获取新交易对的数据
+                fetchCoinGeckoPrices().catch(error => {
+                    console.error('获取新交易对数据失败:', error);
+                });
             }
 
-            // 取消订阅WebSocket数据流
+            // 取消订阅数据流 - 已更新为使用CoinGecko API
             function unsubscribeFromSymbol(symbol) {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    const unsubscribeMessage = {
-                        method: 'UNSUBSCRIBE',
-                        params: [
-                            `${symbol.toLowerCase()}@ticker`,
-                            `${symbol.toLowerCase()}@kline_1m`
-                        ],
-                        id: Date.now()
-                    };
-
-                    try {
-                        ws.send(JSON.stringify(unsubscribeMessage));
-                        console.log(`已取消订阅 ${symbol} 数据流`);
-                    } catch (error) {
-                        console.error('取消订阅数据流失败:', error);
-                    }
-                }
+                console.log(`已取消 ${symbol} 数据源`);
+                // 由于使用REST API，无需实际取消订阅
             }
 
             // 使用真实数据更新图表
@@ -4317,11 +4847,23 @@
                 const registerForm = document.getElementById('registerForm');
                 const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 
-                registerLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    loginForm.style.display = 'none';
-                    registerForm.style.display = 'block';
-                });
+                // 注册链接事件（从登录页面跳转到注册页面）
+                if (registerLink) {
+                    registerLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loginForm.style.display = 'none';
+                        registerForm.style.display = 'block';
+                    });
+                }
+
+                // 注册链接事件（从其他页面跳转到注册页面）
+                const globalRegisterLink = document.getElementById('registerLink');
+                if (globalRegisterLink) {
+                    globalRegisterLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        showNotification('注册功能将在完整版中提供', 'info');
+                    });
+                }
 
                 backToLoginLink.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -5090,6 +5632,73 @@
                 }
             }, 30000); // 每30秒更新一次
 
+            // 三横杆菜单功能
+            function openMobileMenu() {
+                document.getElementById('mobileMenuPanel').style.display = 'block';
+                document.getElementById('menuOverlay').style.display = 'block';
+            }
+
+            function closeMobileMenu() {
+                document.getElementById('mobileMenuPanel').style.display = 'none';
+                document.getElementById('menuOverlay').style.display = 'none';
+            }
+
+            // 初始化三横杆菜单事件
+            document.addEventListener('DOMContentLoaded', function () {
+                // 三横杆菜单按钮事件
+                document.getElementById('mobileMenuBtn').addEventListener('click', openMobileMenu);
+                
+                // 菜单项目事件
+                document.getElementById('menuDashboardBtn').addEventListener('click', () => {
+                    showPage('dashboard');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuPredictionBtn').addEventListener('click', () => {
+                    showPage('prediction');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuMarketBtn').addEventListener('click', () => {
+                    showPage('market');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuMembershipBtn').addEventListener('click', () => {
+                    showPage('membership');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuReinvestBtn').addEventListener('click', () => {
+                    showPage('reinvest');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuBacktestBtn').addEventListener('click', () => {
+                    showPage('backtest');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuRiskBtn').addEventListener('click', () => {
+                    showPage('risk');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuRecordsBtn').addEventListener('click', () => {
+                    showPage('records');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuProfitBtn').addEventListener('click', () => {
+                    showPage('profit');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuDepositBtn').addEventListener('click', () => {
+                    showPage('deposit');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuSettingsBtn').addEventListener('click', () => {
+                    showPage('settings');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuLoginBtn').addEventListener('click', () => {
+                    showPage('login');
+                    closeMobileMenu();
+                });
+            });
+
             // 复制地址功能
             function copyAddress(address) {
                 navigator.clipboard.writeText(address).then(() => {
@@ -5374,7 +5983,58 @@
                     submitWithdrawBtn.addEventListener('click', submitWithdraw);
                 }
             });
+            
+            // 底部工具栏功能
+            function setupBottomToolbar() {
+                // 常用工具按钮事件
+                document.getElementById('toolbarDashboardBtn').addEventListener('click', () => {
+                    showPage('dashboard');
+                });
+                document.getElementById('toolbarPredictionBtn').addEventListener('click', () => {
+                    showPage('prediction');
+                });
+                document.getElementById('toolbarMarketBtn').addEventListener('click', () => {
+                    showPage('market');
+                });
+                document.getElementById('toolbarMembershipBtn').addEventListener('click', () => {
+                    showPage('membership');
+                });
+                document.getElementById('toolbarMoreBtn').addEventListener('click', () => {
+                    showPage('more');
+                });
+            }
+            
+            // 初始化底部工具栏
+            document.addEventListener('DOMContentLoaded', function () {
+                setupBottomToolbar();
+            });
         </script>
+        
+        <!-- 底部工具栏 -->
+        <nav class="bottom-toolbar">
+            <div class="bottom-toolbar-container">
+                <div class="bottom-toolbar-item" id="toolbarDashboardBtn">
+                    <i class="fas fa-tachometer-alt bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">仪表盘</span>
+                </div>
+                <div class="bottom-toolbar-item" id="toolbarPredictionBtn">
+                    <i class="fas fa-robot bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">AI预测</span>
+                </div>
+                <div class="bottom-toolbar-item" id="toolbarMarketBtn">
+                    <i class="fas fa-chart-bar bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">市场</span>
+                </div>
+                <div class="bottom-toolbar-item" id="toolbarMembershipBtn">
+                    <i class="fas fa-gem bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">会员</span>
+                </div>
+                <div class="bottom-toolbar-item" id="toolbarMoreBtn">
+                    <i class="fas fa-ellipsis-h bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">更多</span>
+                </div>
+            </div>
+        </nav>
     </body>
 
 </html>

@@ -4,209 +4,323 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>WebSocket实时数据测试</title>
+        <title>WebSocket连接测试</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
                 max-width: 800px;
                 margin: 0 auto;
                 padding: 20px;
-                background: #f5f5f5;
+                background: #0a0a1a;
+                color: #ffffff;
             }
 
             .container {
-                background: white;
-                padding: 20px;
+                background: #11112a;
+                border: 1px solid #00f3ff;
                 border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                margin-bottom: 20px;
             }
 
             .status {
                 padding: 10px;
-                border-radius: 5px;
+                border-radius: 4px;
                 margin: 10px 0;
-                font-weight: bold;
             }
 
             .connected {
-                background: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
+                background: rgba(40, 167, 69, 0.2);
+                border: 1px solid #28a745;
             }
 
             .disconnected {
-                background: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
+                background: rgba(220, 53, 69, 0.2);
+                border: 1px solid #dc3545;
             }
 
             .connecting {
-                background: #fff3cd;
-                color: #856404;
-                border: 1px solid #ffeaa7;
+                background: rgba(255, 193, 7, 0.2);
+                border: 1px solid #ffc107;
             }
 
-            .data-display {
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 5px;
-                margin: 10px 0;
-                font-family: monospace;
-                white-space: pre-wrap;
-                max-height: 400px;
+            .log {
+                background: #000;
+                border: 1px solid #333;
+                border-radius: 4px;
+                padding: 10px;
+                height: 300px;
                 overflow-y: auto;
+                font-family: monospace;
+                font-size: 12px;
             }
 
             button {
-                background: #007bff;
-                color: white;
+                background: #00f3ff;
+                color: #000;
                 border: none;
                 padding: 10px 20px;
-                border-radius: 5px;
+                border-radius: 4px;
                 cursor: pointer;
                 margin: 5px;
             }
 
             button:hover {
-                background: #0056b3;
+                background: #00a0a7;
             }
 
             button:disabled {
-                background: #6c757d;
+                background: #666;
                 cursor: not-allowed;
+            }
+
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin: 20px 0;
+            }
+
+            .stat-item {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid #00f3ff;
+                border-radius: 4px;
+                padding: 10px;
+                text-align: center;
             }
         </style>
     </head>
 
     <body>
+        <h1>🔌 WebSocket连接稳定性测试</h1>
+
         <div class="container">
-            <h1>🔌 WebSocket实时数据测试</h1>
+            <h2>连接控制</h2>
+            <button onclick="connectWebSocket()" id="connectBtn">连接WebSocket</button>
+            <button onclick="disconnectWebSocket()" id="disconnectBtn" disabled>断开连接</button>
+            <button onclick="clearLog()">清空日志</button>
+            <button onclick="testConnection()" id="testBtn" disabled>测试连接</button>
+        </div>
 
-            <div id="status" class="status disconnected">
-                🔴 未连接
-            </div>
-
-            <div>
-                <button onclick="connectWebSocket()" id="connectBtn">连接WebSocket</button>
-                <button onclick="disconnectWebSocket()" id="disconnectBtn" disabled>断开连接</button>
-                <button onclick="clearData()">清空数据</button>
-            </div>
-
-            <h3>📊 实时数据</h3>
-            <div id="dataDisplay" class="data-display">
-                等待连接...
-            </div>
-
-            <h3>📝 连接日志</h3>
-            <div id="logDisplay" class="data-display">
-                系统就绪
+        <div class="container">
+            <h2>连接状态</h2>
+            <div id="status" class="status disconnected">未连接</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div>连接次数</div>
+                    <div id="connectCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>断开次数</div>
+                    <div id="disconnectCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>重连次数</div>
+                    <div id="reconnectCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div>连接时长</div>
+                    <div id="connectionTime">0s</div>
+                </div>
             </div>
         </div>
 
+        <div class="container">
+            <h2>连接日志</h2>
+            <div id="log" class="log"></div>
+        </div>
+
         <script>
-            let websocket = null;
+            let ws = null;
+            let isConnected = false;
             let reconnectAttempts = 0;
-            const maxReconnectAttempts = 5;
+            let maxReconnectAttempts = 10;
+            let reconnectInterval = 3000;
+            let reconnectTimeout = null;
+            let heartbeatInterval = null;
+            let connectionStartTime = 0;
+            let stats = {
+                connectCount: 0,
+                disconnectCount: 0,
+                reconnectCount: 0
+            };
 
-            function updateStatus(status, message) {
-                const statusDiv = document.getElementById('status');
-                statusDiv.className = `status ${status}`;
-                statusDiv.innerHTML = message;
-
-                const connectBtn = document.getElementById('connectBtn');
-                const disconnectBtn = document.getElementById('disconnectBtn');
-
-                if (status === 'connected') {
-                    connectBtn.disabled = true;
-                    disconnectBtn.disabled = false;
-                } else {
-                    connectBtn.disabled = false;
-                    disconnectBtn.disabled = true;
-                }
-            }
-
-            function addLog(message) {
-                const logDisplay = document.getElementById('logDisplay');
+            function log(message) {
+                const logElement = document.getElementById('log');
                 const timestamp = new Date().toLocaleTimeString();
-                logDisplay.innerHTML += `[${timestamp}] ${message}\n`;
-                logDisplay.scrollTop = logDisplay.scrollHeight;
+                logElement.innerHTML += `[${timestamp}] ${message}\n`;
+                logElement.scrollTop = logElement.scrollHeight;
             }
 
-            function updateData(data) {
-                const dataDisplay = document.getElementById('dataDisplay');
-                dataDisplay.innerHTML = JSON.stringify(data, null, 2);
+            function updateStatus(status, className) {
+                const statusElement = document.getElementById('status');
+                statusElement.textContent = status;
+                statusElement.className = `status ${className}`;
+            }
+
+            function updateStats() {
+                document.getElementById('connectCount').textContent = stats.connectCount;
+                document.getElementById('disconnectCount').textContent = stats.disconnectCount;
+                document.getElementById('reconnectCount').textContent = stats.reconnectCount;
+
+                if (connectionStartTime > 0 && isConnected) {
+                    const duration = Math.floor((Date.now() - connectionStartTime) / 1000);
+                    document.getElementById('connectionTime').textContent = `${duration}s`;
+                }
             }
 
             function connectWebSocket() {
-                if (websocket && websocket.readyState === WebSocket.OPEN) {
-                    addLog('WebSocket已连接');
-                    return;
-                }
-
-                updateStatus('connecting', '🟡 正在连接...');
-                addLog('正在连接到 ws://localhost:8000/ws');
+                cleanupWebSocket();
 
                 try {
-                    websocket = new WebSocket('ws://localhost:8000/ws');
+                    // 使用币安WebSocket进行测试
+                    const streams = ['btcusdt@ticker'].join('/');
+                    const wsUrl = `wss://stream.binance.com:9443/stream?streams=${streams}`;
 
-                    websocket.onopen = function (event) {
-                        updateStatus('connected', '🟢 已连接 - 实时数据已启用');
-                        addLog('WebSocket连接成功！');
+                    const connectionTimeout = setTimeout(() => {
+                        if (ws && ws.readyState === WebSocket.CONNECTING) {
+                            log('连接超时，关闭连接');
+                            ws.close();
+                        }
+                    }, 10000);
+
+                    ws = new WebSocket(wsUrl);
+                    connectionStartTime = Date.now();
+
+                    updateStatus('连接中...', 'connecting');
+                    log('开始连接WebSocket...');
+
+                    ws.onopen = function () {
+                        clearTimeout(connectionTimeout);
+                        isConnected = true;
                         reconnectAttempts = 0;
+                        stats.connectCount++;
+                        updateStatus('已连接', 'connected');
+                        log('WebSocket连接成功');
+
+                        startHeartbeat();
+                        updateStats();
+                        updateButtons();
                     };
 
-                    websocket.onmessage = function (event) {
+                    ws.onmessage = function (event) {
                         try {
-                            const data = JSON.parse(event.data);
-                            addLog(`收到数据: ${data.type}`);
-                            updateData(data);
+                            const message = JSON.parse(event.data);
+                            if (message.data && message.data.s) {
+                                log(`收到数据: ${message.data.s} - $${message.data.c}`);
+                            }
                         } catch (error) {
-                            addLog(`数据解析错误: ${error.message}`);
+                            log(`收到消息: ${event.data}`);
                         }
                     };
 
-                    websocket.onclose = function (event) {
-                        updateStatus('disconnected', '🔴 连接已断开');
-                        addLog(`WebSocket连接关闭 (代码: ${event.code})`);
+                    ws.onclose = function (event) {
+                        clearTimeout(connectionTimeout);
+                        isConnected = false;
+                        stats.disconnectCount++;
+                        updateStatus('已断开', 'disconnected');
+                        log(`连接关闭，代码: ${event.code}, 原因: ${event.reason}`);
 
-                        if (reconnectAttempts < maxReconnectAttempts) {
-                            reconnectAttempts++;
-                            addLog(`尝试重连 (${reconnectAttempts}/${maxReconnectAttempts})...`);
-                            setTimeout(connectWebSocket, 3000);
-                        } else {
-                            addLog('达到最大重连次数，停止重连');
+                        cleanupTimers();
+                        updateStats();
+                        updateButtons();
+
+                        if (event.code !== 1000 && event.code !== 1001) {
+                            if (reconnectAttempts < maxReconnectAttempts) {
+                                reconnectAttempts++;
+                                stats.reconnectCount++;
+                                const delay = Math.min(reconnectInterval * Math.pow(1.2, reconnectAttempts - 1), 30000);
+                                log(`${Math.round(delay / 1000)}秒后进行第${reconnectAttempts}次重连...`);
+
+                                reconnectTimeout = setTimeout(() => {
+                                    connectWebSocket();
+                                }, delay);
+                            } else {
+                                log('重连次数已达上限，停止重连');
+                            }
                         }
                     };
 
-                    websocket.onerror = function (error) {
-                        addLog(`WebSocket错误: ${error.message || '未知错误'}`);
+                    ws.onerror = function (error) {
+                        log(`WebSocket错误: ${error}`);
                     };
 
                 } catch (error) {
-                    updateStatus('disconnected', '🔴 连接失败');
-                    addLog(`连接失败: ${error.message}`);
+                    log(`创建连接失败: ${error.message}`);
+                    updateStatus('连接失败', 'disconnected');
                 }
             }
 
             function disconnectWebSocket() {
-                if (websocket) {
-                    websocket.close();
-                    websocket = null;
-                    updateStatus('disconnected', '🔴 已断开连接');
-                    addLog('手动断开WebSocket连接');
+                if (ws) {
+                    ws.close(1000, '用户主动断开');
                 }
             }
 
-            function clearData() {
-                document.getElementById('dataDisplay').innerHTML = '数据已清空';
-                document.getElementById('logDisplay').innerHTML = '日志已清空';
+            function startHeartbeat() {
+                heartbeatInterval = setInterval(() => {
+                    if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
+                        try {
+                            ws.send(JSON.stringify({ method: 'ping', id: Date.now() }));
+                            log('发送心跳包');
+                        } catch (error) {
+                            log(`心跳发送失败: ${error.message}`);
+                            ws.close();
+                        }
+                    }
+                }, 30000);
             }
 
-            // 页面加载时自动连接
-            window.onload = function () {
-                addLog('页面加载完成，准备连接WebSocket');
-                setTimeout(connectWebSocket, 1000);
-            };
+            function cleanupWebSocket() {
+                if (ws) {
+                    ws.close();
+                    ws = null;
+                }
+                cleanupTimers();
+            }
+
+            function cleanupTimers() {
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                    heartbeatInterval = null;
+                }
+                if (reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                    reconnectTimeout = null;
+                }
+            }
+
+            function updateButtons() {
+                document.getElementById('connectBtn').disabled = isConnected;
+                document.getElementById('disconnectBtn').disabled = !isConnected;
+                document.getElementById('testBtn').disabled = !isConnected;
+            }
+
+            function testConnection() {
+                if (isConnected && ws && ws.readyState === WebSocket.OPEN) {
+                    try {
+                        ws.send(JSON.stringify({ method: 'test', data: 'ping' }));
+                        log('发送测试消息');
+                    } catch (error) {
+                        log(`测试消息发送失败: ${error.message}`);
+                    }
+                }
+            }
+
+            function clearLog() {
+                document.getElementById('log').innerHTML = '';
+            }
+
+            // 页面卸载时清理
+            window.addEventListener('beforeunload', function () {
+                cleanupWebSocket();
+            });
+
+            // 初始化
+            document.addEventListener('DOMContentLoaded', function () {
+                log('WebSocket测试页面已加载');
+                updateButtons();
+            });
         </script>
     </body>
 
