@@ -1676,7 +1676,7 @@
             .container {
                 max-width: 1200px;
                 margin: 0 auto;
-                padding: 1rem;
+                padding: 0.5rem;
                 padding-bottom: 6rem;
                 /* 为底部导航栏留出空间 */
             }
@@ -2197,10 +2197,183 @@
                 box-sizing: border-box;
             }
 
+            /* 紧凑布局优化 */
+            .header-section {
+                transition: all 0.3s ease;
+            }
+
+            .tech-panel {
+                transition: margin 0.3s ease;
+            }
+
+            /* 移动端紧凑布局 */
+            @media (max-width: 768px) {
+                .header-section {
+                    padding: 0.2rem 0 !important;
+                    margin-bottom: 0.2rem !important;
+                }
+
+                .header-section h1 {
+                    font-size: 1rem !important;
+                    margin-bottom: 0.05rem !important;
+                }
+
+                .header-section p {
+                    font-size: 0.65rem !important;
+                }
+
+                .tech-panel {
+                    margin-bottom: 0.25rem !important;
+                }
+
+                .tech-panel .chart-title {
+                    padding: 0.3rem 0.5rem !important;
+                    font-size: 0.75rem !important;
+                }
+
+                .control-panel {
+                    gap: 0.25rem !important;
+                    margin-bottom: 0.25rem !important;
+                }
+
+                .control-label {
+                    font-size: 0.7rem !important;
+                    margin-bottom: 0.15rem !important;
+                }
+
+                .form-input {
+                    padding: 0.3rem !important;
+                    font-size: 0.7rem !important;
+                }
+
+                .tech-btn {
+                    padding: 0.3rem 0.5rem !important;
+                    font-size: 0.7rem !important;
+                }
+            }
+
+            /* 超小屏幕优化 */
+            @media (max-width: 480px) {
+                .container {
+                    padding: 0.3rem !important;
+                    padding-bottom: 5.5rem !important;
+                }
+
+                .header-section {
+                    padding: 0.15rem 0 !important;
+                    margin-bottom: 0.15rem !important;
+                }
+
+                .header-section h1 {
+                    font-size: 0.9rem !important;
+                }
+
+                .header-section p {
+                    font-size: 0.6rem !important;
+                }
+
+                .tech-panel {
+                    margin-bottom: 0.2rem !important;
+                }
+
+                .tech-panel .chart-title {
+                    padding: 0.25rem 0.4rem !important;
+                    font-size: 0.7rem !important;
+                }
+
+                .control-panel {
+                    gap: 0.2rem !important;
+                    margin-bottom: 0.2rem !important;
+                }
+
+                .control-label {
+                    font-size: 0.65rem !important;
+                    margin-bottom: 0.1rem !important;
+                }
+
+                .form-input {
+                    padding: 0.25rem !important;
+                    font-size: 0.65rem !important;
+                }
+
+                .tech-btn {
+                    padding: 0.25rem 0.4rem !important;
+                    font-size: 0.65rem !important;
+                }
+
+                /* 底部导航栏优化 */
+                .bottom-nav {
+                    height: 4.5rem !important;
+                    padding: 0.3rem 0.5rem !important;
+                }
+
+                .nav-item {
+                    font-size: 0.6rem !important;
+                    padding: 0.2rem 0.3rem !important;
+                }
+
+                .nav-item i {
+                    font-size: 1rem !important;
+                    margin-bottom: 0.1rem !important;
+                }
+
+                /* 价格显示面板优化 */
+                .tech-panel.glow>div:first-child {
+                    padding: 0.3rem 0.4rem !important;
+                }
+
+                .tech-panel.glow .tech-font {
+                    font-size: 0.7rem !important;
+                }
+
+                .tech-panel.glow .tech-btn {
+                    padding: 0.15rem 0.3rem !important;
+                    font-size: 0.6rem !important;
+                }
+            }
+
             /* 确保所有卡片都有正确的z-index */
             .tech-panel {
                 position: relative;
                 z-index: 1;
+            }
+
+            /* 移动端触摸优化 */
+            @media (max-width: 768px) {
+
+                .tech-btn,
+                .nav-item,
+                .form-input,
+                select {
+                    min-height: 2.5rem;
+                    touch-action: manipulation;
+                }
+
+                .tech-btn:active,
+                .nav-item:active {
+                    transform: scale(0.95);
+                }
+
+                /* 防止移动端滚动时的弹性效果 */
+                body {
+                    overscroll-behavior: none;
+                }
+
+                /* 优化移动端滚动性能 */
+                .container {
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                /* 移动端视觉反馈优化 */
+                .tech-panel:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+                }
+
+                .tech-btn:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(0, 243, 255, 0.4);
+                }
             }
 
             .prediction-card,
@@ -2225,12 +2398,17 @@
             /* 确保响应式布局正常工作 */
             @media (max-width: 768px) {
                 .container {
-                    padding: 0.5rem;
+                    padding: 0.3rem;
                     padding-bottom: 6rem;
+                    padding-top: 0.2rem;
                 }
 
                 .tech-panel {
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.4rem;
+                }
+
+                .header-section {
+                    margin-bottom: 0.2rem !important;
                 }
             }
         </style>
@@ -2326,16 +2504,16 @@
             onclick="closeMobileMenu()"></div>
 
         <div class="container">
-            <!-- 标题区域 -->
-            <div class="header-section" style="padding: 0.5rem 0; margin-bottom: 0.5rem;">
-                <h1 class="tech-font" style="font-size: 1.2rem; margin-bottom: 0.2rem;">🚀 永续合约预测系统</h1>
-                <p style="font-size: 0.75rem; margin: 0;">基于AI大模型的专业级加密货币预测平台</p>
+            <!-- 标题区域 - 紧凑设计 -->
+            <div class="header-section" style="padding: 0.3rem 0; margin-bottom: 0.3rem;">
+                <h1 class="tech-font" style="font-size: 1.1rem; margin-bottom: 0.1rem;">🚀 永续合约预测系统</h1>
+                <p style="font-size: 0.7rem; margin: 0; opacity: 0.8;">基于AI大模型的专业级加密货币预测平台</p>
             </div>
 
             <!-- 仪表盘页面 -->
             <div id="dashboardPage" class="page" style="display: none;">
                 <!-- 融合价格和状态显示 -->
-                <div class="tech-panel glow" style="margin-bottom: 0.4rem;">
+                <div class="tech-panel glow" style="margin-bottom: 0.3rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem;">
                         <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
                             <div class="tech-font" style="color: var(--tech-blue); font-size: 0.8rem;">
@@ -4826,8 +5004,8 @@
             };
 
 
-            // 初始化
-            document.addEventListener('DOMContentLoaded', function () {
+            // 主初始化函数
+            function mainInit() {
                 // 设置初始化超时
                 const initTimeout = setTimeout(() => {
                     console.warn('系统初始化超时，强制完成初始化');
@@ -4852,8 +5030,11 @@
                     setupEventListeners();
                     setupLoginPage();
                     optimizeForMobile();
+                    setupMobileMenu();
+                    setupWithdrawForm();
+                    setupBottomToolbar();
 
-                    // 启动CoinAPI.io数据源（包含初始数据获取）
+                    // 启动数据源
                     startCoinAPIDataSource();
 
                     // 设置默认交易对
@@ -4867,7 +5048,7 @@
                         updateChartForSymbol(defaultSymbol);
                     }, 2000);
 
-                    showNotification('系统初始化完成，正在连接CoinAPI.io实时数据', 'success');
+                    showNotification('系统初始化完成，正在连接数据', 'success');
 
                     // 设置默认页面为仪表盘
                     showPage('dashboard');
@@ -4885,7 +5066,10 @@
                     showNotification('系统初始化失败，请刷新页面重试', 'error');
                     clearTimeout(initTimeout);
                 }
-            });
+            }
+
+            // 唯一的DOMContentLoaded入口
+            document.addEventListener('DOMContentLoaded', mainInit);
 
             // 页面卸载时清理资源
             window.addEventListener('beforeunload', function () {
@@ -6679,65 +6863,29 @@
                 document.getElementById('menuOverlay').style.display = 'none';
             }
 
-            // 初始化三横杆菜单事件
-            document.addEventListener('DOMContentLoaded', function () {
+            // 设置移动端菜单
+            function setupMobileMenu() {
                 // 三横杆菜单按钮事件
                 document.getElementById('mobileMenuBtn').addEventListener('click', openMobileMenu);
 
                 // 菜单项目事件
-                document.getElementById('menuDashboardBtn').addEventListener('click', () => {
-                    showPage('dashboard');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuPredictionBtn').addEventListener('click', () => {
-                    showPage('prediction');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuMarketBtn').addEventListener('click', () => {
-                    showPage('market');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuMembershipBtn').addEventListener('click', () => {
-                    showPage('membership');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuReinvestBtn').addEventListener('click', () => {
-                    showPage('reinvest');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuBacktestBtn').addEventListener('click', () => {
-                    showPage('backtest');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuRiskBtn').addEventListener('click', () => {
-                    showPage('risk');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuRecordsBtn').addEventListener('click', () => {
-                    showPage('records');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuProfitBtn').addEventListener('click', () => {
-                    showPage('profit');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuDepositBtn').addEventListener('click', () => {
-                    showPage('deposit');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuSettingsBtn').addEventListener('click', () => {
-                    showPage('settings');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuTradingBtn').addEventListener('click', () => {
-                    showPage('trading');
-                    closeMobileMenu();
-                });
-                document.getElementById('menuLoginBtn').addEventListener('click', () => {
-                    showPage('login');
-                    closeMobileMenu();
-                });
-            });
+                document.getElementById('menuDashboardBtn').addEventListener('click', () => { showPage('dashboard'); closeMobileMenu(); });
+                document.getElementById('menuPredictionBtn').addEventListener('click', () => { showPage('prediction'); closeMobileMenu(); });
+                document.getElementById('menuMarketBtn').addEventListener('click', () => { showPage('market'); closeMobileMenu(); });
+                document.getElementById('menuMembershipBtn').addEventListener('click', () => { showPage('membership'); closeMobileMenu(); });
+                document.getElementById('menuReinvestBtn').addEventListener('click', () => { showPage('reinvest'); closeMobileMenu(); });
+                document.getElementById('menuBacktestBtn').addEventListener('click', () => { showPage('backtest'); closeMobileMenu(); });
+                document.getElementById('menuRiskBtn').addEventListener('click', () => { showPage('risk'); closeMobileMenu(); });
+                document.getElementById('menuRecordsBtn').addEventListener('click', () => { showPage('records'); closeMobileMenu(); });
+                document.getElementById('menuProfitBtn').addEventListener('click', () => { showPage('profit'); closeMobileMenu(); });
+                document.getElementById('menuDepositBtn').addEventListener('click', () => { showPage('deposit'); closeMobileMenu(); });
+                document.getElementById('menuSettingsBtn').addEventListener('click', () => { showPage('settings'); closeMobileMenu(); });
+                document.getElementById('menuTradingBtn').addEventListener('click', () => { showPage('trading'); closeMobileMenu(); });
+                document.getElementById('menuLoginBtn').addEventListener('click', () => { showPage('login'); closeMobileMenu(); });
+
+                // 遮罩层事件
+                document.getElementById('menuOverlay').addEventListener('click', closeMobileMenu);
+            }
 
             // 复制地址功能
             function copyAddress(address) {
@@ -7009,8 +7157,8 @@
                 }
             }
 
-            // 初始化出金功能事件监听
-            document.addEventListener('DOMContentLoaded', function () {
+            // 设置出金表单
+            function setupWithdrawForm() {
                 // 发送出金验证码按钮
                 const sendWithdrawSmsBtn = document.getElementById('sendWithdrawSmsBtn');
                 if (sendWithdrawSmsBtn) {
@@ -7022,7 +7170,7 @@
                 if (submitWithdrawBtn) {
                     submitWithdrawBtn.addEventListener('click', submitWithdraw);
                 }
-            });
+            }
 
             // 交易系统全局变量
             let tradingApiConfig = {
@@ -7435,10 +7583,7 @@
                 });
             }
 
-            // 初始化底部工具栏
-            document.addEventListener('DOMContentLoaded', function () {
-                setupBottomToolbar();
-            });
+            // The call to setupBottomToolbar() is now in mainInit.
         </script>
 
         <!-- 底部工具栏 -->
