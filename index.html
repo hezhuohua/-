@@ -4209,7 +4209,7 @@
                 cleanupDataConnection();
 
                 // 立即获取一次数据
-                fetchBinancePrices().then(() => {
+                fetchMarketData().then(() => {
                     console.log('初始数据获取成功');
                 }).catch((error) => {
                     console.error('初始数据获取失败:', error);
@@ -4219,7 +4219,7 @@
 
                 // 设置定时更新（确保只有一个定时器）
                 dataUpdateInterval = setInterval(() => {
-                    fetchBinancePrices();
+                    fetchMarketData();
                 }, UPDATE_INTERVAL);
 
                 // 更新连接状态
@@ -4229,144 +4229,74 @@
                 console.log('Binance数据源启动成功，每5秒更新一次');
             }
 
-            // 获取Binance实时价格数据
-            async function fetchBinancePrices() {
+            // 统一的市场数据获取函数
+            async function fetchMarketData() {
                 try {
-                    // 更新价格状态为加载中
                     updatePriceStatus('loading');
+                    const symbols = SUPPORTED_SYMBOLS.map(s => `\"${s}\"`).join(',');
+                    const url = `${BINANCE_API_BASE}/ticker/24hr?symbols=[${symbols}]`;
 
-                    console.log('正在获取Binance数据...');
+                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    if (!response.ok) {
+                        throw new Error(`Binance API request failed: ${response.status}`);
+                    }
+                    const data = await response.json();
 
-                    // 并行获取所有币种的价格数据
-                    const pricePromises = SUPPORTED_SYMBOLS.map(async (symbol) => {
-                        const url = `${BINANCE_API_BASE}/ticker/price?symbol=${symbol}`;
-
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-
-                        try {
-                            const response = await fetch(url, {
-                                headers: {
-                                    'Accept': 'application/json'
-                                },
-                                signal: controller.signal
-                            });
-
-                            clearTimeout(timeoutId);
-
-                            if (!response.ok) {
-                                throw new Error(`Binance请求失败: ${response.status} ${response.statusText}`);
-                            }
-
-                            const data = await response.json();
-                            return { symbol, data };
-                        } catch (error) {
-                            console.error(`获取${symbol}价格失败:`, error);
-                            return { symbol, error: true };
-                        }
-                    });
-
-                    const results = await Promise.all(pricePromises);
-
-                    // 检查是否有成功获取的数据
-                    const successfulResults = results.filter(r => !r.error);
-                    if (successfulResults.length === 0) {
-                        throw new Error('所有币种数据获取失败');
+                    if (!Array.isArray(data)) {
+                        throw new Error('Invalid data format from Binance API');
                     }
 
-                    // 更新所有币种的价格显示
-                    results.forEach(({ symbol, data, error }) => {
-                        if (error) return;
-
-                        const shortSymbol = symbolMap[symbol];
+                    data.forEach(ticker => {
+                        const shortSymbol = symbolMap[ticker.symbol];
                         if (shortSymbol && elements[`${shortSymbol}Price`] && elements[`${shortSymbol}Change`]) {
-                            const price = parseFloat(data.price);
+                            const price = parseFloat(ticker.lastPrice);
+                            const changePercent = parseFloat(ticker.priceChangePercent);
 
-                            // 更新价格显示
-                            elements[`${shortSymbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            });
+                            elements[`${shortSymbol}Price`].textContent = '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-                            // 由于Binance price接口不提供24小时变化，我们使用模拟变化
-                            const changePercent = (Math.random() - 0.5) * 10; // 模拟-5%到+5%的变化
-
-                            // 更新涨跌幅显示
-                            const changeText = changePercent > 0 ?
-                                '↗ ' + changePercent.toFixed(2) + '%' :
-                                '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
-
+                            const changeText = changePercent >= 0 ? `↗ ${changePercent.toFixed(2)}%` : `↘ ${Math.abs(changePercent).toFixed(2)}%`;
                             elements[`${shortSymbol}Change`].textContent = changeText;
-                            elements[`${shortSymbol}Change`].style.color = changePercent > 0 ?
-                                'var(--tech-success)' : 'var(--tech-danger)';
+                            elements[`${shortSymbol}Change`].style.color = changePercent >= 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
                         }
                     });
 
-                    // 更新时间
                     const now = new Date();
                     if (elements.currentTime) {
                         elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
                     }
 
-                    // 更新最后数据更新时间
                     lastDataUpdateTime = Date.now();
-
-                    // 更新价格状态为实时数据
                     updatePriceStatus('realtime');
+                    updateConnectionStatus('已连接', 'var(--tech-success)');
 
-                    // 更新图表数据（使用当前选中的交易对）
                     const selectedSymbol = elements.symbolSelector?.value;
                     if (selectedSymbol) {
                         const binanceSymbol = getBinanceSymbol(selectedSymbol);
-                        const result = results.find(r => r.symbol === binanceSymbol);
-                        if (result && !result.error) {
-                            updateChartWithRealData(parseFloat(result.data.price));
+                        const result = data.find(r => r.symbol === binanceSymbol);
+                        if (result) {
+                            updateChartWithRealData(parseFloat(result.lastPrice));
                         }
                     }
 
-                    // 更新预测面板和指标
                     updatePredictionPanel();
                     updateIndicators();
                     updateReinvestData();
 
-                    console.log(`CoinAPI.io实时价格数据更新成功，获取到${successfulResults.length}个币种数据`);
+                    console.log(`Market data updated successfully for ${data.length} symbols.`);
                     return true;
 
                 } catch (error) {
-                    console.error('获取CoinAPI.io实时价格失败:', error);
-
-                    // 显示连接错误状态
-                    updateConnectionStatus('连接错误', 'var(--tech-danger)');
+                    console.error('Failed to fetch market data:', error);
                     updatePriceStatus('error');
-
-                    // 显示错误通知
-                    showNotification('无法连接到CoinAPI.io服务器，使用模拟数据', 'error');
-
-                    // 如果API调用失败，使用模拟数据作为备用
-                    setTimeout(() => {
-                        updateSimulatedPrices();
-                    }, 2000); // 2秒后切换到模拟数据
-
+                    updateConnectionStatus('连接错误', 'var(--tech-danger)');
+                    startSimulatedDataSource();
                     return false;
                 }
             }
 
-            // 根据币安符号获取CoinAPI.io符号
-            function getCoinAPISymbol(symbol) {
-                const symbolToCoinAPI = {
-                    'BTCUSDT': 'BTC/USDT',
-                    'ETHUSDT': 'ETH/USDT',
-                    'BNBUSDT': 'BNB/USDT',
-                    'SOLUSDT': 'SOL/USDT',
-                    'XRPUSDT': 'XRP/USDT',
-                    'ADAUSDT': 'ADA/USDT',
-                    'DOGEUSDT': 'DOGE/USDT',
-                    'DOTUSDT': 'DOT/USDT',
-                    'LINKUSDT': 'LINK/USDT',
-                    'MATICUSDT': 'MATIC/USDT'
-                };
-                return symbolToCoinAPI[symbol];
-            }
+
+
+
 
             // 更新价格状态指示器
             function updatePriceStatus(status) {
@@ -4563,7 +4493,7 @@
                 try {
                     showNotification('正在测试Binance连接...', 'info');
 
-                    const result = await fetchBinancePrices();
+                    const result = await fetchMarketData();
 
                     if (result) {
                         showNotification('Binance连接测试成功', 'success');
@@ -4578,8 +4508,8 @@
 
             // 更新实时数据
             function updateRealTimeData() {
-                // 直接使用Binance数据源
-                fetchBinancePrices().catch((error) => {
+                // 直接使用统一的数据源
+                fetchMarketData().catch((error) => {
                     console.error('实时价格更新失败:', error);
                     updatePriceStatus('error');
                     setTimeout(() => {
