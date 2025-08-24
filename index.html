@@ -1042,12 +1042,208 @@
 
                     /* 优化预测卡片布局 */
                     .prediction-grid {
-                        grid-template-columns: repeat(2, 1fr);
+                        grid-template-columns: 1fr;
+                        gap: 0.5rem;
                     }
 
                     /* 优化指标卡片布局 */
                     .indicators-grid {
-                        grid-template-columns: repeat(2, 1fr);
+                        grid-template-columns: 1fr;
+                        gap: 0.5rem;
+                    }
+
+                    /* 修复多时间粒度预测卡片布局 */
+                    .tech-panel .prediction-card {
+                        margin-bottom: 0.5rem;
+                        min-width: 0;
+                        overflow: hidden;
+                    }
+
+                    /* 修复专业指标卡片布局 */
+                    .tech-panel .indicator-card {
+                        margin-bottom: 0.5rem;
+                        min-width: 0;
+                        overflow: hidden;
+                    }
+
+                    /* 确保卡片内容不会溢出 */
+                    .prediction-card,
+                    .indicator-card {
+                        box-sizing: border-box;
+                        width: 100%;
+                        max-width: 100%;
+                        word-wrap: break-word;
+                        overflow-wrap: break-word;
+                    }
+
+                    /* 修复浮动按钮位置 */
+                    .floating-btn {
+                        position: fixed;
+                        bottom: 80px;
+                        right: 10px;
+                        z-index: 1000;
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        background: rgba(255, 193, 7, 0.8);
+                        border: none;
+                        color: white;
+                        font-size: 1.2rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                    }
+
+                    /* 确保面板内容不会溢出 */
+                    .tech-panel {
+                        overflow: hidden;
+                        box-sizing: border-box;
+                    }
+
+                    /* 优化卡片间距 */
+                    .tech-panel>div {
+                        margin: 0;
+                        padding: 0.5rem;
+                    }
+
+                    /* 确保所有卡片都有正确的盒模型 */
+                    * {
+                        box-sizing: border-box;
+                    }
+
+                    /* 修复可能的z-index问题 */
+                    .tech-panel {
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    /* 确保文本不会溢出 */
+                    .prediction-header,
+                    .indicator-header,
+                    .prediction-confidence,
+                    .indicator-status {
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    /* 优化数值显示 */
+                    .prediction-probability,
+                    .indicator-value {
+                        word-break: break-all;
+                        hyphens: auto;
+                    }
+
+                    /* 确保按钮不会重叠 */
+                    .signal-btn {
+                        margin: 0.25rem;
+                        min-height: 44px;
+                    }
+
+                    /* 修复可能的负边距问题 */
+                    .tech-panel,
+                    .prediction-card,
+                    .indicator-card {
+                        margin: 0;
+                        padding: 0.5rem;
+                    }
+
+                    /* 卡片布局修复 - 防止重叠和跳出边框 */
+                    .prediction-card,
+                    .indicator-card {
+                        box-sizing: border-box;
+                        width: 100%;
+                        margin: 0;
+                        overflow: hidden;
+                        position: relative;
+                    }
+
+                    .tech-panel {
+                        overflow: hidden;
+                        box-sizing: border-box;
+                    }
+
+                    /* 确保卡片内容不会溢出 */
+                    .prediction-header,
+                    .indicator-header,
+                    .prediction-probability,
+                    .indicator-value,
+                    .prediction-confidence,
+                    .indicator-status {
+                        word-wrap: break-word;
+                        overflow-wrap: break-word;
+                    }
+
+                    /* 确保容器不会溢出 */
+                    .container {
+                        overflow-x: hidden;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+
+                    /* 修复可能的z-index冲突 */
+                    .tech-panel {
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    .prediction-card,
+                    .indicator-card {
+                        position: relative;
+                        z-index: 2;
+                    }
+
+                    /* 确保浮动元素不会影响布局 */
+                    .bottom-toolbar,
+                    .more-menu,
+                    .more-menu-overlay {
+                        z-index: 1000;
+                    }
+
+                    /* 最终移动端布局优化 */
+                    @media (max-width: 480px) {
+                        .tech-panel {
+                            margin: 0.5rem;
+                            padding: 0.5rem;
+                        }
+
+                        .prediction-card,
+                        .indicator-card {
+                            margin-bottom: 0.5rem;
+                            padding: 0.75rem;
+                            min-height: 70px;
+                        }
+
+                        .prediction-direction {
+                            font-size: 1.2rem !important;
+                        }
+
+                        .prediction-probability,
+                        .indicator-value {
+                            font-size: 0.9rem !important;
+                        }
+
+                        .prediction-confidence,
+                        .indicator-status {
+                            font-size: 0.65rem !important;
+                        }
+
+                        /* 确保没有元素重叠 */
+                        .tech-panel>div {
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        /* 修复可能的溢出问题 */
+                        .tech-panel {
+                            overflow: visible;
+                        }
+
+                        .prediction-card,
+                        .indicator-card {
+                            overflow: hidden;
+                        }
                     }
 
                     /* 优化按钮组 */
@@ -1993,6 +2189,50 @@
                 color: var(--tech-text-secondary);
                 font-family: 'Orbitron', monospace;
             }
+
+            /* 最终布局修复 */
+            .container {
+                overflow-x: hidden;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* 确保所有卡片都有正确的z-index */
+            .tech-panel {
+                position: relative;
+                z-index: 1;
+            }
+
+            .prediction-card,
+            .indicator-card {
+                position: relative;
+                z-index: 2;
+            }
+
+            /* 确保浮动元素不会影响布局 */
+            .bottom-toolbar,
+            .more-menu,
+            .more-menu-overlay {
+                z-index: 1000;
+            }
+
+            /* 修复可能的水平滚动问题 */
+            body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+
+            /* 确保响应式布局正常工作 */
+            @media (max-width: 768px) {
+                .container {
+                    padding: 0.5rem;
+                    padding-bottom: 6rem;
+                }
+
+                .tech-panel {
+                    margin-bottom: 0.5rem;
+                }
+            }
         </style>
     </head>
 
@@ -2198,7 +2438,7 @@
                     <div class="chart-title">
                         <i class="fas fa-clock"></i> 多时间粒度预测
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; padding: 0.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem;">
                         <div class="prediction-card" data-timeframe="1m" style="padding: 0.75rem; min-height: 80px;">
                             <div class="prediction-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 1分钟</div>
@@ -2247,7 +2487,7 @@
                     <div class="chart-title">
                         <i class="fas fa-chart-area"></i> 专业指标
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; padding: 0.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem;">
                         <div class="indicator-card" style="padding: 0.75rem; min-height: 80px;">
                             <div class="indicator-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 <i class="fas fa-percentage"></i> 资金费率
