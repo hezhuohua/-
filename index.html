@@ -7061,6 +7061,9 @@
                                 <input type="checkbox" id="tradingTestnet" checked>
                                 <span>使用测试网络（推荐）</span>
                             </label>
+                            <div style="font-size: 0.7rem; color: var(--tech-text-secondary); margin-top: 0.2rem;">
+                                <i class="fas fa-info-circle"></i> 测试网络使用虚拟资金，安全无风险
+                            </div>
                         </div>
 
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -7069,6 +7072,9 @@
                             </button>
                             <button class="tech-btn" onclick="saveTradingApiConfig()" style="font-size: 0.8rem;">
                                 <i class="fas fa-save"></i> 保存配置
+                            </button>
+                            <button class="tech-btn" onclick="openApiSetupGuide()" style="font-size: 0.8rem;">
+                                <i class="fas fa-question-circle"></i> API设置指南
                             </button>
                         </div>
 
@@ -7386,9 +7392,9 @@
                 let lastDataUpdateTime = null;
                 let chart = null; // Chart.js图表实例
 
-                // Binance API配置 (免费且稳定)
-                const BINANCE_API_BASE = 'https://api.binance.com/api/v3';
-                const UPDATE_INTERVAL = 5000; // 5秒更新间隔
+                // 币安官方API配置（免费且稳定）
+                const BINANCE_API_BASE = 'https://fapi.binance.com/fapi/v1';
+                const UPDATE_INTERVAL = 10000; // 10秒更新间隔（避免请求过于频繁）
                 const SUPPORTED_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT', 'LINKUSDT', 'MATICUSDT'];
 
                 // 币种映射
@@ -7405,7 +7411,7 @@
                     'MATICUSDT': 'matic'
                 };
 
-                // 获取Binance符号
+                // 获取币安符号
                 function getBinanceSymbol(shortSymbol) {
                     const reverseMap = Object.fromEntries(Object.entries(symbolMap).map(([k, v]) => [v, k]));
                     return reverseMap[shortSymbol] || 'BTCUSDT';
@@ -7427,18 +7433,18 @@
                     // 初始化交易系统
                     initializeTradingSystem();
 
-                    // 启动Binance数据源
+                    // 启动币安数据源
                     startBinanceDataSource();
 
                     // 显示初始化完成通知
-                    showNotification('系统初始化完成，正在连接Binance实时数据', 'success');
+                    showNotification('系统初始化完成，正在连接币安实时数据', 'success');
 
                     console.log('系统初始化完成');
                 }
 
-                // 启动Binance数据源
+                // 启动币安数据源
                 function startBinanceDataSource() {
-                    console.log('启动Binance数据源...');
+                    console.log('启动币安数据源...');
 
                     // 清理现有连接
                     cleanupDataConnection();
@@ -7448,37 +7454,43 @@
                         console.log('初始数据获取成功');
                     }).catch((error) => {
                         console.error('初始数据获取失败:', error);
-                        // 如果初始获取失败，切换到模拟数据
-                        startSimulatedDataSource();
+                        showNotification('无法连接到币安服务器，请检查网络连接', 'error');
                     });
 
-                    // 设置定时更新（确保只有一个定时器）
+                    // 设置定时更新（每10秒更新一次，避免请求过于频繁）
                     dataUpdateInterval = setInterval(() => {
                         fetchMarketData();
                     }, UPDATE_INTERVAL);
 
                     // 更新连接状态
-                    updateConnectionStatus('已连接Binance', 'var(--tech-success)');
+                    updateConnectionStatus('已连接币安', 'var(--tech-success)');
                     updatePriceStatus('realtime');
 
-                    console.log('Binance数据源启动成功，每5秒更新一次');
+                    console.log('币安数据源启动成功，每10秒更新一次');
                 }
 
-                // 统一的市场数据获取函数
+                // 统一的市场数据获取函数（使用币安官方API）
                 async function fetchMarketData() {
                     try {
                         updatePriceStatus('loading');
+
+                        // 使用币安官方API获取价格数据
                         const symbols = SUPPORTED_SYMBOLS.map(s => `\"${s}\"`).join(',');
                         const url = `${BINANCE_API_BASE}/ticker/24hr?symbols=[${symbols}]`;
 
-                        const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                        const response = await fetch(url, {
+                            headers: { 'Accept': 'application/json' },
+                            timeout: 5000 // 5秒超时
+                        });
+
                         if (!response.ok) {
-                            throw new Error(`Binance API request failed: ${response.status}`);
+                            throw new Error(`币安API请求失败: ${response.status}`);
                         }
+
                         const data = await response.json();
 
                         if (!Array.isArray(data)) {
-                            throw new Error('Invalid data format from Binance API');
+                            throw new Error('币安API返回数据格式错误');
                         }
 
                         data.forEach(ticker => {
@@ -7502,8 +7514,9 @@
 
                         lastDataUpdateTime = Date.now();
                         updatePriceStatus('realtime');
-                        updateConnectionStatus('已连接', 'var(--tech-success)');
+                        updateConnectionStatus('已连接币安', 'var(--tech-success)');
 
+                        // 更新图表数据
                         const selectedSymbol = elements.symbolSelector?.value;
                         if (selectedSymbol) {
                             const binanceSymbol = getBinanceSymbol(selectedSymbol);
@@ -7513,18 +7526,19 @@
                             }
                         }
 
+                        // 更新其他面板
                         updatePredictionPanel();
                         updateIndicators();
                         updateReinvestData();
 
-                        console.log(`Market data updated successfully for ${data.length} symbols.`);
+                        console.log(`币安数据更新成功，共${data.length}个币种`);
                         return true;
 
                     } catch (error) {
-                        console.error('Failed to fetch market data:', error);
+                        console.error('币安数据获取失败:', error);
                         updatePriceStatus('error');
                         updateConnectionStatus('连接错误', 'var(--tech-danger)');
-                        startSimulatedDataSource();
+                        showNotification('币安数据获取失败，请检查网络连接', 'error');
                         return false;
                     }
                 }
@@ -7544,16 +7558,12 @@
                             priceStatusElement.style.color = 'var(--tech-warning)';
                             break;
                         case 'realtime':
-                            priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据 (CoinAPI.io)';
+                            priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 币安实时数据';
                             priceStatusElement.style.color = 'var(--tech-success)';
                             break;
                         case 'error':
                             priceStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 连接错误';
                             priceStatusElement.style.color = 'var(--tech-danger)';
-                            break;
-                        case 'simulated':
-                            priceStatusElement.innerHTML = '<i class="fas fa-chart-line"></i> 模拟数据';
-                            priceStatusElement.style.color = 'var(--tech-blue)';
                             break;
                         default:
                             priceStatusElement.innerHTML = '<i class="fas fa-question-circle"></i> 未知状态';
@@ -7579,105 +7589,17 @@
                     }
                 }
 
-                // 模拟价格更新（备用方案）
-                function updateSimulatedPrices() {
-                    console.log('使用模拟价格数据...');
 
-                    // 模拟价格数据
-                    const mockPrices = {
-                        btc: 45000 + Math.random() * 5000,
-                        eth: 3000 + Math.random() * 500,
-                        bnb: 300 + Math.random() * 50,
-                        sol: 100 + Math.random() * 20,
-                        xrp: 0.5 + Math.random() * 0.1,
-                        ada: 0.4 + Math.random() * 0.1,
-                        doge: 0.08 + Math.random() * 0.02,
-                        dot: 7 + Math.random() * 1,
-                        link: 15 + Math.random() * 3,
-                        matic: 0.8 + Math.random() * 0.2
-                    };
-
-                    // 更新所有币种的价格显示
-                    Object.keys(mockPrices).forEach(symbol => {
-                        const price = mockPrices[symbol];
-                        const changePercent = (Math.random() - 0.5) * 10; // -5%到+5%
-
-                        if (elements[`${symbol}Price`]) {
-                            elements[`${symbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            });
-                        }
-
-                        if (elements[`${symbol}Change`]) {
-                            const changeText = changePercent > 0 ?
-                                '↗ ' + changePercent.toFixed(2) + '%' :
-                                '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
-
-                            elements[`${symbol}Change`].textContent = changeText;
-                            elements[`${symbol}Change`].style.color = changePercent > 0 ?
-                                'var(--tech-success)' : 'var(--tech-danger)';
-                        }
-                    });
-
-                    // 更新时间
-                    const now = new Date();
-                    if (elements.currentTime) {
-                        elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
-                    }
-
-                    // 更新最后数据更新时间
-                    lastDataUpdateTime = Date.now();
-
-                    // 更新价格状态
-                    updatePriceStatus('simulated');
-                    updateConnectionStatus('使用模拟数据', 'var(--tech-warning)');
-
-                    console.log('模拟价格数据更新完成');
-                }
-
-                // 启动备用数据源
-                function startBackupDataSource() {
-                    console.log('启动备用数据源...');
-
-                    // 停止CoinAPI.io数据源
-                    if (dataUpdateInterval) {
-                        clearInterval(dataUpdateInterval);
-                        dataUpdateInterval = null;
-                    }
-
-                    // 启动模拟数据源
-                    startSimulatedDataSource();
-                }
-
-                // 启动模拟数据源
-                function startSimulatedDataSource() {
-                    console.log('启动模拟数据源...');
-
-                    // 立即更新一次模拟数据
-                    updateSimulatedPrices();
-
-                    // 设置模拟数据更新间隔
-                    dataUpdateInterval = setInterval(() => {
-                        updateSimulatedPrices();
-                    }, UPDATE_INTERVAL);
-
-                    // 更新连接状态
-                    updateConnectionStatus('使用模拟数据', 'var(--tech-warning)');
-                    updatePriceStatus('simulated');
-
-                    showNotification('已切换到模拟数据源', 'warning');
-                }
 
                 // 重新连接数据源
                 function reconnectDataSource() {
-                    console.log('重新连接数据源...');
+                    console.log('重新连接币安数据源...');
 
                     // 清理当前连接
                     cleanupDataConnection();
 
                     // 显示重连通知
-                    showNotification('正在重新连接Binance数据源...', 'info');
+                    showNotification('正在重新连接币安数据源...', 'info');
 
                     // 延迟重连
                     setTimeout(() => {
@@ -7718,7 +7640,7 @@
                     return {
                         connected: true,
                         lastUpdate: lastDataUpdateTime,
-                        dataSource: 'Binance API',
+                        dataSource: '币安官方API',
                         updateInterval: UPDATE_INTERVAL
                     };
                 }
@@ -7726,30 +7648,26 @@
                 // 测试连接
                 async function testConnection() {
                     try {
-                        showNotification('正在测试Binance连接...', 'info');
+                        showNotification('正在测试币安连接...', 'info');
 
                         const result = await fetchMarketData();
 
                         if (result) {
-                            showNotification('Binance连接测试成功', 'success');
+                            showNotification('币安连接测试成功', 'success');
                         } else {
-                            showNotification('Binance连接测试失败', 'error');
+                            showNotification('币安连接测试失败', 'error');
                         }
                     } catch (error) {
                         console.error('连接测试失败:', error);
-                        showNotification('连接测试失败 - 无法连接到Binance服务器', 'error');
+                        showNotification('连接测试失败 - 无法连接到币安服务器', 'error');
                     }
                 }
 
                 // 更新实时数据
                 function updateRealTimeData() {
-                    // 直接使用统一的数据源
                     fetchMarketData().catch((error) => {
                         console.error('实时价格更新失败:', error);
                         updatePriceStatus('error');
-                        setTimeout(() => {
-                            updateSimulatedPrices();
-                        }, 2000); // 2秒后切换到模拟数据
                     });
                 }
 
@@ -7858,7 +7776,7 @@
                         updateTradingStats();
 
                         // 启动数据源
-                        startCoinAPIDataSource();
+                        startBinanceDataSource();
 
                         // 设置默认交易对
                         const defaultSymbol = 'BTCUSDT';
@@ -8054,18 +7972,16 @@
                 // 生成模拟数据
                 function generateMockData() {
                     const data = [];
-                    let basePrice = 43250;
-
+                    const basePrice = 45000;
                     for (let i = 0; i <= 100; i++) {
-                        const volatility = Math.random() * 100;
-                        const change = (Math.random() - 0.5) * volatility;
-                        const price = basePrice + change;
+                        const randomChange = (Math.random() - 0.5) * 2000;
+                        const price = basePrice + randomChange + Math.sin(i * 0.1) * 500;
                         data.push(price);
-                        basePrice = price;
                     }
-
                     return data;
                 }
+
+
 
 
                 // WebSocket连接管理 - 已移除，使用CoinGecko API替代
@@ -8219,35 +8135,7 @@
 
                 // 更新价格状态指示器 - 重复函数已移除
 
-                // 模拟价格更新（备用方案）
-                function updateSimulatedPrices() {
-                    // 更新BTC价格
-                    const btcBasePrice = 43250;
-                    const btcChange = (Math.random() - 0.5) * 200;
-                    const btcPrice = btcBasePrice + btcChange;
-                    const btcChangePercent = ((btcChange / btcBasePrice) * 100).toFixed(2);
 
-                    elements.btcPrice.textContent = '$' + btcPrice.toLocaleString();
-                    elements.btcChange.textContent = btcChangePercent > 0 ? '↗ ' + btcChangePercent + '%' : '↘ ' + Math.abs(btcChangePercent) + '%';
-                    elements.btcChange.style.color = btcChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
-
-                    // 更新ETH价格
-                    const ethBasePrice = 2680;
-                    const ethChange = (Math.random() - 0.5) * 50;
-                    const ethPrice = ethBasePrice + ethChange;
-                    const ethChangePercent = ((ethChange / ethBasePrice) * 100).toFixed(2);
-
-                    elements.ethPrice.textContent = '$' + ethPrice.toLocaleString();
-                    elements.ethChange.textContent = ethChangePercent > 0 ? '↗ ' + ethChangePercent + '%' : '↘ ' + Math.abs(ethChangePercent) + '%';
-                    elements.ethChange.style.color = ethChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
-
-                    // 更新时间
-                    const now = new Date();
-                    elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
-
-                    // 更新价格状态为模拟数据
-                    updatePriceStatus('simulated');
-                }
 
                 // 更新实时数据 - 重复函数已移除
 
@@ -8613,7 +8501,7 @@
                         if (success) {
                             showNotification('实时数据已更新', 'success');
                         } else {
-                            showNotification('数据更新失败，使用模拟数据', 'warning');
+                            showNotification('数据更新失败，请检查网络连接', 'error');
                         }
 
                         elements.refreshMarketBtn.innerHTML = '<i class="fas fa-sync-alt"></i> 刷新';
@@ -8882,13 +8770,7 @@
                         showNotification(`${symbol} 图表数据已更新`, 'success');
                     } catch (error) {
                         console.error('更新图表失败:', error);
-                        showNotification('图表数据更新失败，使用模拟数据', 'warning');
-
-                        // 使用模拟数据作为备用
-                        chart.data.labels = generateTimeLabels();
-                        chart.data.datasets[0].data = generateMockData();
-                        chart.data.datasets[0].label = symbol;
-                        chart.update();
+                        showNotification('图表数据更新失败，请检查网络连接', 'error');
                     }
                 }
 
@@ -9633,7 +9515,7 @@
                 function startDataSync() {
                     if (!isApiBound) return;
 
-                    // 模拟数据同步
+                    // 数据同步
                     setTimeout(() => {
                         updateProfitData();
                         updateProfitRecords();
@@ -10073,10 +9955,12 @@
                 const BINANCE_CONFIG = {
                     mainnet: {
                         baseUrl: 'https://fapi.binance.com',
+                        apiBase: 'https://fapi.binance.com/fapi/v1',
                         wsUrl: 'wss://fstream.binance.com'
                     },
                     testnet: {
                         baseUrl: 'https://testnet.binancefuture.com',
+                        apiBase: 'https://testnet.binancefuture.com/fapi/v1',
                         wsUrl: 'wss://stream.binancefuture.com'
                     }
                 };
@@ -10133,6 +10017,11 @@
                     localStorage.setItem('tradingApiConfig', JSON.stringify(tradingApiConfig));
                     showNotification('交易API配置已保存', 'success');
                     console.log('交易API配置已保存');
+                }
+
+                // 打开API设置指南
+                function openApiSetupGuide() {
+                    window.open('api_setup_guide.html', '_blank', 'width=1000,height=800');
                 }
 
                 // 测试交易API连接

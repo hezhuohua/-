@@ -40,6 +40,8 @@ This is a cryptocurrency perpetual contract prediction system built with:
 ├── tests/                   # Test files
 ├── requirements.txt         # Python dependencies
 └── run_server.py           # Application startup script
+
+NOTE: The frontend is primarily HTML/CSS/JavaScript files in the root directory, not in a dedicated frontend/ directory.
 ```
 
 ## Common Development Tasks
@@ -228,4 +230,30 @@ Advanced risk management features:
 - **Risk metrics**: VaR, maximum drawdown, Sharpe ratio
 - **Real-time monitoring**: Market condition alerts
 
-When asked to design UI & frontend interface
+## Backend Service Architecture
+
+The backend is structured as a FastAPI application with the following key components:
+
+### Core Services
+1. **ExchangeDataManager** (`backend/exchange_manager.py`) - Manages real-time market data from multiple exchanges
+2. **PredictionService** (`backend/prediction_service.py`) - Combines technical analysis, AI models, and DEEPSEEK API for predictions
+3. **PaymentService** (`backend/payment_service.py`) - Handles orders, payments, and membership management
+4. **AuthService** (`backend/auth.py`) - JWT-based authentication and authorization
+
+### Database Layer
+- **Models** (`backend/models.py`) - SQLAlchemy ORM models for all database entities
+- **Schemas** (`backend/schemas.py`) - Pydantic validation schemas for API input/output
+- **Database** (`backend/database.py`) - Database engine and session management
+
+### API Layer
+- **Main Application** (`backend/main.py`) - FastAPI application with all endpoints
+- **Rate Limiter** (`backend/rate_limiter.py`) - API rate limiting middleware
+
+## Frontend Components
+
+The frontend consists of several HTML files that serve different purposes:
+- `index.html` - Main dashboard with real-time charts and predictions
+- `demo.html` - Demonstration version with simulated data
+- Various test and diagnostic HTML files for specific features
+
+Key JavaScri

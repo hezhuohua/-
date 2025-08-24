@@ -215,6 +215,89 @@ class BinanceAPI:
                 'message': '获取持仓信息失败'
             }
 
+    def get_market_data(self, symbols=None):
+        """获取市场数据（不需要API密钥）"""
+        try:
+            if symbols is None:
+                symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT']
+
+            # 构建符号列表
+            symbols_str = '[' + ','.join([f'"{symbol}"' for symbol in symbols]) + ']'
+
+            # 使用币安官方API获取24小时价格数据
+            url = f"{self.base_url}/fapi/v1/ticker/24hr"
+            params = {'symbols': symbols_str}
+
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+
+            data = response.json()
+
+            return {
+                'success': True,
+                'data': data,
+                'message': '获取市场数据成功'
+            }
+        except Exception as e:
+            logger.error(f"获取市场数据失败: {e}")
+            return {
+                'success': False,
+                'error': str(e),
+                'message': '获取市场数据失败'
+            }
+
+    def get_price(self, symbol):
+        """获取单个币种价格（不需要API密钥）"""
+        try:
+            url = f"{self.base_url}/fapi/v1/ticker/price"
+            params = {'symbol': symbol}
+
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+
+            data = response.json()
+
+            return {
+                'success': True,
+                'data': data,
+                'message': '获取价格成功'
+            }
+        except Exception as e:
+            logger.error(f"获取价格失败: {e}")
+            return {
+                'success': False,
+                'error': str(e),
+                'message': '获取价格失败'
+            }
+
+    def get_klines(self, symbol, interval='1m', limit=100):
+        """获取K线数据（不需要API密钥）"""
+        try:
+            url = f"{self.base_url}/fapi/v1/klines"
+            params = {
+                'symbol': symbol,
+                'interval': interval,
+                'limit': limit
+            }
+
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+
+            data = response.json()
+
+            return {
+                'success': True,
+                'data': data,
+                'message': '获取K线数据成功'
+            }
+        except Exception as e:
+            logger.error(f"获取K线数据失败: {e}")
+            return {
+                'success': False,
+                'error': str(e),
+                'message': '获取K线数据失败'
+            }
+
 # 数据库操作类
 class DatabaseManager:
     def __init__(self):
@@ -582,6 +665,78 @@ def calculate_profit_share():
 
     except Exception as e:
         logger.error(f"计算分润异常: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/market-data', methods=['GET'])
+def get_market_data():
+    """获取市场数据（不需要API密钥）"""
+    try:
+        symbols = request.args.get('symbols', 'BTCUSDT,ETHUSDT,BNBUSDT,SOLUSDT,XRPUSDT')
+        symbol_list = [s.strip() for s in symbols.split(',')]
+
+        # 创建币安API实例（不需要API密钥）
+        binance_api = BinanceAPI('', '', testnet=False)
+
+        result = binance_api.get_market_data(symbol_list)
+
+        if result['success']:
+            return jsonify({
+                'success': True,
+                'message': '获取市场数据成功',
+                'data': result['data']
+            })
+        else:
+            return jsonify({'success': False, 'error': result['message']}), 500
+
+    except Exception as e:
+        logger.error(f"获取市场数据异常: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/price/<symbol>', methods=['GET'])
+def get_price(symbol):
+    """获取单个币种价格（不需要API密钥）"""
+    try:
+        # 创建币安API实例（不需要API密钥）
+        binance_api = BinanceAPI('', '', testnet=False)
+
+        result = binance_api.get_price(symbol.upper())
+
+        if result['success']:
+            return jsonify({
+                'success': True,
+                'message': '获取价格成功',
+                'data': result['data']
+            })
+        else:
+            return jsonify({'success': False, 'error': result['message']}), 500
+
+    except Exception as e:
+        logger.error(f"获取价格异常: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/klines/<symbol>', methods=['GET'])
+def get_klines(symbol):
+    """获取K线数据（不需要API密钥）"""
+    try:
+        interval = request.args.get('interval', '1m')
+        limit = int(request.args.get('limit', 100))
+
+        # 创建币安API实例（不需要API密钥）
+        binance_api = BinanceAPI('', '', testnet=False)
+
+        result = binance_api.get_klines(symbol.upper(), interval, limit)
+
+        if result['success']:
+            return jsonify({
+                'success': True,
+                'message': '获取K线数据成功',
+                'data': result['data']
+            })
+        else:
+            return jsonify({'success': False, 'error': result['message']}), 500
+
+    except Exception as e:
+        logger.error(f"获取K线数据异常: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 # 定时任务
