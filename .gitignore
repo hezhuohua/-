@@ -150,3 +150,6 @@ __pycache__/
 
 # Claude IDE settings
 .claude/
+
+# Super-design tool files
+.superdesign/

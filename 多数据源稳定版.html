@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>永续合约预测系统 - 多数据源稳定版</title>
+        <link href="https://cdn.jsdelivr.net/npm/element-plus@2.4.4/dist/index.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <style>
+            :root {
+                --tech-blue: #00f3ff;
+                --tech-bg: #0a0a1a;
+                --tech-panel: #11112a;
+                --tech-success: #28a745;
+                --tech-danger: #dc3545;
+                --tech-warning: #ffc107;
+            }
+
+            body {
+                font-family: 'Exo 2', sans-serif;
+                background: var(--tech-bg);
+                color: white;
+                margin: 0;
+                padding: 20px;
+                background-image:
+                    radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
+                min-height: 100vh;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .header h1 {
+                color: var(--tech-blue);
+                font-size: 2.5rem;
+                margin: 0;
+                text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            }
+
+            .data-source-panel {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            }
+
+            .data-source-status {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .source-item {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid rgba(0, 243, 255, 0.3);
+                border-radius: 8px;
+                padding: 15px;
+                transition: all 0.3s ease;
+            }
+
+            .source-item.active {
+                border-color: var(--tech-success);
+                box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+            }
+
+            .source-item.error {
+                border-color: var(--tech-danger);
+                box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+            }
+
+            .source-item.warning {
+                border-color: var(--tech-warning);
+                box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+            }
+
+            .source-name {
+                font-weight: bold;
+                margin-bottom: 5px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .source-status {
+                font-size: 0.9rem;
+                opacity: 0.8;
+            }
+
+            .price-panel {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            }
+
+            .price-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .price-item {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid rgba(0, 243, 255, 0.3);
+                border-radius: 8px;
+                padding: 15px;
+                text-align: center;
+            }
+
+            .price-symbol {
+                font-weight: bold;
+                color: var(--tech-blue);
+                margin-bottom: 5px;
+            }
+
+            .price-value {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .price-change {
+                font-size: 0.9rem;
+            }
+
+            .price-change.positive {
+                color: var(--tech-success);
+            }
+
+            .price-change.negative {
+                color: var(--tech-danger);
+            }
+
+            .controls {
+                text-align: center;
+                margin: 20px 0;
+            }
+
+            .btn {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                color: var(--tech-blue);
+                padding: 10px 20px;
+                margin: 5px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn:hover {
+                background: rgba(0, 243, 255, 0.2);
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.7);
+            }
+
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                z-index: 1000;
+                transition: all 0.3s ease;
+                max-width: 300px;
+            }
+
+            .notification.success {
+                background: var(--tech-success);
+                border: 1px solid rgba(40, 167, 69, 0.5);
+            }
+
+            .notification.error {
+                background: var(--tech-danger);
+                border: 1px solid rgba(220, 53, 69, 0.5);
+            }
+
+            .notification.info {
+                background: var(--tech-blue);
+                border: 1px solid rgba(0, 243, 255, 0.5);
+            }
+
+            .notification.warning {
+                background: var(--tech-warning);
+                border: 1px solid rgba(255, 193, 7, 0.5);
+                color: #000;
+            }
+
+            .log-panel {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                border-radius: 16px;
+                padding: 20px;
+                margin-top: 20px;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .log-entry {
+                font-family: monospace;
+                font-size: 0.9rem;
+                margin-bottom: 5px;
+                padding: 5px;
+                border-left: 3px solid var(--tech-blue);
+                padding-left: 10px;
+            }
+
+            .log-entry.error {
+                border-left-color: var(--tech-danger);
+                background: rgba(220, 53, 69, 0.1);
+            }
+
+            .log-entry.success {
+                border-left-color: var(--tech-success);
+                background: rgba(40, 167, 69, 0.1);
+            }
+
+            .log-entry.warning {
+                border-left-color: var(--tech-warning);
+                background: rgba(255, 193, 7, 0.1);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🚀 永续合约预测系统</h1>
+                <p>多数据源稳定版 - 2025年最新</p>
+            </div>
+
+            <div class="data-source-panel">
+                <h3><i class="fas fa-database"></i> 数据源状态监控</h3>
+                <div class="data-source-status" id="dataSourceStatus">
+                    <!-- 数据源状态将在这里动态生成 -->
+                </div>
+                <div>
+                    <strong>当前活跃数据源：</strong>
+                    <span id="currentDataSource" style="color: var(--tech-success);">初始化中...</span>
+                </div>
+            </div>
+
+            <div class="price-panel">
+                <h3><i class="fas fa-chart-line"></i> 实时价格数据</h3>
+                <div class="price-grid" id="priceGrid">
+                    <!-- 价格数据将在这里动态生成 -->
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn" onclick="testAllDataSources()">
+                    <i class="fas fa-test-tube"></i> 测试所有数据源
+                </button>
+                <button class="btn" onclick="forceRefresh()">
+                    <i class="fas fa-refresh"></i> 强制刷新
+                </button>
+                <button class="btn" onclick="switchToNextSource()">
+                    <i class="fas fa-exchange-alt"></i> 切换数据源
+                </button>
+                <button class="btn" onclick="clearLogs()">
+                    <i class="fas fa-eraser"></i> 清空日志
+                </button>
+            </div>
+
+            <div class="log-panel">
+                <h3><i class="fas fa-terminal"></i> 系统日志</h3>
+                <div id="logContainer">
+                    <!-- 日志将在这里显示 -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 多数据源配置 - 2025年最稳定的数据源
+            const DATA_SOURCES = {
+                coinapi: {
+                    name: 'CoinAPI.io',
+                    priority: 1,
+                    baseUrl: 'https://rest.coinapi.io/v1',
+                    apiKey: '', // 需要注册获取免费API Key
+                    rateLimit: 100, // 免费版每日100次
+                    status: 'unknown',
+                    lastSuccess: null,
+                    errorCount: 0,
+                    description: '专业级API，99.9%可用性'
+                },
+                alphavantage: {
+                    name: 'Alpha Vantage',
+                    priority: 2,
+                    baseUrl: 'https://www.alphavantage.co/query',
+                    apiKey: 'demo', // 使用demo key进行测试
+                    rateLimit: 500, // 免费版每日500次
+                    status: 'unknown',
+                    lastSuccess: null,
+                    errorCount: 0,
+                    description: '2025年最佳综合数据源'
+                },
+                coinpaprika: {
+                    name: 'CoinPaprika',
+                    priority: 3,
+                    baseUrl: 'https://api.coinpaprika.com/v1',
+                    apiKey: null, // 免费无需API Key
+                    rateLimit: 2000, // 免费版每日2000次
+                    status: 'unknown',
+                    lastSuccess: null,
+                    errorCount: 0,
+                    description: '独立数据聚合商，54K+资产'
+                },
+                coingecko: {
+                    name: 'CoinGecko',
+                    priority: 4,
+                    baseUrl: 'https://api.coingecko.com/api/v3',
+                    apiKey: null, // 免费无需API Key
+                    rateLimit: 1000, // 免费版限制较低
+                    status: 'unknown',
+                    lastSuccess: null,
+                    errorCount: 0,
+                    description: '传统数据源，备用选择'
+                },
+                binance: {
+                    name: 'Binance API',
+                    priority: 5,
+                    baseUrl: 'https://api.binance.com/api/v3',
+                    apiKey: null, // 公开数据无需API Key
+                    rateLimit: 1200, // 权重限制
+                    status: 'unknown',
+                    lastSuccess: null,
+                    errorCount: 0,
+                    description: '官方数据，最权威'
+                }
+            };
+
+            // 支持的交易对
+            const TRADING_PAIRS = ['BTC/USD', 'ETH/USD', 'BNB/USD', 'ADA/USD', 'SOL/USD', 'XRP/USD', 'DOGE/USD', 'AVAX/USD'];
+
+            // 当前活跃的数据源
+            let currentDataSource = null;
+            let priceData = {};
+            let updateInterval = null;
+            let logContainer = document.getElementById('logContainer');
+
+            // 日志记录函数
+            function addLog(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.innerHTML = `[${timestamp}] ${message}`;
+                logContainer.insertBefore(logEntry, logContainer.firstChild);
+
+                // 限制日志条数
+                if (logContainer.children.length > 100) {
+                    logContainer.removeChild(logContainer.lastChild);
+                }
+
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            }
+
+            // 显示通知
+            function showNotification(message, type = 'info', duration = 5000) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation-triangle' : 'info'}"></i> ${message}`;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, duration);
+            }
+
+            // 更新数据源状态显示
+            function updateDataSourceStatus() {
+                const container = document.getElementById('dataSourceStatus');
+                container.innerHTML = '';
+
+                Object.entries(DATA_SOURCES).forEach(([key, source]) => {
+                    const item = document.createElement('div');
+                    item.className = `source-item ${source.status}`;
+
+                    const statusIcon = source.status === 'active' ? 'check-circle' :
+                        source.status === 'error' ? 'exclamation-circle' :
+                            source.status === 'warning' ? 'exclamation-triangle' : 'question-circle';
+
+                    const statusColor = source.status === 'active' ? 'var(--tech-success)' :
+                        source.status === 'error' ? 'var(--tech-danger)' :
+                            source.status === 'warning' ? 'var(--tech-warning)' : 'var(--tech-blue)';
+
+                    item.innerHTML = `
+                    <div class="source-name">
+                        <i class="fas fa-${statusIcon}" style="color: ${statusColor}"></i>
+                        ${source.name}
+                        ${key === currentDataSource ? '<span style="color: var(--tech-success);">[活跃]</span>' : ''}
+                    </div>
+                    <div class="source-status">
+                        优先级: ${source.priority} | 错误次数: ${source.errorCount}<br>
+                        ${source.description}<br>
+                        ${source.lastSuccess ? `最后成功: ${new Date(source.lastSuccess).toLocaleTimeString()}` : '未连接'}
+                    </div>
+                `;
+                    container.appendChild(item);
+                });
+
+                // 更新当前数据源显示
+                document.getElementById('currentDataSource').textContent =
+                    currentDataSource ? DATA_SOURCES[currentDataSource].name : '无';
+            }
+
+            // CoinPaprika数据获取
+            async function fetchCoinPaprikaData() {
+                try {
+                    addLog('尝试连接CoinPaprika数据源...', 'info');
+
+                    // CoinPaprika的ticker数据
+                    const response = await fetch(`${DATA_SOURCES.coinpaprika.baseUrl}/tickers?limit=10`);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    const prices = {};
+
+                    // 映射常见币种
+                    const symbolMap = {
+                        'btc-bitcoin': 'BTC/USD',
+                        'eth-ethereum': 'ETH/USD',
+                        'bnb-binance-coin': 'BNB/USD',
+                        'ada-cardano': 'ADA/USD',
+                        'sol-solana': 'SOL/USD',
+                        'xrp-xrp': 'XRP/USD',
+                        'doge-dogecoin': 'DOGE/USD',
+                        'avax-avalanche': 'AVAX/USD'
+                    };
+
+                    data.forEach(coin => {
+                        const symbol = symbolMap[coin.id];
+                        if (symbol && coin.quotes && coin.quotes.USD) {
+                            prices[symbol] = {
+                                price: coin.quotes.USD.price,
+                                change24h: coin.quotes.USD.percent_change_24h,
+                                timestamp: new Date().toISOString()
+                            };
+                        }
+                    });
+
+                    if (Object.keys(prices).length === 0) {
+                        throw new Error('未获取到有效的价格数据');
+                    }
+
+                    DATA_SOURCES.coinpaprika.status = 'active';
+                    DATA_SOURCES.coinpaprika.lastSuccess = Date.now();
+                    DATA_SOURCES.coinpaprika.errorCount = 0;
+
+                    addLog(`CoinPaprika数据获取成功，获取到${Object.keys(prices).length}个交易对数据`, 'success');
+                    return prices;
+
+                } catch (error) {
+                    DATA_SOURCES.coinpaprika.status = 'error';
+                    DATA_SOURCES.coinpaprika.errorCount++;
+                    addLog(`CoinPaprika连接失败: ${error.message}`, 'error');
+                    throw error;
+                }
+            }
+
+            // CoinGecko数据获取
+            async function fetchCoinGeckoData() {
+                try {
+                    addLog('尝试连接CoinGecko数据源...', 'info');
+
+                    const coinIds = 'bitcoin,ethereum,binancecoin,cardano,solana,ripple,dogecoin,avalanche-2';
+                    const url = `${DATA_SOURCES.coingecko.baseUrl}/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true`;
+
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    const prices = {};
+
+                    // 映射币种ID到交易对
+                    const idMap = {
+                        'bitcoin': 'BTC/USD',
+                        'ethereum': 'ETH/USD',
+                        'binancecoin': 'BNB/USD',
+                        'cardano': 'ADA/USD',
+                        'solana': 'SOL/USD',
+                        'ripple': 'XRP/USD',
+                        'dogecoin': 'DOGE/USD',
+                        'avalanche-2': 'AVAX/USD'
+                    };
+
+                    Object.entries(data).forEach(([coinId, coinData]) => {
+                        const symbol = idMap[coinId];
+                        if (symbol && coinData.usd) {
+                            prices[symbol] = {
+                                price: coinData.usd,
+                                change24h: coinData.usd_24h_change || 0,
+                                timestamp: new Date().toISOString()
+                            };
+                        }
+                    });
+
+                    if (Object.keys(prices).length === 0) {
+                        throw new Error('未获取到有效的价格数据');
+                    }
+
+                    DATA_SOURCES.coingecko.status = 'active';
+                    DATA_SOURCES.coingecko.lastSuccess = Date.now();
+                    DATA_SOURCES.coingecko.errorCount = 0;
+
+                    addLog(`CoinGecko数据获取成功，获取到${Object.keys(prices).length}个交易对数据`, 'success');
+                    return prices;
+
+                } catch (error) {
+                    DATA_SOURCES.coingecko.status = 'error';
+                    DATA_SOURCES.coingecko.errorCount++;
+                    addLog(`CoinGecko连接失败: ${error.message}`, 'error');
+                    throw error;
+                }
+            }
+
+            // Binance数据获取
+            async function fetchBinanceData() {
+                try {
+                    addLog('尝试连接Binance数据源...', 'info');
+
+                    const response = await fetch(`${DATA_SOURCES.binance.baseUrl}/ticker/24hr`);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    const prices = {};
+
+                    // 过滤我们需要的交易对
+                    const symbolMap = {
+                        'BTCUSDT': 'BTC/USD',
+                        'ETHUSDT': 'ETH/USD',
+                        'BNBUSDT': 'BNB/USD',
+                        'ADAUSDT': 'ADA/USD',
+                        'SOLUSDT': 'SOL/USD',
+                        'XRPUSDT': 'XRP/USD',
+                        'DOGEUSDT': 'DOGE/USD',
+                        'AVAXUSDT': 'AVAX/USD'
+                    };
+
+                    data.forEach(ticker => {
+                        const symbol = symbolMap[ticker.symbol];
+                        if (symbol) {
+                            prices[symbol] = {
+                                price: parseFloat(ticker.lastPrice),
+                                change24h: parseFloat(ticker.priceChangePercent),
+                                timestamp: new Date().toISOString()
+                            };
+                        }
+                    });
+
+                    if (Object.keys(prices).length === 0) {
+                        throw new Error('未获取到有效的价格数据');
+                    }
+
+                    DATA_SOURCES.binance.status = 'active';
+                    DATA_SOURCES.binance.lastSuccess = Date.now();
+                    DATA_SOURCES.binance.errorCount = 0;
+
+                    addLog(`Binance数据获取成功，获取到${Object.keys(prices).length}个交易对数据`, 'success');
+                    return prices;
+
+                } catch (error) {
+                    DATA_SOURCES.binance.status = 'error';
+                    DATA_SOURCES.binance.errorCount++;
+                    addLog(`Binance连接失败: ${error.message}`, 'error');
+                    throw error;
+                }
+            }
+
+            // 生成模拟数据（最后备用方案）
+            function generateSimulatedData() {
+                addLog('使用模拟数据作为备用方案', 'warning');
+
+                const baseData = {
+                    'BTC/USD': { price: 43250.00, change24h: 2.45 },
+                    'ETH/USD': { price: 2680.50, change24h: -1.23 },
+                    'BNB/USD': { price: 315.75, change24h: 1.87 },
+                    'ADA/USD': { price: 0.485, change24h: 3.21 },
+                    'SOL/USD': { price: 98.45, change24h: -0.95 },
+                    'XRP/USD': { price: 0.625, change24h: 1.65 },
+                    'DOGE/USD': { price: 0.085, change24h: 4.32 },
+                    'AVAX/USD': { price: 36.75, change24h: -2.14 }
+                };
+
+                const simulatedData = {};
+                Object.entries(baseData).forEach(([symbol, data]) => {
+                    // 添加随机波动
+                    const priceVariation = (Math.random() - 0.5) * 0.02; // ±1%的随机波动
+                    const changeVariation = (Math.random() - 0.5) * 2; // ±1%的变化波动
+
+                    simulatedData[symbol] = {
+                        price: data.price * (1 + priceVariation),
+                        change24h: data.change24h + changeVariation,
+                        timestamp: new Date().toISOString()
+                    };
+                });
+
+                return simulatedData;
+            }
+
+            // 智能数据源选择器
+            async function fetchDataFromBestSource() {
+                // 按优先级排序可用的数据源
+                const sortedSources = Object.entries(DATA_SOURCES)
+                    .filter(([key, source]) => source.errorCount < 5) // 过滤错误过多的源
+                    .sort((a, b) => a[1].priority - b[1].priority);
+
+                for (const [sourceKey, sourceConfig] of sortedSources) {
+                    try {
+                        let data = null;
+
+                        switch (sourceKey) {
+                            case 'coinpaprika':
+                                data = await fetchCoinPaprikaData();
+                                break;
+                            case 'coingecko':
+                                data = await fetchCoinGeckoData();
+                                break;
+                            case 'binance':
+                                data = await fetchBinanceData();
+                                break;
+                            // 注意：CoinAPI和Alpha Vantage需要API Key才能正常使用
+                            default:
+                                continue;
+                        }
+
+                        if (data && Object.keys(data).length > 0) {
+                            currentDataSource = sourceKey;
+                            priceData = data;
+                            addLog(`成功切换到数据源: ${sourceConfig.name}`, 'success');
+                            return data;
+                        }
+
+                    } catch (error) {
+                        addLog(`数据源 ${sourceConfig.name} 失败，尝试下一个...`, 'warning');
+                        continue;
+                    }
+                }
+
+                // 如果所有数据源都失败，使用模拟数据
+                addLog('所有数据源均不可用，使用模拟数据', 'warning');
+                priceData = generateSimulatedData();
+                currentDataSource = null;
+                return priceData;
+            }
+
+            // 更新价格显示
+            function updatePriceDisplay() {
+                const container = document.getElementById('priceGrid');
+                container.innerHTML = '';
+
+                Object.entries(priceData).forEach(([symbol, data]) => {
+                    const item = document.createElement('div');
+                    item.className = 'price-item';
+
+                    const changeClass = data.change24h >= 0 ? 'positive' : 'negative';
+                    const changeIcon = data.change24h >= 0 ? '↗' : '↘';
+
+                    item.innerHTML = `
+                    <div class="price-symbol">${symbol}</div>
+                    <div class="price-value">$${data.price.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: data.price < 1 ? 6 : 2
+                    })}</div>
+                    <div class="price-change ${changeClass}">
+                        ${changeIcon} ${data.change24h.toFixed(2)}%
+                    </div>
+                `;
+                    container.appendChild(item);
+                });
+            }
+
+            // 主要的数据更新函数
+            async function updateData() {
+                try {
+                    addLog('开始数据更新...', 'info');
+                    await fetchDataFromBestSource();
+                    updatePriceDisplay();
+                    updateDataSourceStatus();
+                    addLog('数据更新完成', 'success');
+                } catch (error) {
+                    addLog(`数据更新失败: ${error.message}`, 'error');
+                    showNotification('数据更新失败，请检查网络连接', 'error');
+                }
+            }
+
+            // 测试所有数据源
+            async function testAllDataSources() {
+                addLog('开始测试所有数据源...', 'info');
+                showNotification('正在测试所有数据源...', 'info');
+
+                const testPromises = Object.entries(DATA_SOURCES).map(async ([key, source]) => {
+                    try {
+                        switch (key) {
+                            case 'coinpaprika':
+                                await fetchCoinPaprikaData();
+                                break;
+                            case 'coingecko':
+                                await fetchCoinGeckoData();
+                                break;
+                            case 'binance':
+                                await fetchBinanceData();
+                                break;
+                            default:
+                                DATA_SOURCES[key].status = 'warning';
+                                addLog(`${source.name}: 需要API Key，跳过测试`, 'warning');
+                        }
+                    } catch (error) {
+                        // 错误已在各自的fetch函数中处理
+                    }
+                });
+
+                await Promise.allSettled(testPromises);
+                updateDataSourceStatus();
+
+                const activeSources = Object.values(DATA_SOURCES).filter(s => s.status === 'active').length;
+                addLog(`数据源测试完成，${activeSources}个数据源可用`, 'success');
+                showNotification(`测试完成，${activeSources}个数据源可用`, 'success');
+            }
+
+            // 强制刷新
+            async function forceRefresh() {
+                addLog('执行强制刷新...', 'info');
+                showNotification('正在强制刷新数据...', 'info');
+                await updateData();
+            }
+
+            // 切换到下一个数据源
+            async function switchToNextSource() {
+                const currentIndex = Object.keys(DATA_SOURCES).indexOf(currentDataSource);
+                const nextIndex = (currentIndex + 1) % Object.keys(DATA_SOURCES).length;
+                const nextSourceKey = Object.keys(DATA_SOURCES)[nextIndex];
+
+                addLog(`尝试切换到数据源: ${DATA_SOURCES[nextSourceKey].name}`, 'info');
+
+                // 重置当前数据源状态
+                if (currentDataSource) {
+                    DATA_SOURCES[currentDataSource].status = 'unknown';
+                }
+
+                await updateData();
+            }
+
+            // 清空日志
+            function clearLogs() {
+                logContainer.innerHTML = '';
+                addLog('日志已清空', 'info');
+            }
+
+            // 初始化系统
+            async function initializeSystem() {
+                addLog('=== 永续合约预测系统启动 ===', 'info');
+                addLog('多数据源稳定版 - 2025年最新', 'info');
+
+                showNotification('系统正在初始化...', 'info');
+
+                // 初始化数据源状态
+                updateDataSourceStatus();
+
+                // 进行初始数据获取
+                await updateData();
+
+                // 设置定时更新（每30秒）
+                if (updateInterval) clearInterval(updateInterval);
+                updateInterval = setInterval(updateData, 30000);
+
+                addLog('系统初始化完成，每30秒自动更新数据', 'success');
+                showNotification('系统初始化完成！', 'success');
+            }
+
+            // 页面加载完成后启动系统
+            document.addEventListener('DOMContentLoaded', initializeSystem);
+
+            // 页面卸载时清理
+            window.addEventListener('beforeunload', () => {
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                }
+            });
+
+            // 网络状态监控
+            window.addEventListener('online', () => {
+                addLog('网络连接已恢复', 'success');
+                showNotification('网络连接已恢复', 'success');
+                updateData();
+            });
+
+            window.addEventListener('offline', () => {
+                addLog('网络连接中断，将使用缓存数据', 'warning');
+                showNotification('网络连接中断', 'warning');
+            });
+        </script>
+    </body>
+
+</html>

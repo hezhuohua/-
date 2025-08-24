@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>实时诊断工具 - 数据源状态检查</title>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #1a1a1a;
+                color: #fff;
+            }
+
+            .diagnostic-section {
+                background: #2a2a2a;
+                padding: 20px;
+                margin: 20px 0;
+                border-radius: 8px;
+                border: 1px solid #333;
+            }
+
+            .success {
+                color: #28a745;
+            }
+
+            .error {
+                color: #dc3545;
+            }
+
+            .warning {
+                color: #ffc107;
+            }
+
+            .info {
+                color: #17a2b8;
+            }
+
+            .status-indicator {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 8px;
+            }
+
+            .status-online {
+                background: #28a745;
+            }
+
+            .status-offline {
+                background: #dc3545;
+            }
+
+            .status-warning {
+                background: #ffc107;
+            }
+
+            button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+            .price-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .price-card {
+                background: #333;
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .price-value {
+                font-size: 20px;
+                font-weight: bold;
+                color: #28a745;
+            }
+
+            .log-container {
+                background: #000;
+                padding: 15px;
+                border-radius: 8px;
+                max-height: 300px;
+                overflow-y: auto;
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+            }
+
+            .auto-refresh {
+                background: #28a745;
+            }
+
+            .auto-refresh.active {
+                background: #dc3545;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>🔍 实时诊断工具</h1>
+        <p class="info">当前时间: <span id="currentTime"></span></p>
+
+        <div class="diagnostic-section">
+            <h2>📊 系统状态概览</h2>
+            <div id="systemStatus">
+                <p><span class="status-indicator status-warning"></span>正在检查系统状态...</p>
+            </div>
+            <button onclick="checkAllSystems()">重新检查所有系统</button>
+            <button id="autoRefreshBtn" onclick="toggleAutoRefresh()" class="auto-refresh">开启自动刷新</button>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>🌐 网络连接测试</h2>
+            <div id="networkStatus">
+                <p><span class="status-indicator status-warning"></span>正在测试网络连接...</p>
+            </div>
+            <button onclick="testNetworkConnections()">测试网络连接</button>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>📈 Binance API 测试</h2>
+            <div id="binanceStatus">
+                <p><span class="status-indicator status-warning"></span>正在测试Binance API...</p>
+            </div>
+            <button onclick="testBinanceAPI()">测试Binance API</button>
+            <button onclick="testAllSymbols()">测试所有交易对</button>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>💰 实时价格数据</h2>
+            <div id="priceGrid" class="price-grid"></div>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>📝 详细日志</h2>
+            <div id="logContainer" class="log-container"></div>
+            <button onclick="clearLog()">清空日志</button>
+        </div>
+
+        <script>
+            let autoRefreshInterval = null;
+            const BINANCE_API_BASE = 'https://api.binance.com/api/v3';
+            const SUPPORTED_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'];
+
+            function log(message, type = 'info') {
+                const logContainer = document.getElementById('logContainer');
+                const timestamp = new Date().toLocaleTimeString();
+                const className = type === 'success' ? 'success' :
+                    type === 'error' ? 'error' :
+                        type === 'warning' ? 'warning' : 'info';
+                logContainer.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+                logContainer.scrollTop = logContainer.scrollHeight;
+            }
+
+            function clearLog() {
+                document.getElementById('logContainer').innerHTML = '';
+            }
+
+            function updateCurrentTime() {
+                const now = new Date();
+                document.getElementById('currentTime').textContent = now.toLocaleString('zh-CN');
+            }
+
+            function updateStatus(elementId, status, message) {
+                const element = document.getElementById(elementId);
+                const statusClass = status === 'online' ? 'status-online' :
+                    status === 'offline' ? 'status-offline' : 'status-warning';
+                element.innerHTML = `<p><span class="status-indicator ${statusClass}"></span>${message}</p>`;
+            }
+
+            async function checkAllSystems() {
+                log('开始全面系统检查...', 'info');
+
+                // 检查网络连接
+                await testNetworkConnections();
+
+                // 检查Binance API
+                await testBinanceAPI();
+
+                // 检查系统状态
+                checkSystemStatus();
+
+                log('系统检查完成', 'success');
+            }
+
+            async function testNetworkConnections() {
+                log('测试网络连接...', 'info');
+
+                const testUrls = [
+                    { name: 'Google', url: 'https://www.google.com' },
+                    { name: 'Cloudflare', url: 'https://www.cloudflare.com' },
+                    { name: 'Binance', url: 'https://api.binance.com' }
+                ];
+
+                let onlineCount = 0;
+
+                for (const test of testUrls) {
+                    try {
+                        const startTime = Date.now();
+                        const response = await fetch(test.url, {
+                            method: 'HEAD',
+                            mode: 'no-cors'
+                        });
+                        const endTime = Date.now();
+                        const latency = endTime - startTime;
+
+                        log(`✅ ${test.name}: 连接正常 (${latency}ms)`, 'success');
+                        onlineCount++;
+                    } catch (error) {
+                        log(`❌ ${test.name}: 连接失败 - ${error.message}`, 'error');
+                    }
+                }
+
+                if (onlineCount === testUrls.length) {
+                    updateStatus('networkStatus', 'online', `网络连接正常 (${onlineCount}/${testUrls.length})`);
+                } else if (onlineCount > 0) {
+                    updateStatus('networkStatus', 'warning', `部分网络连接异常 (${onlineCount}/${testUrls.length})`);
+                } else {
+                    updateStatus('networkStatus', 'offline', `网络连接失败 (${onlineCount}/${testUrls.length})`);
+                }
+            }
+
+            async function testBinanceAPI() {
+                log('测试Binance API连接...', 'info');
+
+                try {
+                    const startTime = Date.now();
+                    const response = await fetch(`${BINANCE_API_BASE}/ticker/price?symbol=BTCUSDT`);
+                    const endTime = Date.now();
+                    const latency = endTime - startTime;
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✅ Binance API: 连接正常 (${latency}ms) - BTC价格: $${data.price}`, 'success');
+                        updateStatus('binanceStatus', 'online', `Binance API正常 (${latency}ms)`);
+                    } else {
+                        log(`❌ Binance API: 请求失败 ${response.status}`, 'error');
+                        updateStatus('binanceStatus', 'offline', `Binance API错误 (${response.status})`);
+                    }
+                } catch (error) {
+                    log(`❌ Binance API: 连接失败 - ${error.message}`, 'error');
+                    updateStatus('binanceStatus', 'offline', `Binance API连接失败`);
+                }
+            }
+
+            async function testAllSymbols() {
+                log('测试所有交易对...', 'info');
+
+                const priceGrid = document.getElementById('priceGrid');
+                priceGrid.innerHTML = '';
+
+                for (const symbol of SUPPORTED_SYMBOLS) {
+                    try {
+                        const response = await fetch(`${BINANCE_API_BASE}/ticker/price?symbol=${symbol}`);
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const price = parseFloat(data.price);
+
+                            const priceCard = document.createElement('div');
+                            priceCard.className = 'price-card';
+                            priceCard.innerHTML = `
+                            <h3>${symbol}</h3>
+                            <div class="price-value">$${price.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}</div>
+                            <small class="success">✅ 正常</small>
+                        `;
+                            priceGrid.appendChild(priceCard);
+
+                            log(`✅ ${symbol}: $${price}`, 'success');
+                        } else {
+                            log(`❌ ${symbol}: 请求失败 ${response.status}`, 'error');
+                        }
+                    } catch (error) {
+                        log(`❌ ${symbol}: ${error.message}`, 'error');
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+
+            function checkSystemStatus() {
+                const now = new Date();
+                const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+                const hour = now.getHours();
+
+                let status = 'online';
+                let message = '系统运行正常';
+
+                // 检查时间相关的问题
+                if (isWeekend) {
+                    status = 'warning';
+                    message = '周末期间，部分服务可能受限';
+                    log('⚠️ 检测到周末时间，某些API服务可能响应较慢', 'warning');
+                }
+
+                if (hour < 6 || hour > 22) {
+                    status = 'warning';
+                    message = '非交易时间，数据更新可能较慢';
+                    log('⚠️ 检测到非交易时间，数据更新频率可能降低', 'warning');
+                }
+
+                updateStatus('systemStatus', status, message);
+            }
+
+            function toggleAutoRefresh() {
+                const btn = document.getElementById('autoRefreshBtn');
+
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                    btn.textContent = '开启自动刷新';
+                    btn.classList.remove('active');
+                    log('自动刷新已关闭', 'info');
+                } else {
+                    autoRefreshInterval = setInterval(() => {
+                        updateCurrentTime();
+                        checkSystemStatus();
+                        testBinanceAPI();
+                    }, 30000); // 每30秒刷新一次
+                    btn.textContent = '关闭自动刷新';
+                    btn.classList.add('active');
+                    log('自动刷新已开启 (每30秒)', 'success');
+                }
+            }
+
+            // 页面加载时初始化
+            window.addEventListener('load', () => {
+                log('🔍 实时诊断工具已加载', 'info');
+                updateCurrentTime();
+                checkAllSystems();
+
+                // 每秒更新时间
+                setInterval(updateCurrentTime, 1000);
+            });
+        </script>
+    </body>
+
+</html>

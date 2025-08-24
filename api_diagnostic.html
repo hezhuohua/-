@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CoinAPI.io 诊断工具</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #1a1a1a;
+                color: #fff;
+            }
+
+            .diagnostic-section {
+                background: #2a2a2a;
+                padding: 20px;
+                margin: 20px 0;
+                border-radius: 8px;
+                border: 1px solid #333;
+            }
+
+            .success {
+                color: #28a745;
+            }
+
+            .error {
+                color: #dc3545;
+            }
+
+            .warning {
+                color: #ffc107;
+            }
+
+            .info {
+                color: #17a2b8;
+            }
+
+            button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+            button.warning {
+                background: #ffc107;
+                color: #000;
+            }
+
+            button.danger {
+                background: #dc3545;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: 8px;
+                margin: 5px 0;
+                border: 1px solid #555;
+                border-radius: 4px;
+                background: #333;
+                color: #fff;
+            }
+
+            pre {
+                background: #333;
+                padding: 10px;
+                border-radius: 4px;
+                overflow-x: auto;
+                font-size: 12px;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>🔍 CoinAPI.io 诊断工具</h1>
+
+        <div class="diagnostic-section">
+            <h2>📋 API 配置检查</h2>
+            <div class="grid">
+                <div>
+                    <label>API Key:</label>
+                    <input type="text" id="apiKey" value="2c318d13-0557-47a3-a5c2-93afdf223408"
+                        placeholder="输入您的API Key">
+                </div>
+                <div>
+                    <label>Base URL:</label>
+                    <input type="text" id="baseUrl" value="https://rest.coinapi.io/v1" readonly>
+                </div>
+            </div>
+            <button onclick="validateApiKey()">🔑 验证API Key</button>
+            <button onclick="testBasicConnection()">🌐 测试基础连接</button>
+            <button onclick="testDifferentEndpoints()">📊 测试不同端点</button>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>🔧 常见问题诊断</h2>
+            <button onclick="testCORS()">🌍 测试CORS</button>
+            <button onclick="testHeaders()">📋 测试请求头</button>
+            <button onclick="testRateLimit()">⏱️ 测试频率限制</button>
+            <button onclick="testPlan()" class="warning">💳 检查订阅计划</button>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>📝 诊断结果</h2>
+            <div id="results"></div>
+        </div>
+
+        <div class="diagnostic-section">
+            <h2>💡 解决方案建议</h2>
+            <div id="solutions"></div>
+        </div>
+
+        <script>
+            function log(message, type = 'info') {
+                const results = document.getElementById('results');
+                const timestamp = new Date().toLocaleTimeString();
+                const className = type === 'success' ? 'success' :
+                    type === 'error' ? 'error' :
+                        type === 'warning' ? 'warning' : 'info';
+                results.innerHTML += `<p class="${className}">[${timestamp}] ${message}</p>`;
+                results.scrollTop = results.scrollHeight;
+            }
+
+            function addSolution(solution) {
+                const solutions = document.getElementById('solutions');
+                solutions.innerHTML += `<p class="info">💡 ${solution}</p>`;
+            }
+
+            function getApiKey() {
+                return document.getElementById('apiKey').value.trim();
+            }
+
+            function getBaseUrl() {
+                return document.getElementById('baseUrl').value.trim();
+            }
+
+            async function validateApiKey() {
+                const apiKey = getApiKey();
+                log(`开始验证API Key: ${apiKey.substring(0, 8)}...`, 'info');
+
+                if (!apiKey) {
+                    log('❌ API Key为空', 'error');
+                    addSolution('请确保输入了有效的API Key');
+                    return;
+                }
+
+                if (apiKey.length < 20) {
+                    log('⚠️ API Key长度异常', 'warning');
+                    addSolution('API Key通常应该更长，请检查是否正确');
+                }
+
+                // 测试最简单的端点
+                try {
+                    const response = await fetch(`${getBaseUrl()}/exchangerate/BTC/USDT`, {
+                        headers: {
+                            'X-CoinAPI-Key': apiKey,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✅ API Key有效！BTC/USDT: $${data.rate}`, 'success');
+                        addSolution('API Key工作正常，可以继续使用');
+                    } else if (response.status === 403) {
+                        log(`❌ API Key无效 (403 Forbidden)`, 'error');
+                        addSolution('API Key可能无效或已过期，请检查CoinAPI.io账户');
+                        addSolution('确认API Key有正确的权限和订阅计划');
+                    } else if (response.status === 401) {
+                        log(`❌ API Key未授权 (401 Unauthorized)`, 'error');
+                        addSolution('API Key格式正确但权限不足');
+                    } else {
+                        log(`❌ 请求失败: ${response.status} ${response.statusText}`, 'error');
+                        addSolution('检查网络连接和API端点');
+                    }
+                } catch (error) {
+                    log(`❌ 网络错误: ${error.message}`, 'error');
+                    addSolution('检查网络连接和防火墙设置');
+                }
+            }
+
+            async function testBasicConnection() {
+                log('测试基础网络连接...', 'info');
+
+                try {
+                    // 测试不包含API Key的请求
+                    const response = await fetch(`${getBaseUrl()}/exchangerate/BTC/USDT`);
+
+                    if (response.status === 401) {
+                        log('✅ 网络连接正常，需要API Key认证', 'success');
+                    } else {
+                        log(`⚠️ 意外响应: ${response.status}`, 'warning');
+                    }
+                } catch (error) {
+                    log(`❌ 网络连接失败: ${error.message}`, 'error');
+                    addSolution('检查网络连接和DNS设置');
+                }
+            }
+
+            async function testDifferentEndpoints() {
+                const apiKey = getApiKey();
+                const endpoints = [
+                    '/exchangerate/BTC/USDT',
+                    '/exchangerate/ETH/USDT',
+                    '/assets',
+                    '/exchanges'
+                ];
+
+                log('测试不同API端点...', 'info');
+
+                for (const endpoint of endpoints) {
+                    try {
+                        const response = await fetch(`${getBaseUrl()}${endpoint}`, {
+                            headers: {
+                                'X-CoinAPI-Key': apiKey,
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            log(`✅ ${endpoint}: 成功`, 'success');
+                        } else {
+                            log(`❌ ${endpoint}: ${response.status}`, 'error');
+                        }
+                    } catch (error) {
+                        log(`❌ ${endpoint}: ${error.message}`, 'error');
+                    }
+
+                    // 延迟避免频率限制
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+            }
+
+            async function testCORS() {
+                log('测试CORS设置...', 'info');
+
+                try {
+                    const response = await fetch(`${getBaseUrl()}/exchangerate/BTC/USDT`, {
+                        method: 'OPTIONS',
+                        headers: {
+                            'X-CoinAPI-Key': getApiKey(),
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const corsHeaders = response.headers.get('access-control-allow-origin');
+                    if (corsHeaders) {
+                        log(`✅ CORS配置: ${corsHeaders}`, 'success');
+                    } else {
+                        log('⚠️ 未检测到CORS头', 'warning');
+                    }
+                } catch (error) {
+                    log(`❌ CORS测试失败: ${error.message}`, 'error');
+                }
+            }
+
+            async function testHeaders() {
+                const apiKey = getApiKey();
+                log('测试不同请求头组合...', 'info');
+
+                const headerCombinations = [
+                    {
+                        'X-CoinAPI-Key': apiKey,
+                        'Accept': 'application/json'
+                    },
+                    {
+                        'X-CoinAPI-Key': apiKey,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    {
+                        'X-CoinAPI-Key': apiKey,
+                        'Accept': '*/*'
+                    }
+                ];
+
+                for (let i = 0; i < headerCombinations.length; i++) {
+                    const headers = headerCombinations[i];
+                    try {
+                        const response = await fetch(`${getBaseUrl()}/exchangerate/BTC/USDT`, {
+                            headers: headers
+                        });
+
+                        log(`组合${i + 1}: ${response.status}`, response.ok ? 'success' : 'error');
+                    } catch (error) {
+                        log(`组合${i + 1}: ${error.message}`, 'error');
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+
+            async function testRateLimit() {
+                log('测试频率限制...', 'info');
+
+                const apiKey = getApiKey();
+                const promises = [];
+
+                // 快速发送多个请求
+                for (let i = 0; i < 5; i++) {
+                    promises.push(
+                        fetch(`${getBaseUrl()}/exchangerate/BTC/USDT`, {
+                            headers: {
+                                'X-CoinAPI-Key': apiKey,
+                                'Accept': 'application/json'
+                            }
+                        })
+                    );
+                }
+
+                try {
+                    const responses = await Promise.all(promises);
+                    let successCount = 0;
+                    let rateLimitCount = 0;
+
+                    responses.forEach((response, index) => {
+                        if (response.ok) {
+                            successCount++;
+                        } else if (response.status === 429) {
+                            rateLimitCount++;
+                            log(`请求${index + 1}: 频率限制 (429)`, 'warning');
+                        } else {
+                            log(`请求${index + 1}: ${response.status}`, 'error');
+                        }
+                    });
+
+                    log(`频率测试结果: ${successCount}成功, ${rateLimitCount}频率限制`,
+                        rateLimitCount > 0 ? 'warning' : 'success');
+                } catch (error) {
+                    log(`频率测试失败: ${error.message}`, 'error');
+                }
+            }
+
+            async function testPlan() {
+                log('检查订阅计划状态...', 'info');
+
+                try {
+                    const response = await fetch(`${getBaseUrl()}/assets`, {
+                        headers: {
+                            'X-CoinAPI-Key': getApiKey(),
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        log('✅ 可以访问资产列表，订阅计划正常', 'success');
+                    } else if (response.status === 403) {
+                        log('❌ 403错误 - 可能是订阅计划问题', 'error');
+                        addSolution('检查CoinAPI.io订阅计划是否有效');
+                        addSolution('确认订阅计划包含所需的API端点');
+                        addSolution('联系CoinAPI.io客服确认账户状态');
+                    } else {
+                        log(`⚠️ 订阅检查: ${response.status}`, 'warning');
+                    }
+                } catch (error) {
+                    log(`❌ 订阅检查失败: ${error.message}`, 'error');
+                }
+            }
+
+            // 页面加载时的初始诊断
+            window.addEventListener('load', () => {
+                log('🔍 诊断工具已加载，准备开始诊断...', 'info');
+                log('💡 建议按顺序执行诊断步骤', 'info');
+            });
+        </script>
+    </body>
+
+</html>

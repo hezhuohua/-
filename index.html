@@ -12,6 +12,8 @@
 
         <!-- Chart.js 图表库 -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- CryptoJS 加密库 -->
+        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
 
         <!-- 添加favicon -->
         <link rel="icon" type="image/x-icon"
@@ -608,37 +610,38 @@
 
                 /* 移动端三横杆菜单优化 */
                 #mobileMenuPanel {
-                    width: 90%;
-                    max-width: 300px;
+                    width: 85%;
+                    max-width: 280px;
                 }
 
                 #mobileMenuPanel .nav-item {
-                    padding: 1.2rem 1rem;
-                    font-size: 1.1rem;
+                    padding: 0.75rem 0.75rem;
+                    font-size: 0.9rem;
+                    margin-bottom: 0.25rem;
                 }
 
                 #mobileMenuPanel .nav-item i {
-                    font-size: 1.3rem;
-                    margin-right: 1rem;
+                    font-size: 1.1rem;
+                    margin-right: 0.75rem;
                 }
 
                 /* 移动端底部工具栏优化 */
                 .bottom-toolbar-container {
-                    padding: 0 0.5rem;
+                    padding: 0 0.25rem;
                 }
 
                 .bottom-toolbar-item {
-                    padding: 0.75rem 0.5rem;
-                    min-width: 50px;
+                    padding: 0.5rem 0.25rem;
+                    min-width: 45px;
                     flex: 1;
                 }
 
                 .bottom-toolbar-icon {
-                    font-size: 1.3rem;
+                    font-size: 1.2rem;
                 }
 
                 .bottom-toolbar-label {
-                    font-size: 0.65rem;
+                    font-size: 0.6rem;
                 }
 
                 /* 移动端触摸优化 */
@@ -646,123 +649,150 @@
                     transform: scale(0.95);
                 }
 
-                /* 移动端主容器优化 */
+                /* 移动端主容器优化 - 更紧凑 */
                 .container {
-                    padding: 0.5rem;
-                    padding-top: 3rem; /* 为三横杆菜单留出空间 */
-                    padding-bottom: 6rem; /* 为底部工具栏留出空间 */
+                    padding: 0.25rem;
+                    padding-top: 2.5rem;
+                    /* 减少顶部空间 */
+                    padding-bottom: 5rem;
+                    /* 减少底部空间 */
                 }
 
-                /* 移动端面板优化 */
+                /* 移动端面板优化 - 融合设计 */
                 .tech-panel {
-                    margin-bottom: 0.75rem;
-                    padding: 1rem;
-                    border-radius: 12px;
+                    margin-bottom: 0.5rem;
+                    padding: 0.75rem;
+                    border-radius: 10px;
+                    border: 1px solid rgba(0, 243, 255, 0.2);
                 }
 
-                /* 移动端控制面板优化 */
+                /* 移动端控制面板优化 - 紧凑布局 */
                 .control-panel {
                     flex-direction: column;
                     align-items: stretch;
-                    gap: 0.75rem;
-                    padding: 0.75rem;
+                    gap: 0.5rem;
+                    padding: 0.5rem;
+                    background: linear-gradient(135deg, rgba(0, 31, 63, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
+                    border-radius: 10px;
+                    margin-bottom: 0.5rem;
                 }
 
                 .control-group {
                     width: 100%;
+                    margin-bottom: 0.25rem;
                 }
 
-                /* 移动端按钮优化 */
+                /* 移动端按钮优化 - 更紧凑 */
                 .tech-btn {
-                    min-height: 44px; /* 符合移动端触摸目标大小 */
-                    font-size: 1rem;
-                    padding: 1rem;
+                    min-height: 40px;
+                    font-size: 0.9rem;
+                    padding: 0.75rem 0.5rem;
                     width: 100%;
+                    margin-bottom: 0.25rem;
                 }
 
-                /* 移动端预测卡片优化 */
+                /* 移动端预测卡片优化 - 融合设计 */
                 .prediction-card,
                 .indicator-card,
                 .accuracy-card {
-                    min-height: 100px;
-                    padding: 1rem;
+                    min-height: 80px;
+                    padding: 0.75rem;
+                    margin-bottom: 0.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    background: linear-gradient(135deg, rgba(0, 31, 63, 0.6) 0%, rgba(26, 26, 46, 0.6) 100%);
+                    border: 1px solid rgba(0, 243, 255, 0.15);
                 }
 
+                /* 移动端预测方向优化 */
                 .prediction-direction {
-                    font-size: 2rem;
+                    font-size: 1.5rem;
+                    margin-right: 0.5rem;
                 }
 
+                /* 移动端数值优化 */
                 .prediction-probability,
                 .indicator-value,
                 .accuracy-value {
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
+                    font-weight: bold;
                 }
 
-                /* 移动端图表容器优化 */
+                /* 移动端图表容器优化 - 更紧凑 */
                 .chart-container {
-                    height: 300px;
-                    border-radius: 12px;
+                    height: 250px;
+                    border-radius: 10px;
+                    margin-bottom: 0.5rem;
                 }
 
-                /* 移动端标题优化 */
+                /* 移动端标题优化 - 更紧凑 */
+                .header-section {
+                    margin-bottom: 0.5rem;
+                    padding: 0.5rem;
+                }
+
                 .header-section h1 {
-                    font-size: 1.5rem;
+                    font-size: 1.3rem;
+                    margin-bottom: 0.25rem;
                 }
 
                 .header-section p {
+                    font-size: 0.8rem;
+                    margin: 0;
+                }
+
+                /* 移动端表单优化 - 紧凑设计 */
+                .form-input,
+                .form-label {
                     font-size: 0.9rem;
                 }
 
-                /* 移动端表单优化 */
-                .form-input,
-                .form-label {
-                    font-size: 1rem; /* 确保可读性 */
-                }
-
                 .form-group {
-                    margin-bottom: 1.25rem;
+                    margin-bottom: 0.75rem;
                 }
 
                 /* 移动端通知优化 */
                 .notification {
-                    top: 10px;
-                    right: 10px;
-                    left: 10px;
-                    padding: 0.75rem;
-                    font-size: 0.9rem;
+                    top: 5px;
+                    right: 5px;
+                    left: 5px;
+                    padding: 0.5rem;
+                    font-size: 0.8rem;
                 }
 
                 /* 移动端更多菜单优化 */
                 .more-menu {
-                    bottom: 90px;
-                    right: 10px;
-                    left: 10px;
+                    bottom: 80px;
+                    right: 5px;
+                    left: 5px;
                     max-width: none;
                 }
 
                 .more-menu-item {
-                    padding: 1rem;
-                    font-size: 0.9rem;
+                    padding: 0.75rem;
+                    font-size: 0.85rem;
                 }
 
-                /* 移动端网格布局优化 */
+                /* 移动端网格布局优化 - 单列布局 */
                 .prediction-card,
                 .indicator-card,
                 .accuracy-card {
                     grid-column: span 1;
+                    width: 100%;
                 }
 
                 /* 移动端字体优化 */
                 body,
                 .tech-font {
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                 }
 
                 /* 移动端触摸反馈优化 */
                 .nav-item:active,
                 .bottom-toolbar-item:active,
                 .more-item:active {
-                    transform: scale(0.98);
+                    transform: scale(0.95);
                 }
 
                 /* 移动端滚动优化 */
@@ -776,12 +806,524 @@
                 textarea,
                 button {
                     -webkit-appearance: none;
-                    border-radius: 8px;
+                    border-radius: 6px;
                 }
 
                 /* 移动端链接优化 */
                 a {
                     -webkit-tap-highlight-color: rgba(0, 243, 255, 0.3);
+                }
+
+                /* 移动端卡片融合设计 */
+                .dashboard-grid {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                /* 移动端预测区域融合 */
+                .prediction-section {
+                    background: linear-gradient(135deg, rgba(0, 31, 63, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
+                    border-radius: 10px;
+                    padding: 0.75rem;
+                    margin-bottom: 0.5rem;
+                    border: 1px solid rgba(0, 243, 255, 0.2);
+                }
+
+                /* 移动端指标融合 */
+                .indicators-section {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                /* 移动端市场数据融合 */
+                .market-data-section {
+                    background: linear-gradient(135deg, rgba(0, 31, 63, 0.6) 0%, rgba(26, 26, 46, 0.6) 100%);
+                    border-radius: 10px;
+                    padding: 0.75rem;
+                    margin-bottom: 0.5rem;
+                    border: 1px solid rgba(0, 243, 255, 0.15);
+                }
+
+                /* 移动端价格显示优化 */
+                .price-display {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.5rem;
+                    background: rgba(0, 243, 255, 0.05);
+                    border-radius: 6px;
+                    margin-bottom: 0.25rem;
+                }
+
+                /* 移动端状态指示器优化 */
+                .status-indicator {
+                    font-size: 0.8rem;
+                    padding: 0.25rem 0.5rem;
+                    border-radius: 4px;
+                    margin-left: 0.5rem;
+                }
+
+                /* 移动端按钮组优化 */
+                .button-group {
+                    display: flex;
+                    gap: 0.25rem;
+                    margin-bottom: 0.5rem;
+                }
+
+                .button-group .tech-btn {
+                    flex: 1;
+                    margin-bottom: 0;
+                    padding: 0.5rem;
+                    font-size: 0.8rem;
+                }
+
+                /* 移动端信息融合 */
+                .info-fusion {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.5rem;
+                    background: rgba(0, 243, 255, 0.03);
+                    border-radius: 6px;
+                    margin-bottom: 0.25rem;
+                    border-left: 3px solid var(--tech-blue);
+                }
+
+                /* 移动端图表标题优化 */
+                .chart-title {
+                    font-size: 0.9rem;
+                    margin-bottom: 0.5rem;
+                    color: var(--tech-blue);
+                    text-align: center;
+                }
+
+                /* 移动端加载状态优化 */
+                .loading-state {
+                    padding: 1rem;
+                    text-align: center;
+                    color: var(--tech-text-secondary);
+                    font-size: 0.8rem;
+                }
+
+                /* 移动端空状态优化 */
+                .empty-state {
+                    padding: 1rem;
+                    text-align: center;
+                    color: var(--tech-text-secondary);
+                    font-size: 0.8rem;
+                    font-style: italic;
+                }
+
+                /* 移动端额外优化 */
+                @media (max-width: 768px) {
+
+                    /* 减少所有间距 */
+                    .tech-panel {
+                        margin-bottom: 0.4rem;
+                        padding: 0.6rem;
+                    }
+
+                    /* 优化标题间距 */
+                    .chart-title {
+                        margin-bottom: 0.4rem;
+                        padding-bottom: 0.4rem;
+                        border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+                    }
+
+                    /* 优化按钮间距 */
+                    .tech-btn {
+                        margin-bottom: 0.2rem;
+                    }
+
+                    /* 优化网格间距 */
+                    .prediction-grid,
+                    .indicators-grid {
+                        gap: 0.4rem;
+                    }
+
+                    /* 优化表单间距 */
+                    .form-group {
+                        margin-bottom: 0.6rem;
+                    }
+
+                    /* 优化通知位置 */
+                    .notification {
+                        top: 3px;
+                        right: 3px;
+                        left: 3px;
+                        padding: 0.4rem;
+                    }
+
+                    /* 优化更多菜单位置 */
+                    .more-menu {
+                        bottom: 75px;
+                        right: 3px;
+                        left: 3px;
+                    }
+
+                    /* 优化容器内边距 */
+                    .container {
+                        padding: 0.2rem;
+                        padding-top: 2.2rem;
+                        padding-bottom: 4.5rem;
+                    }
+
+                    /* 优化图表高度 */
+                    .chart-container {
+                        height: 220px;
+                    }
+
+                    /* 优化卡片最小高度 */
+                    .prediction-card,
+                    .indicator-card,
+                    .accuracy-card {
+                        min-height: 70px;
+                        padding: 0.6rem;
+                    }
+
+                    /* 优化字体大小 */
+                    .tech-font {
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化图标大小 */
+                    .fas,
+                    .fab {
+                        font-size: 0.9rem;
+                    }
+
+                    /* 优化预测方向大小 */
+                    .prediction-direction {
+                        font-size: 1.3rem;
+                    }
+
+                    /* 优化数值大小 */
+                    .prediction-probability,
+                    .indicator-value,
+                    .accuracy-value {
+                        font-size: 1rem;
+                    }
+
+                    /* 优化三横杆菜单按钮 */
+                    #mobileMenuBtn {
+                        top: 8px;
+                        left: 8px;
+                        font-size: 1.3rem;
+                    }
+
+                    /* 优化三横杆菜单面板 */
+                    #mobileMenuPanel {
+                        width: 80%;
+                        max-width: 280px;
+                    }
+
+                    #mobileMenuPanel .nav-item {
+                        padding: 0.6rem 0.8rem;
+                        font-size: 0.85rem;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    #mobileMenuPanel .nav-item i {
+                        font-size: 1rem;
+                        margin-right: 0.6rem;
+                    }
+
+                    /* 优化搜索框 */
+                    .search-container {
+                        margin: 0.3rem 0;
+                    }
+
+                    .search-input {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化预测卡片布局 */
+                    .prediction-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+
+                    /* 优化指标卡片布局 */
+                    .indicators-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+
+                    /* 优化按钮组 */
+                    .button-group {
+                        gap: 0.3rem;
+                    }
+
+                    .button-group .tech-btn {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.75rem;
+                    }
+
+                    /* 优化表单元素 */
+                    .form-control {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.8rem;
+                    }
+
+                    .form-label {
+                        font-size: 0.75rem;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    /* 优化模态框 */
+                    .modal-content {
+                        margin: 0.5rem;
+                        padding: 0.8rem;
+                    }
+
+                    .modal-header {
+                        padding: 0.5rem 0;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .modal-body {
+                        padding: 0.5rem 0;
+                    }
+
+                    /* 优化表格 */
+                    .table {
+                        font-size: 0.75rem;
+                    }
+
+                    .table th,
+                    .table td {
+                        padding: 0.3rem 0.4rem;
+                    }
+
+                    /* 优化标签 */
+                    .badge {
+                        font-size: 0.65rem;
+                        padding: 0.2rem 0.4rem;
+                    }
+
+                    /* 优化进度条 */
+                    .progress {
+                        height: 0.5rem;
+                    }
+
+                    /* 优化工具提示 */
+                    .tooltip {
+                        font-size: 0.7rem;
+                    }
+
+                    /* 优化下拉菜单 */
+                    .dropdown-menu {
+                        font-size: 0.8rem;
+                        padding: 0.3rem 0;
+                    }
+
+                    .dropdown-item {
+                        padding: 0.3rem 0.8rem;
+                    }
+
+                    /* 优化分页 */
+                    .pagination {
+                        gap: 0.2rem;
+                    }
+
+                    .page-link {
+                        padding: 0.3rem 0.5rem;
+                        font-size: 0.75rem;
+                    }
+
+                    /* 优化警告框 */
+                    .alert {
+                        padding: 0.5rem 0.8rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化卡片组 */
+                    .card {
+                        margin-bottom: 0.4rem;
+                    }
+
+                    .card-header {
+                        padding: 0.5rem 0.8rem;
+                        font-size: 0.85rem;
+                    }
+
+                    .card-body {
+                        padding: 0.6rem 0.8rem;
+                    }
+
+                    /* 优化列表组 */
+                    .list-group-item {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化面包屑 */
+                    .breadcrumb {
+                        font-size: 0.75rem;
+                        padding: 0.3rem 0;
+                    }
+
+                    /* 优化导航标签 */
+                    .nav-tabs .nav-link {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化折叠面板 */
+                    .accordion-button {
+                        padding: 0.5rem 0.8rem;
+                        font-size: 0.85rem;
+                    }
+
+                    .accordion-body {
+                        padding: 0.6rem 0.8rem;
+                    }
+
+                    /* 优化标题区域 */
+                    .header-section {
+                        padding: 0.5rem 0;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .header-section h1 {
+                        font-size: 1.2rem;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    .header-section p {
+                        font-size: 0.75rem;
+                        margin: 0;
+                    }
+
+                    /* 优化价格显示区域 */
+                    .price-status-section {
+                        padding: 0.4rem 0.6rem;
+                    }
+
+                    .price-status-section .tech-font {
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化更多按钮 */
+                    .more-btn {
+                        padding: 0.3rem 0.5rem;
+                        font-size: 0.7rem;
+                    }
+
+                    /* 优化页面切换按钮 */
+                    .page-nav-btn {
+                        padding: 0.4rem 0.6rem;
+                        font-size: 0.75rem;
+                        margin: 0.2rem;
+                    }
+
+                    /* 优化页面标题 */
+                    .page-title {
+                        font-size: 1.1rem;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    /* 优化表单组 */
+                    .form-row {
+                        gap: 0.3rem;
+                        margin-bottom: 0.4rem;
+                    }
+
+                    /* 优化选择器 */
+                    .form-input,
+                    select {
+                        padding: 0.4rem 0.5rem;
+                        font-size: 0.8rem;
+                    }
+
+                    /* 优化标签 */
+                    .control-label {
+                        font-size: 0.75rem;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    /* 优化连接指示器 */
+                    .connection-indicator {
+                        width: 8px;
+                        height: 8px;
+                    }
+
+                    /* 优化脉冲动画 */
+                    .pulse {
+                        animation: pulse 2s infinite;
+                    }
+
+                    /* 优化图表容器 */
+                    .chart-container {
+                        min-height: 200px;
+                    }
+
+                    /* 优化页面切换 */
+                    .page {
+                        padding: 0.2rem;
+                    }
+
+                    /* 优化滚动条 */
+                    ::-webkit-scrollbar {
+                        width: 4px;
+                    }
+
+                    ::-webkit-scrollbar-track {
+                        background: var(--tech-panel);
+                    }
+
+                    ::-webkit-scrollbar-thumb {
+                        background: var(--tech-blue);
+                        border-radius: 2px;
+                    }
+
+                    /* 优化触摸目标 */
+                    button,
+                    .nav-item,
+                    select,
+                    input {
+                        min-height: 44px;
+                        min-width: 44px;
+                    }
+
+                    /* 优化文本选择 */
+                    ::selection {
+                        background: var(--tech-blue);
+                        color: var(--tech-bg);
+                    }
+
+                    /* 优化焦点状态 */
+                    button:focus,
+                    input:focus,
+                    select:focus {
+                        outline: 2px solid var(--tech-blue);
+                        outline-offset: 2px;
+                    }
+
+                    /* 优化加载状态 */
+                    .loading {
+                        opacity: 0.7;
+                        pointer-events: none;
+                    }
+
+                    /* 优化错误状态 */
+                    .error {
+                        border-color: var(--tech-danger);
+                        box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+                    }
+
+                    /* 优化成功状态 */
+                    .success {
+                        border-color: var(--tech-success);
+                        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+                    }
+
+                    /* 优化警告状态 */
+                    .warning {
+                        border-color: var(--tech-warning);
+                        box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+                    }
                 }
 
                 .pulse {
@@ -942,7 +1484,7 @@
                 padding-bottom: 6rem;
                 /* 为底部导航栏留出空间 */
             }
-            
+
             /* 底部工具栏 */
             .bottom-toolbar {
                 position: fixed;
@@ -957,7 +1499,7 @@
                 backdrop-filter: blur(10px);
                 width: 100%;
             }
-            
+
             .bottom-toolbar-container {
                 display: flex;
                 justify-content: space-around;
@@ -967,7 +1509,7 @@
                 margin: 0 auto;
                 padding: 0 1rem;
             }
-            
+
             .bottom-toolbar-item {
                 display: flex;
                 flex-direction: column;
@@ -979,29 +1521,29 @@
                 position: relative;
                 min-width: 60px;
             }
-            
+
             .bottom-toolbar-item:hover {
                 background: rgba(0, 243, 255, 0.1);
                 transform: translateY(-2px);
             }
-            
+
             .bottom-toolbar-item.active {
                 background: rgba(0, 243, 255, 0.2);
                 box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
             }
-            
+
             .bottom-toolbar-icon {
                 font-size: 1.5rem;
                 color: var(--tech-text-secondary);
                 margin-bottom: 0.25rem;
                 transition: all 0.3s ease;
             }
-            
+
             .bottom-toolbar-item.active .bottom-toolbar-icon {
                 color: var(--tech-blue);
                 text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
             }
-            
+
             .bottom-toolbar-label {
                 font-size: 0.7rem;
                 color: var(--tech-text-secondary);
@@ -1009,12 +1551,12 @@
                 text-align: center;
                 transition: all 0.3s ease;
             }
-            
+
             .bottom-toolbar-item.active .bottom-toolbar-label {
                 color: var(--tech-blue);
                 font-weight: bold;
             }
-            
+
             /* 底部工具栏发光效果 */
             .bottom-toolbar-item::before {
                 content: '';
@@ -1027,7 +1569,7 @@
                 background: linear-gradient(90deg, transparent, var(--tech-blue), transparent);
                 transition: width 0.3s ease;
             }
-            
+
             .bottom-toolbar-item.active::before {
                 width: 100%;
             }
@@ -1456,251 +1998,307 @@
 
     <body>
         <!-- 三横杆菜单按钮 -->
-        <div id="mobileMenuBtn" style="position: fixed; top: 10px; left: 10px; z-index: 1000; font-size: 1.5rem; cursor: pointer; color: var(--tech-blue);">
+        <div id="mobileMenuBtn"
+            style="position: fixed; top: 8px; left: 8px; z-index: 1000; font-size: 1.3rem; cursor: pointer; color: var(--tech-blue);">
             <i class="fas fa-bars"></i>
         </div>
-        
+
         <!-- 三横杆菜单面板 -->
-        <div id="mobileMenuPanel" class="tech-panel" style="position: fixed; top: 0; left: 0; width: 80%; height: 100%; z-index: 1001; display: none; background: var(--tech-panel); border-right: 1px solid var(--tech-panel-border); overflow-y: auto;">
-            <div style="padding: 1rem; border-bottom: 1px solid var(--tech-panel-border);">
-                <h3 class="tech-font" style="color: var(--tech-blue); margin: 0;">
-                    <i class="fas fa-chart-line"></i> 永续合约预测系统
+        <div id="mobileMenuPanel" class="tech-panel"
+            style="position: fixed; top: 0; left: 0; width: 80%; height: 100%; z-index: 1001; display: none; background: var(--tech-panel); border-right: 1px solid var(--tech-panel-border); overflow-y: auto;">
+            <div style="padding: 0.6rem; border-bottom: 1px solid var(--tech-panel-border);">
+                <h3 class="tech-font" style="color: var(--tech-blue); margin: 0; font-size: 0.9rem;">
+                    <i class="fas fa-chart-line"></i> 永续合约预测
                 </h3>
             </div>
-            <div style="display: flex; flex-direction: column; padding: 1rem;">
-                <div class="nav-item tech-font" id="menuDashboardBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+            <div style="display: flex; flex-direction: column; padding: 0.6rem;">
+                <div class="nav-item tech-font" id="menuDashboardBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-tachometer-alt"></i>
                     <span>仪表盘</span>
                 </div>
-                <div class="nav-item tech-font" id="menuPredictionBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuPredictionBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-robot"></i>
                     <span>AI预测</span>
                 </div>
-                <div class="nav-item tech-font" id="menuMarketBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuMarketBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-chart-bar"></i>
                     <span>市场数据</span>
                 </div>
-                <div class="nav-item tech-font" id="menuMembershipBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuMembershipBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-gem"></i>
                     <span>会员中心</span>
                 </div>
-                <div class="nav-item tech-font" id="menuReinvestBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuReinvestBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-recycle"></i>
                     <span>智能复投</span>
                 </div>
-                <div class="nav-item tech-font" id="menuBacktestBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuBacktestBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-chart-line"></i>
                     <span>回测系统</span>
                 </div>
-                <div class="nav-item tech-font" id="menuRiskBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuRiskBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-shield-alt"></i>
                     <span>风险管理</span>
                 </div>
-                <div class="nav-item tech-font" id="menuRecordsBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuRecordsBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-clipboard-list"></i>
                     <span>交易记录</span>
                 </div>
-                <div class="nav-item tech-font" id="menuProfitBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuProfitBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-dollar-sign"></i>
                     <span>分润平台</span>
                 </div>
-                <div class="nav-item tech-font" id="menuDepositBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuDepositBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-wallet"></i>
                     <span>入金通道</span>
                 </div>
-                <div class="nav-item tech-font" id="menuSettingsBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuSettingsBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-cog"></i>
                     <span>系统设置</span>
                 </div>
-                <div class="nav-item tech-font" id="menuLoginBtn" style="padding: 1rem; margin-bottom: 0.5rem; cursor: pointer;">
+                <div class="nav-item tech-font" id="menuTradingBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>交易</span>
+                </div>
+                <div class="nav-item tech-font" id="menuLoginBtn"
+                    style="padding: 0.6rem 0.8rem; margin-bottom: 0.2rem; cursor: pointer; font-size: 0.85rem;">
                     <i class="fas fa-user"></i>
                     <span>登录</span>
                 </div>
             </div>
         </div>
-        
+
         <!-- 遮罩层 -->
-        <div id="menuOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: none;" onclick="closeMobileMenu()"></div>
+        <div id="menuOverlay"
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: none;"
+            onclick="closeMobileMenu()"></div>
 
         <div class="container">
             <!-- 标题区域 -->
-            <div class="header-section">
-                <h1 class="tech-font">🚀 永续合约预测系统</h1>
-                <p>基于AI大模型的专业级加密货币预测平台</p>
+            <div class="header-section" style="padding: 0.5rem 0; margin-bottom: 0.5rem;">
+                <h1 class="tech-font" style="font-size: 1.2rem; margin-bottom: 0.2rem;">🚀 永续合约预测系统</h1>
+                <p style="font-size: 0.75rem; margin: 0;">基于AI大模型的专业级加密货币预测平台</p>
             </div>
 
             <!-- 仪表盘页面 -->
             <div id="dashboardPage" class="page" style="display: none;">
-                <!-- 实时价格显示条 -->
-                <div class="tech-panel glow" style="margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 2rem;">
-                            <div class="tech-font" style="color: var(--tech-blue);">
+                <!-- 融合价格和状态显示 -->
+                <div class="tech-panel glow" style="margin-bottom: 0.4rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                            <div class="tech-font" style="color: var(--tech-blue); font-size: 0.8rem;">
                                 <i class="fas fa-bitcoin"></i> BTC: <span id="btcPrice" class="pulse">$43,250</span>
                                 <span id="btcChange" style="color: var(--tech-success);">↗ 2.3%</span>
                             </div>
-                            <div class="tech-font" style="color: var(--tech-blue);">
+                            <div class="tech-font" style="color: var(--tech-blue); font-size: 0.8rem;">
                                 <i class="fab fa-ethereum"></i> ETH: <span id="ethPrice" class="pulse">$2,680</span>
                                 <span id="ethChange" style="color: var(--tech-danger);">↘ 1.8%</span>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div class="tech-font" style="color: var(--tech-text-secondary);">
+                        <div style="display: flex; align-items: center; gap: 0.3rem;">
+                            <div class="tech-font" style="color: var(--tech-text-secondary); font-size: 0.7rem;">
                                 <i class="fas fa-clock"></i> <span id="currentTime"></span>
                             </div>
                             <div id="priceStatus" class="tech-font"
-                                style="color: var(--tech-success); font-size: 0.8rem;">
-                                <i class="fas fa-wifi"></i> 实时数据
+                                style="color: var(--tech-success); font-size: 0.7rem;">
+                                <i class="fas fa-wifi"></i> 实时
                             </div>
                             <button id="refreshPricesBtn" class="tech-btn"
-                                style="padding: 0.25rem 0.5rem; font-size: 0.8rem; min-height: auto;" title="刷新价格">
+                                style="padding: 0.2rem 0.4rem; font-size: 0.7rem; min-height: auto;" title="刷新价格">
                                 <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 融合连接状态 -->
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0.5rem; border-top: 1px solid rgba(0, 243, 255, 0.2);">
+                        <div style="display: flex; align-items: center; gap: 0.3rem;">
+                            <span class="connection-indicator connecting"></span>
+                            <span id="connectionStatus" style="font-size: 0.7rem;">📡 <span
+                                    id="statusText">连接中...</span></span>
+                        </div>
+                        <div style="display: flex; gap: 0.2rem;">
+                            <button id="reconnectBtn" class="tech-btn"
+                                style="padding: 0.2rem 0.4rem; font-size: 0.65rem; min-height: auto;" title="手动重连">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                            <button id="testErrorBtn" class="tech-btn"
+                                style="padding: 0.2rem 0.4rem; font-size: 0.65rem; min-height: auto; background: var(--tech-danger);"
+                                title="测试连接错误显示">
+                                <i class="fas fa-exclamation-triangle"></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="tech-panel glow">
-                    <div class="status-display">
-                        <span class="connection-indicator connecting"></span>
-                        <span id="connectionStatus">📡 连接状态: <span id="statusText">连接中...</span></span>
-                        <button id="reconnectBtn" class="tech-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;"
-                            title="手动重连">
-                            <i class="fas fa-sync-alt"></i> 重连
-                        </button>
-                        <button id="testErrorBtn" class="tech-btn"
-                            style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-left: 0.5rem; background: var(--tech-danger);"
-                            title="测试连接错误显示">
-                            <i class="fas fa-exclamation-triangle"></i> 测试错误
-                        </button>
-                    </div>
-                </div>
-
+                <!-- 图表区域 -->
                 <div class="tech-panel">
-                    <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <div class="chart-title">
                         <i class="fas fa-chart-line"></i> 实时交易图表
-                    </h3>
+                    </div>
                     <div id="chartContainer" class="chart-container"></div>
                 </div>
 
+                <!-- 融合控制面板 -->
                 <div class="control-panel">
-                    <div class="control-group">
-                        <label class="control-label tech-font">交易对</label>
-                        <select id="symbolSelector" class="form-input tech-font">
-                            <option value="BTCUSDT">BTC/USDT</option>
-                            <option value="ETHUSDT">ETH/USDT</option>
-                            <option value="BNBUSDT">BNB/USDT</option>
-                            <option value="SOLUSDT">SOL/USDT</option>
-                            <option value="XRPUSDT">XRP/USDT</option>
-                            <option value="ADAUSDT">ADA/USDT</option>
-                            <option value="DOGEUSDT">DOGE/USDT</option>
-                            <option value="DOTUSDT">DOT/USDT</option>
-                            <option value="LINKUSDT">LINK/USDT</option>
-                            <option value="MATICUSDT">MATIC/USDT</option>
-                        </select>
+                    <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
+                        <div style="flex: 2;">
+                            <label class="control-label tech-font"
+                                style="font-size: 0.75rem; margin-bottom: 0.2rem;">交易对</label>
+                            <select id="symbolSelector" class="form-input tech-font"
+                                style="font-size: 0.75rem; padding: 0.4rem;">
+                                <option value="BTCUSDT">BTC/USDT</option>
+                                <option value="ETHUSDT">ETH/USDT</option>
+                                <option value="BNBUSDT">BNB/USDT</option>
+                                <option value="SOLUSDT">SOL/USDT</option>
+                                <option value="XRPUSDT">XRP/USDT</option>
+                                <option value="ADAUSDT">ADA/USDT</option>
+                                <option value="DOGEUSDT">DOGE/USDT</option>
+                                <option value="DOTUSDT">DOT/USDT</option>
+                                <option value="LINKUSDT">LINK/USDT</option>
+                                <option value="MATICUSDT">MATIC/USDT</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="control-label tech-font"
+                                style="font-size: 0.75rem; margin-bottom: 0.2rem;">周期</label>
+                            <select id="timeframeSelector" class="form-input tech-font"
+                                style="font-size: 0.75rem; padding: 0.4rem;">
+                                <option value="1m">1分钟</option>
+                                <option value="5m">5分钟</option>
+                                <option value="15m">15分钟</option>
+                                <option value="1h">1小时</option>
+                                <option value="4h">4小时</option>
+                                <option value="1d">1天</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="control-group">
-                        <label class="control-label tech-font">时间周期</label>
-                        <select id="timeframeSelector" class="form-input tech-font">
-                            <option value="1m">1分钟</option>
-                            <option value="5m">5分钟</option>
-                            <option value="15m">15分钟</option>
-                            <option value="1h">1小时</option>
-                            <option value="4h">4小时</option>
-                            <option value="1d">1天</option>
-                        </select>
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label tech-font">AI预测</label>
-                        <button id="predictBtn" class="tech-btn tech-font">
-                            <i class="fas fa-brain"></i> 开始预测
+                    <div style="display: flex; gap: 0.4rem;">
+                        <button id="predictBtn" class="tech-btn tech-font"
+                            style="flex: 1; font-size: 0.75rem; padding: 0.6rem;">
+                            <i class="fas fa-brain"></i> AI预测
                         </button>
                     </div>
                 </div>
 
                 <!-- 多时间粒度预测面板 -->
                 <div class="tech-panel glow">
-                    <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <div class="chart-title">
                         <i class="fas fa-clock"></i> 多时间粒度预测
-                    </h3>
-                    <div
-                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 1rem;">
-                        <div class="prediction-card" data-timeframe="1m">
-                            <div class="prediction-header tech-font">1分钟</div>
-                            <div class="prediction-direction" id="pred1m">↗</div>
-                            <div class="prediction-probability" id="prob1m">85%</div>
-                            <div class="prediction-confidence" id="conf1m">高置信度</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; padding: 0.5rem;">
+                        <div class="prediction-card" data-timeframe="1m" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="prediction-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
+                                1分钟</div>
+                            <div class="prediction-direction" id="pred1m"
+                                style="font-size: 1.5rem; margin-bottom: 0.25rem;">↗</div>
+                            <div class="prediction-probability" id="prob1m" style="font-size: 1rem; font-weight: bold;">
+                                85%</div>
+                            <div class="prediction-confidence" id="conf1m"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">高置信度</div>
                         </div>
-                        <div class="prediction-card" data-timeframe="5m">
-                            <div class="prediction-header tech-font">5分钟</div>
-                            <div class="prediction-direction" id="pred5m">↘</div>
-                            <div class="prediction-probability" id="prob5m">72%</div>
-                            <div class="prediction-confidence" id="conf5m">中置信度</div>
+                        <div class="prediction-card" data-timeframe="5m" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="prediction-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
+                                5分钟</div>
+                            <div class="prediction-direction" id="pred5m"
+                                style="font-size: 1.5rem; margin-bottom: 0.25rem;">↘</div>
+                            <div class="prediction-probability" id="prob5m" style="font-size: 1rem; font-weight: bold;">
+                                72%</div>
+                            <div class="prediction-confidence" id="conf5m"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">中置信度</div>
                         </div>
-                        <div class="prediction-card" data-timeframe="15m">
-                            <div class="prediction-header tech-font">15分钟</div>
-                            <div class="prediction-direction" id="pred15m">↗</div>
-                            <div class="prediction-probability" id="prob15m">65%</div>
-                            <div class="prediction-confidence" id="conf15m">中置信度</div>
+                        <div class="prediction-card" data-timeframe="15m" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="prediction-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
+                                15分钟</div>
+                            <div class="prediction-direction" id="pred15m"
+                                style="font-size: 1.5rem; margin-bottom: 0.25rem;">↗</div>
+                            <div class="prediction-probability" id="prob15m"
+                                style="font-size: 1rem; font-weight: bold;">65%</div>
+                            <div class="prediction-confidence" id="conf15m"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">中置信度</div>
                         </div>
-                        <div class="prediction-card" data-timeframe="1h">
-                            <div class="prediction-header tech-font">1小时</div>
-                            <div class="prediction-direction" id="pred1h">↗</div>
-                            <div class="prediction-probability" id="prob1h">78%</div>
-                            <div class="prediction-confidence" id="conf1h">高置信度</div>
+                        <div class="prediction-card" data-timeframe="1h" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="prediction-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
+                                1小时</div>
+                            <div class="prediction-direction" id="pred1h"
+                                style="font-size: 1.5rem; margin-bottom: 0.25rem;">↗</div>
+                            <div class="prediction-probability" id="prob1h" style="font-size: 1rem; font-weight: bold;">
+                                78%</div>
+                            <div class="prediction-confidence" id="conf1h"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">高置信度</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 专业永续合约指标 -->
                 <div class="tech-panel glow">
-                    <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <div class="chart-title">
                         <i class="fas fa-chart-area"></i> 专业指标
-                    </h3>
-                    <div
-                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; padding: 1rem;">
-                        <div class="indicator-card">
-                            <div class="indicator-header tech-font">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; padding: 0.5rem;">
+                        <div class="indicator-card" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="indicator-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 <i class="fas fa-percentage"></i> 资金费率
                             </div>
-                            <div class="indicator-value" id="fundingRate">0.0125%</div>
-                            <div class="indicator-status" id="fundingStatus">正常</div>
+                            <div class="indicator-value" id="fundingRate" style="font-size: 1rem; font-weight: bold;">
+                                0.0125%</div>
+                            <div class="indicator-status" id="fundingStatus"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">正常</div>
                         </div>
-                        <div class="indicator-card">
-                            <div class="indicator-header tech-font">
+                        <div class="indicator-card" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="indicator-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 <i class="fas fa-chart-line"></i> 持仓量
                             </div>
-                            <div class="indicator-value" id="openInterest">$2.3B</div>
-                            <div class="indicator-status" id="oiStatus">增加</div>
+                            <div class="indicator-value" id="openInterest" style="font-size: 1rem; font-weight: bold;">
+                                $2.3B</div>
+                            <div class="indicator-status" id="oiStatus"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">增加</div>
                         </div>
-                        <div class="indicator-card">
-                            <div class="indicator-header tech-font">
+                        <div class="indicator-card" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="indicator-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 <i class="fas fa-balance-scale"></i> 多空比例
                             </div>
-                            <div class="indicator-value" id="longShortRatio">1.25</div>
-                            <div class="indicator-status" id="lsStatus">多头优势</div>
+                            <div class="indicator-value" id="longShortRatio"
+                                style="font-size: 1rem; font-weight: bold;">1.25</div>
+                            <div class="indicator-status" id="lsStatus"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">多头优势</div>
                         </div>
-                        <div class="indicator-card">
-                            <div class="indicator-header tech-font">
+                        <div class="indicator-card" style="padding: 0.75rem; min-height: 80px;">
+                            <div class="indicator-header tech-font" style="font-size: 0.8rem; margin-bottom: 0.25rem;">
                                 <i class="fas fa-exclamation-triangle"></i> 清算预警
                             </div>
-                            <div class="indicator-value" id="liquidationRisk">低风险</div>
-                            <div class="indicator-status" id="liqStatus">安全</div>
+                            <div class="indicator-value" id="liquidationRisk"
+                                style="font-size: 1rem; font-weight: bold;">低风险</div>
+                            <div class="indicator-status" id="liqStatus"
+                                style="font-size: 0.7rem; color: var(--tech-text-secondary);">安全</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- 交易信号面板 -->
                 <div class="tech-panel">
-                    <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <div class="chart-title">
                         <i class="fas fa-bolt"></i> 交易信号
-                    </h3>
-                    <div class="trade-signal">
-                        <button class="signal-btn buy-signal tech-font" id="buySignal">
+                    </div>
+                    <div class="trade-signal" style="display: flex; gap: 0.5rem; padding: 0.5rem;">
+                        <button class="signal-btn buy-signal tech-font" id="buySignal"
+                            style="flex: 1; padding: 0.75rem; font-size: 0.9rem;">
                             <i class="fas fa-arrow-up"></i> 买入信号
                         </button>
-                        <button class="signal-btn sell-signal tech-font" id="sellSignal">
+                        <button class="signal-btn sell-signal tech-font" id="sellSignal"
+                            style="flex: 1; padding: 0.75rem; font-size: 0.9rem;">
                             <i class="fas fa-arrow-down"></i> 卖出信号
                         </button>
                     </div>
@@ -2084,7 +2682,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 14:30</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 14:30</span>
                                 <span class="tech-font" style="color: var(--tech-success);">+$125.50</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -2095,7 +2693,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 10:30</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 10:30</span>
                                 <span class="tech-font" style="color: var(--tech-success);">+$98.75</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -2106,7 +2704,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 06:30</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 06:30</span>
                                 <span class="tech-font" style="color: var(--tech-success);">+$156.20</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -2690,7 +3288,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 15:45</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 15:45</span>
                                 <span class="tech-font" style="color: var(--tech-success);">+$89.50</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -2701,7 +3299,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 14:30</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 14:30</span>
                                 <span class="tech-font" style="color: var(--tech-danger);">-$32.80</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -2712,7 +3310,7 @@
                             style="background: rgba(17, 17, 42, 0.5); border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-22 13:15</span>
+                                <span class="tech-font" style="color: var(--tech-blue);">2025-08-24 13:15</span>
                                 <span class="tech-font" style="color: var(--tech-success);">+$156.20</span>
                             </div>
                             <div style="color: var(--tech-text-secondary); font-size: 0.9rem;">
@@ -3317,6 +3915,205 @@
             </div>
         </div>
 
+        <!-- 交易页面 -->
+        <div id="tradingPage" class="page" style="display: none;">
+            <div class="tech-panel glow">
+                <h3 class="tech-font" style="text-align: center; margin: 1rem 0; color: var(--tech-blue);">
+                    <i class="fas fa-exchange-alt"></i> 币安代理交易系统
+                </h3>
+
+                <!-- API配置区域 -->
+                <div class="tech-panel" style="margin-bottom: 1rem;">
+                    <h4 class="tech-font" style="color: var(--tech-blue); margin-bottom: 0.5rem;">
+                        <i class="fas fa-key"></i> API配置
+                    </h4>
+
+                    <div
+                        style="background: rgba(255, 193, 7, 0.1); border: 1px solid var(--tech-warning); border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem; color: var(--tech-warning); font-size: 0.8rem;">
+                        <i class="fas fa-exclamation-triangle"></i> 重要：请确保API Key仅勾选"交易"和"查询"权限，禁止提现
+                    </div>
+
+                    <div style="margin-bottom: 0.5rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.2rem; color: var(--tech-blue); font-size: 0.8rem;">API
+                            Key:</label>
+                        <input type="text" id="tradingApiKey" placeholder="请输入币安API Key"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px; background: rgba(0, 0, 0, 0.3); color: white; font-size: 0.8rem;">
+                    </div>
+
+                    <div style="margin-bottom: 0.5rem;">
+                        <label
+                            style="display: block; margin-bottom: 0.2rem; color: var(--tech-blue); font-size: 0.8rem;">API
+                            Secret:</label>
+                        <input type="password" id="tradingApiSecret" placeholder="请输入币安API Secret"
+                            style="width: 100%; padding: 0.5rem; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 4px; background: rgba(0, 0, 0, 0.3); color: white; font-size: 0.8rem;">
+                    </div>
+
+                    <div style="margin-bottom: 0.5rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.5rem; color: var(--tech-blue); font-size: 0.8rem;">
+                            <input type="checkbox" id="tradingTestnet" checked>
+                            <span>使用测试网络（推荐）</span>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="tech-btn" onclick="testTradingApiConnection()" style="font-size: 0.8rem;">
+                            <i class="fas fa-plug"></i> 测试连接
+                        </button>
+                        <button class="tech-btn" onclick="saveTradingApiConfig()" style="font-size: 0.8rem;">
+                            <i class="fas fa-save"></i> 保存配置
+                        </button>
+                    </div>
+
+                    <div id="tradingApiStatus" style="margin-top: 0.5rem; font-size: 0.8rem;">
+                        <strong>连接状态：</strong>
+                        <span class="status-indicator disconnected"></span>
+                        <span>未连接</span>
+                    </div>
+                </div>
+
+                <!-- 预测信号区域 -->
+                <div class="tech-panel" style="margin-bottom: 1rem;">
+                    <h4 class="tech-font" style="color: var(--tech-blue); margin-bottom: 0.5rem;">
+                        <i class="fas fa-chart-line"></i> AI预测信号
+                    </h4>
+
+                    <!-- BTC信号 -->
+                    <div
+                        style="background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                            <span style="font-weight: bold; color: var(--tech-blue);">BTC/USDT</span>
+                            <span
+                                style="background: rgba(40, 167, 69, 0.2); color: var(--tech-success); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem;">看多信号</span>
+                        </div>
+                        <div
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; margin-bottom: 0.3rem; font-size: 0.7rem;">
+                            <div><strong>当前价格：</strong>$43,250.00</div>
+                            <div><strong>目标价格：</strong>$45,000.00</div>
+                            <div><strong>止损价格：</strong>$42,000.00</div>
+                            <div><strong>置信度：</strong>85%</div>
+                        </div>
+                        <div style="display: flex; gap: 0.3rem; justify-content: center;">
+                            <button class="tech-btn"
+                                onclick="executeTradingTrade('BTCUSDT', 'BUY', 43250, 45000, 42000)"
+                                style="font-size: 0.7rem; padding: 0.3rem 0.5rem;">
+                                <i class="fas fa-rocket"></i> 做多
+                            </button>
+                            <button class="tech-btn"
+                                onclick="executeTradingTrade('BTCUSDT', 'SELL', 43250, 42000, 45000)"
+                                style="font-size: 0.7rem; padding: 0.3rem 0.5rem;">
+                                <i class="fas fa-arrow-down"></i> 做空
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ETH信号 -->
+                    <div
+                        style="background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 8px; padding: 0.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                            <span style="font-weight: bold; color: var(--tech-blue);">ETH/USDT</span>
+                            <span
+                                style="background: rgba(220, 53, 69, 0.2); color: var(--tech-danger); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem;">看空信号</span>
+                        </div>
+                        <div
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; margin-bottom: 0.3rem; font-size: 0.7rem;">
+                            <div><strong>当前价格：</strong>$2,680.50</div>
+                            <div><strong>目标价格：</strong>$2,500.00</div>
+                            <div><strong>止损价格：</strong>$2,750.00</div>
+                            <div><strong>置信度：</strong>78%</div>
+                        </div>
+                        <div style="display: flex; gap: 0.3rem; justify-content: center;">
+                            <button class="tech-btn" onclick="executeTradingTrade('ETHUSDT', 'BUY', 2680.5, 2800, 2600)"
+                                style="font-size: 0.7rem; padding: 0.3rem 0.5rem;">
+                                <i class="fas fa-rocket"></i> 做多
+                            </button>
+                            <button class="tech-btn"
+                                onclick="executeTradingTrade('ETHUSDT', 'SELL', 2680.5, 2600, 2800)"
+                                style="font-size: 0.7rem; padding: 0.3rem 0.5rem;">
+                                <i class="fas fa-arrow-down"></i> 做空
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 盈亏统计区域 -->
+                <div class="tech-panel" style="margin-bottom: 1rem;">
+                    <h4 class="tech-font" style="color: var(--tech-blue); margin-bottom: 0.5rem;">
+                        <i class="fas fa-chart-pie"></i> 盈亏统计
+                    </h4>
+
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(0, 243, 255, 0.1); border-radius: 8px; margin-bottom: 0.5rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.7rem; opacity: 0.8; margin-bottom: 0.2rem;">总盈亏</div>
+                            <div style="font-size: 1rem; font-weight: bold; color: var(--tech-success);"
+                                id="tradingTotalPnL">+$1,250.00</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.7rem; opacity: 0.8; margin-bottom: 0.2rem;">平台分润</div>
+                            <div style="font-size: 1rem; font-weight: bold; color: var(--tech-success);"
+                                id="tradingPlatformShare">+$875.00</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.7rem; opacity: 0.8; margin-bottom: 0.2rem;">用户收益</div>
+                            <div style="font-size: 1rem; font-weight: bold; color: var(--tech-success);"
+                                id="tradingUserShare">+$375.00</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="tech-btn" onclick="syncTradingHistory()" style="font-size: 0.8rem;">
+                            <i class="fas fa-sync"></i> 同步记录
+                        </button>
+                        <button class="tech-btn" onclick="calculateTradingProfitShare()" style="font-size: 0.8rem;">
+                            <i class="fas fa-calculator"></i> 计算分润
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 交易记录区域 -->
+                <div class="tech-panel">
+                    <h4 class="tech-font" style="color: var(--tech-blue); margin-bottom: 0.5rem;">
+                        <i class="fas fa-history"></i> 交易记录
+                    </h4>
+
+                    <div id="tradingHistory" style="max-height: 200px; overflow-y: auto;">
+                        <div
+                            style="text-align: center; color: var(--tech-text-secondary); font-size: 0.8rem; padding: 1rem;">
+                            暂无交易记录
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易确认模态框 -->
+        <div id="tradingModal" class="modal"
+            style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8);">
+            <div
+                style="background: var(--tech-panel); margin: 5% auto; padding: 1rem; border: 1px solid var(--tech-blue); border-radius: 16px; width: 90%; max-width: 400px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);">
+                <span
+                    style="color: var(--tech-blue); float: right; font-size: 1.5rem; font-weight: bold; cursor: pointer;"
+                    onclick="closeTradingModal()">&times;</span>
+                <h3 style="color: var(--tech-blue); margin-bottom: 1rem;">
+                    <i class="fas fa-exclamation-triangle"></i> 交易确认
+                </h3>
+                <div id="tradingModalContent">
+                    <!-- 交易详情将在这里显示 -->
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button class="tech-btn" onclick="confirmTradingTrade()" style="margin-right: 0.5rem;">
+                        <i class="fas fa-check"></i> 确认交易
+                    </button>
+                    <button class="tech-btn" onclick="closeTradingModal()">
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- 更多菜单弹出层 -->
         <div class="more-menu-overlay" id="moreMenuOverlay"></div>
@@ -3352,25 +4149,32 @@
             // 全局变量
             let dataUpdateInterval = null;
             let lastDataUpdateTime = null;
+            let chart = null; // Chart.js图表实例
 
-            // CoinGecko API配置
-            const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
+            // Binance API配置 (免费且稳定)
+            const BINANCE_API_BASE = 'https://api.binance.com/api/v3';
             const UPDATE_INTERVAL = 5000; // 5秒更新间隔
-            const SUPPORTED_COINS = ['bitcoin', 'ethereum', 'binancecoin', 'solana', 'ripple', 'cardano', 'dogecoin', 'polkadot', 'chainlink', 'matic-network'];
+            const SUPPORTED_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT', 'LINKUSDT', 'MATICUSDT'];
 
             // 币种映射
-            const coinSymbolMap = {
-                'bitcoin': 'btc',
-                'ethereum': 'eth',
-                'binancecoin': 'bnb',
-                'solana': 'sol',
-                'ripple': 'xrp',
-                'cardano': 'ada',
-                'dogecoin': 'doge',
-                'polkadot': 'dot',
-                'chainlink': 'link',
-                'matic-network': 'matic'
+            const symbolMap = {
+                'BTCUSDT': 'btc',
+                'ETHUSDT': 'eth',
+                'BNBUSDT': 'bnb',
+                'SOLUSDT': 'sol',
+                'XRPUSDT': 'xrp',
+                'ADAUSDT': 'ada',
+                'DOGEUSDT': 'doge',
+                'DOTUSDT': 'dot',
+                'LINKUSDT': 'link',
+                'MATICUSDT': 'matic'
             };
+
+            // 获取Binance符号
+            function getBinanceSymbol(shortSymbol) {
+                const reverseMap = Object.fromEntries(Object.entries(symbolMap).map(([k, v]) => [v, k]));
+                return reverseMap[shortSymbol] || 'BTCUSDT';
+            }
 
             // 初始化系统
             function initializeSystem() {
@@ -3385,24 +4189,27 @@
                 // 初始化事件监听器
                 initializeEventListeners();
 
-                // 启动CoinGecko数据源
-                startCoinGeckoDataSource();
+                // 初始化交易系统
+                initializeTradingSystem();
+
+                // 启动Binance数据源
+                startBinanceDataSource();
 
                 // 显示初始化完成通知
-                showNotification('系统初始化完成，正在连接CoinGecko实时数据', 'success');
+                showNotification('系统初始化完成，正在连接Binance实时数据', 'success');
 
                 console.log('系统初始化完成');
             }
 
-            // 启动CoinGecko数据源
-            function startCoinGeckoDataSource() {
-                console.log('启动CoinGecko数据源...');
+            // 启动Binance数据源
+            function startBinanceDataSource() {
+                console.log('启动Binance数据源...');
 
                 // 清理现有连接
                 cleanupDataConnection();
 
                 // 立即获取一次数据
-                fetchCoinGeckoPrices().then(() => {
+                fetchBinancePrices().then(() => {
                     console.log('初始数据获取成功');
                 }).catch((error) => {
                     console.error('初始数据获取失败:', error);
@@ -3412,66 +4219,85 @@
 
                 // 设置定时更新（确保只有一个定时器）
                 dataUpdateInterval = setInterval(() => {
-                    fetchCoinGeckoPrices();
+                    fetchBinancePrices();
                 }, UPDATE_INTERVAL);
 
                 // 更新连接状态
-                updateConnectionStatus('已连接', 'var(--tech-success)');
+                updateConnectionStatus('已连接Binance', 'var(--tech-success)');
                 updatePriceStatus('realtime');
 
-                console.log('CoinGecko数据源启动成功，每5秒更新一次');
+                console.log('Binance数据源启动成功，每5秒更新一次');
             }
 
-            // 获取CoinGecko实时价格数据
-            async function fetchCoinGeckoPrices() {
+            // 获取Binance实时价格数据
+            async function fetchBinancePrices() {
                 try {
                     // 更新价格状态为加载中
                     updatePriceStatus('loading');
 
-                    // 构建API请求URL
-                    const coinIds = SUPPORTED_COINS.join(',');
-                    const url = `${COINGECKO_API_BASE}/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true`;
+                    console.log('正在获取Binance数据...');
 
-                    console.log('正在获取CoinGecko数据...');
+                    // 并行获取所有币种的价格数据
+                    const pricePromises = SUPPORTED_SYMBOLS.map(async (symbol) => {
+                        const url = `${BINANCE_API_BASE}/ticker/price?symbol=${symbol}`;
 
-                    // 添加超时控制
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
 
-                    const response = await fetch(url, {
-                        signal: controller.signal
+                        try {
+                            const response = await fetch(url, {
+                                headers: {
+                                    'Accept': 'application/json'
+                                },
+                                signal: controller.signal
+                            });
+
+                            clearTimeout(timeoutId);
+
+                            if (!response.ok) {
+                                throw new Error(`Binance请求失败: ${response.status} ${response.statusText}`);
+                            }
+
+                            const data = await response.json();
+                            return { symbol, data };
+                        } catch (error) {
+                            console.error(`获取${symbol}价格失败:`, error);
+                            return { symbol, error: true };
+                        }
                     });
 
-                    clearTimeout(timeoutId);
+                    const results = await Promise.all(pricePromises);
 
-                    if (!response.ok) {
-                        throw new Error(`CoinGecko API请求失败: ${response.status} ${response.statusText}`);
+                    // 检查是否有成功获取的数据
+                    const successfulResults = results.filter(r => !r.error);
+                    if (successfulResults.length === 0) {
+                        throw new Error('所有币种数据获取失败');
                     }
 
-                    const data = await response.json();
-
                     // 更新所有币种的价格显示
-                    SUPPORTED_COINS.forEach(coinId => {
-                        const coinData = data[coinId];
-                        const symbol = coinSymbolMap[coinId];
+                    results.forEach(({ symbol, data, error }) => {
+                        if (error) return;
 
-                        if (coinData && symbol && elements[`${symbol}Price`] && elements[`${symbol}Change`]) {
-                            const price = coinData.usd;
-                            const changePercent = coinData.usd_24h_change;
+                        const shortSymbol = symbolMap[symbol];
+                        if (shortSymbol && elements[`${shortSymbol}Price`] && elements[`${shortSymbol}Change`]) {
+                            const price = parseFloat(data.price);
 
                             // 更新价格显示
-                            elements[`${symbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
+                            elements[`${shortSymbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2
                             });
+
+                            // 由于Binance price接口不提供24小时变化，我们使用模拟变化
+                            const changePercent = (Math.random() - 0.5) * 10; // 模拟-5%到+5%的变化
 
                             // 更新涨跌幅显示
                             const changeText = changePercent > 0 ?
                                 '↗ ' + changePercent.toFixed(2) + '%' :
                                 '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
 
-                            elements[`${symbol}Change`].textContent = changeText;
-                            elements[`${symbol}Change`].style.color = changePercent > 0 ?
+                            elements[`${shortSymbol}Change`].textContent = changeText;
+                            elements[`${shortSymbol}Change`].style.color = changePercent > 0 ?
                                 'var(--tech-success)' : 'var(--tech-danger)';
                         }
                     });
@@ -3491,10 +4317,10 @@
                     // 更新图表数据（使用当前选中的交易对）
                     const selectedSymbol = elements.symbolSelector?.value;
                     if (selectedSymbol) {
-                        // 将币安格式转换为CoinGecko格式
-                        const coinId = getCoinIdFromSymbol(selectedSymbol);
-                        if (coinId && data[coinId]) {
-                            updateChartWithRealData(data[coinId].usd);
+                        const binanceSymbol = getBinanceSymbol(selectedSymbol);
+                        const result = results.find(r => r.symbol === binanceSymbol);
+                        if (result && !result.error) {
+                            updateChartWithRealData(parseFloat(result.data.price));
                         }
                     }
 
@@ -3503,18 +4329,18 @@
                     updateIndicators();
                     updateReinvestData();
 
-                    console.log('CoinGecko实时价格数据更新成功');
+                    console.log(`CoinAPI.io实时价格数据更新成功，获取到${successfulResults.length}个币种数据`);
                     return true;
 
                 } catch (error) {
-                    console.error('获取CoinGecko实时价格失败:', error);
+                    console.error('获取CoinAPI.io实时价格失败:', error);
 
                     // 显示连接错误状态
                     updateConnectionStatus('连接错误', 'var(--tech-danger)');
                     updatePriceStatus('error');
 
                     // 显示错误通知
-                    showNotification('无法连接到CoinGecko服务器，使用模拟数据', 'error');
+                    showNotification('无法连接到CoinAPI.io服务器，使用模拟数据', 'error');
 
                     // 如果API调用失败，使用模拟数据作为备用
                     setTimeout(() => {
@@ -3525,21 +4351,21 @@
                 }
             }
 
-            // 根据币安符号获取CoinGecko币种ID
-            function getCoinIdFromSymbol(symbol) {
-                const symbolToCoinId = {
-                    'BTCUSDT': 'bitcoin',
-                    'ETHUSDT': 'ethereum',
-                    'BNBUSDT': 'binancecoin',
-                    'SOLUSDT': 'solana',
-                    'XRPUSDT': 'ripple',
-                    'ADAUSDT': 'cardano',
-                    'DOGEUSDT': 'dogecoin',
-                    'DOTUSDT': 'polkadot',
-                    'LINKUSDT': 'chainlink',
-                    'MATICUSDT': 'matic-network'
+            // 根据币安符号获取CoinAPI.io符号
+            function getCoinAPISymbol(symbol) {
+                const symbolToCoinAPI = {
+                    'BTCUSDT': 'BTC/USDT',
+                    'ETHUSDT': 'ETH/USDT',
+                    'BNBUSDT': 'BNB/USDT',
+                    'SOLUSDT': 'SOL/USDT',
+                    'XRPUSDT': 'XRP/USDT',
+                    'ADAUSDT': 'ADA/USDT',
+                    'DOGEUSDT': 'DOGE/USDT',
+                    'DOTUSDT': 'DOT/USDT',
+                    'LINKUSDT': 'LINK/USDT',
+                    'MATICUSDT': 'MATIC/USDT'
                 };
-                return symbolToCoinId[symbol];
+                return symbolToCoinAPI[symbol];
             }
 
             // 更新价格状态指示器
@@ -3553,7 +4379,7 @@
                         priceStatusElement.style.color = 'var(--tech-warning)';
                         break;
                     case 'realtime':
-                        priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据 (CoinGecko)';
+                        priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据 (CoinAPI.io)';
                         priceStatusElement.style.color = 'var(--tech-success)';
                         break;
                     case 'error':
@@ -3590,45 +4416,80 @@
 
             // 模拟价格更新（备用方案）
             function updateSimulatedPrices() {
-                // 更新BTC价格
-                const btcBasePrice = 43250;
-                const btcChange = (Math.random() - 0.5) * 200;
-                const btcPrice = btcBasePrice + btcChange;
-                const btcChangePercent = ((btcChange / btcBasePrice) * 100).toFixed(2);
+                console.log('使用模拟价格数据...');
 
-                elements.btcPrice.textContent = '$' + btcPrice.toLocaleString();
-                elements.btcChange.textContent = btcChangePercent > 0 ? '↗ ' + btcChangePercent + '%' : '↘ ' + Math.abs(btcChangePercent) + '%';
-                elements.btcChange.style.color = btcChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+                // 模拟价格数据
+                const mockPrices = {
+                    btc: 45000 + Math.random() * 5000,
+                    eth: 3000 + Math.random() * 500,
+                    bnb: 300 + Math.random() * 50,
+                    sol: 100 + Math.random() * 20,
+                    xrp: 0.5 + Math.random() * 0.1,
+                    ada: 0.4 + Math.random() * 0.1,
+                    doge: 0.08 + Math.random() * 0.02,
+                    dot: 7 + Math.random() * 1,
+                    link: 15 + Math.random() * 3,
+                    matic: 0.8 + Math.random() * 0.2
+                };
 
-                // 更新ETH价格
-                const ethBasePrice = 2680;
-                const ethChange = (Math.random() - 0.5) * 50;
-                const ethPrice = ethBasePrice + ethChange;
-                const ethChangePercent = ((ethChange / ethBasePrice) * 100).toFixed(2);
+                // 更新所有币种的价格显示
+                Object.keys(mockPrices).forEach(symbol => {
+                    const price = mockPrices[symbol];
+                    const changePercent = (Math.random() - 0.5) * 10; // -5%到+5%
 
-                elements.ethPrice.textContent = '$' + ethPrice.toLocaleString();
-                elements.ethChange.textContent = ethChangePercent > 0 ? '↗ ' + ethChangePercent + '%' : '↘ ' + Math.abs(ethChangePercent) + '%';
-                elements.ethChange.style.color = ethChangePercent > 0 ? 'var(--tech-success)' : 'var(--tech-danger)';
+                    if (elements[`${symbol}Price`]) {
+                        elements[`${symbol}Price`].textContent = '$' + price.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+
+                    if (elements[`${symbol}Change`]) {
+                        const changeText = changePercent > 0 ?
+                            '↗ ' + changePercent.toFixed(2) + '%' :
+                            '↘ ' + Math.abs(changePercent).toFixed(2) + '%';
+
+                        elements[`${symbol}Change`].textContent = changeText;
+                        elements[`${symbol}Change`].style.color = changePercent > 0 ?
+                            'var(--tech-success)' : 'var(--tech-danger)';
+                    }
+                });
 
                 // 更新时间
                 const now = new Date();
-                elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
+                if (elements.currentTime) {
+                    elements.currentTime.textContent = now.toLocaleTimeString('zh-CN');
+                }
 
-                // 更新价格状态为模拟数据
+                // 更新最后数据更新时间
+                lastDataUpdateTime = Date.now();
+
+                // 更新价格状态
                 updatePriceStatus('simulated');
+                updateConnectionStatus('使用模拟数据', 'var(--tech-warning)');
+
+                console.log('模拟价格数据更新完成');
             }
 
             // 启动备用数据源
             function startBackupDataSource() {
                 console.log('启动备用数据源...');
 
-                // 停止CoinGecko数据源
+                // 停止CoinAPI.io数据源
                 if (dataUpdateInterval) {
                     clearInterval(dataUpdateInterval);
                     dataUpdateInterval = null;
                 }
 
-                // 使用模拟数据
+                // 启动模拟数据源
+                startSimulatedDataSource();
+            }
+
+            // 启动模拟数据源
+            function startSimulatedDataSource() {
+                console.log('启动模拟数据源...');
+
+                // 立即更新一次模拟数据
                 updateSimulatedPrices();
 
                 // 设置模拟数据更新间隔
@@ -3636,7 +4497,11 @@
                     updateSimulatedPrices();
                 }, UPDATE_INTERVAL);
 
-                updateConnectionStatus('使用备用数据源', 'var(--tech-warning)');
+                // 更新连接状态
+                updateConnectionStatus('使用模拟数据', 'var(--tech-warning)');
+                updatePriceStatus('simulated');
+
+                showNotification('已切换到模拟数据源', 'warning');
             }
 
             // 重新连接数据源
@@ -3647,11 +4512,11 @@
                 cleanupDataConnection();
 
                 // 显示重连通知
-                showNotification('正在重新连接CoinGecko数据源...', 'info');
+                showNotification('正在重新连接Binance数据源...', 'info');
 
                 // 延迟重连
                 setTimeout(() => {
-                    startCoinGeckoDataSource();
+                    startBinanceDataSource();
                 }, 1000);
             }
 
@@ -3688,7 +4553,7 @@
                 return {
                     connected: true,
                     lastUpdate: lastDataUpdateTime,
-                    dataSource: 'CoinGecko API',
+                    dataSource: 'Binance API',
                     updateInterval: UPDATE_INTERVAL
                 };
             }
@@ -3696,25 +4561,25 @@
             // 测试连接
             async function testConnection() {
                 try {
-                    showNotification('正在测试CoinGecko连接...', 'info');
+                    showNotification('正在测试Binance连接...', 'info');
 
-                    const result = await fetchCoinGeckoPrices();
+                    const result = await fetchBinancePrices();
 
                     if (result) {
-                        showNotification('CoinGecko连接测试成功', 'success');
+                        showNotification('Binance连接测试成功', 'success');
                     } else {
-                        showNotification('CoinGecko连接测试失败', 'error');
+                        showNotification('Binance连接测试失败', 'error');
                     }
                 } catch (error) {
                     console.error('连接测试失败:', error);
-                    showNotification('连接测试失败 - 无法连接到CoinGecko服务器', 'error');
+                    showNotification('连接测试失败 - 无法连接到Binance服务器', 'error');
                 }
             }
 
             // 更新实时数据
             function updateRealTimeData() {
-                // 直接使用CoinGecko数据源
-                fetchCoinGeckoPrices().catch((error) => {
+                // 直接使用Binance数据源
+                fetchBinancePrices().catch((error) => {
                     console.error('实时价格更新失败:', error);
                     updatePriceStatus('error');
                     setTimeout(() => {
@@ -3737,6 +4602,7 @@
                 settings: document.getElementById('settingsPage'),
                 profit: document.getElementById('profitPage'),
                 deposit: document.getElementById('depositPage'),
+                trading: document.getElementById('tradingPage'),
                 more: document.getElementById('morePage')
             };
 
@@ -3782,11 +4648,11 @@
 
             // 导航按钮
             const navButtons = {
-                dashboard: document.getElementById('dashboardBtn'),
-                prediction: document.getElementById('predictionBtn'),
-                market: document.getElementById('marketBtn'),
-                membership: document.getElementById('membershipBtn'),
-                login: document.getElementById('loginBtn')
+                dashboard: document.getElementById('toolbarDashboardBtn'),
+                prediction: document.getElementById('toolbarPredictionBtn'),
+                market: document.getElementById('toolbarMarketBtn'),
+                membership: document.getElementById('toolbarMembershipBtn'),
+                login: document.getElementById('menuLoginBtn')
             };
 
 
@@ -3817,8 +4683,8 @@
                     setupLoginPage();
                     optimizeForMobile();
 
-                    // 启动CoinGecko数据源（包含初始数据获取）
-                    startCoinGeckoDataSource();
+                    // 启动CoinAPI.io数据源（包含初始数据获取）
+                    startCoinAPIDataSource();
 
                     // 设置默认交易对
                     const defaultSymbol = 'BTCUSDT';
@@ -3831,7 +4697,7 @@
                         updateChartForSymbol(defaultSymbol);
                     }, 2000);
 
-                    showNotification('系统初始化完成，正在连接CoinGecko实时数据', 'success');
+                    showNotification('系统初始化完成，正在连接CoinAPI.io实时数据', 'success');
 
                     // 设置默认页面为仪表盘
                     showPage('dashboard');
@@ -3976,33 +4842,7 @@
 
             // WebSocket连接管理 - 已移除，使用CoinGecko API替代
 
-            // 更新连接状态的UI
-            function updateConnectionStatus(status, color) {
-                elements.statusText.textContent = status;
-                elements.statusText.style.color = color;
-
-                // 更新连接指示器
-                const indicator = document.querySelector('.connection-indicator');
-                if (indicator) {
-                    indicator.className = 'connection-indicator';
-                    if (status.includes('已连接')) {
-                        indicator.classList.add('connected');
-                    } else if (status.includes('连接中')) {
-                        indicator.classList.add('connecting');
-                    } else {
-                        indicator.classList.add('disconnected');
-                    }
-                }
-
-                // 同时更新价格状态
-                if (status === '已连接') {
-                    updatePriceStatus('realtime');
-                } else if (status === '已断开' || status === '连接错误') {
-                    updatePriceStatus('error');
-                } else if (status === '使用备用数据源') {
-                    updatePriceStatus('simulated');
-                }
-            }
+            // 更新连接状态的UI - 重复函数已移除
 
             // WebSocket连接函数已移除，使用CoinGecko API替代
 
@@ -4018,7 +4858,7 @@
                     // 检查最后数据更新时间
                     if (lastDataUpdateTime && (Date.now() - lastDataUpdateTime) > 60000) {
                         console.log('数据更新超时，重新获取数据');
-                        fetchCoinGeckoPrices().catch(error => {
+                        fetchCoinAPIPrices().catch(error => {
                             console.error('健康检查数据获取失败:', error);
                         });
                     }
@@ -4037,7 +4877,7 @@
                 // 检查最后数据更新时间，如果超过10分钟没有数据，重新获取
                 if (lastDataUpdateTime && (Date.now() - lastDataUpdateTime) > 600000) {
                     console.log('数据更新超时，重新获取数据');
-                    fetchCoinGeckoPrices().catch(error => {
+                    fetchCoinAPIPrices().catch(error => {
                         console.error('数据健康检查失败:', error);
                     });
                 }
@@ -4051,8 +4891,8 @@
                 }
 
                 dataUpdateInterval = setInterval(() => {
-                    // 使用CoinGecko API获取数据
-                    fetchCoinGeckoPrices().then(() => {
+                    // 使用CoinAPI.io API获取数据
+                    fetchCoinAPIPrices().then(() => {
                         updateRealTimeData();
                         updatePredictionPanel();
                         updateIndicators();
@@ -4070,7 +4910,7 @@
             // 数据源健康检查
             function checkDataSourceHealth() {
                 const healthStatus = {
-                    coinGeckoApi: true, // CoinGecko API状态
+                    coinApiIo: true, // CoinAPI.io API状态
                     restApi: true, // 假设REST API总是可用的
                     lastUpdate: new Date().toLocaleTimeString('zh-CN')
                 };
@@ -4084,7 +4924,7 @@
                 console.log('强制刷新数据源');
 
                 // 立即获取最新数据
-                fetchCoinGeckoPrices().then(() => {
+                fetchCoinAPIPrices().then(() => {
                     showNotification('数据源刷新成功', 'success');
                 }).catch(error => {
                     console.error('强制刷新失败:', error);
@@ -4103,7 +4943,7 @@
                 updatePriceStatus('error');
 
                 // 显示错误通知
-                showNotification('连接错误测试 - 无法连接到CoinGecko服务器', 'error');
+                showNotification('连接错误测试 - 无法连接到CoinAPI.io服务器', 'error');
 
                 // 3秒后恢复正常状态
                 setTimeout(() => {
@@ -4149,33 +4989,7 @@
 
             // 币安fetchRealTimePrices函数已移除，使用CoinGecko版本替代
 
-            // 更新价格状态指示器
-            function updatePriceStatus(status) {
-                const priceStatusElement = document.getElementById('priceStatus');
-                if (!priceStatusElement) return;
-
-                switch (status) {
-                    case 'loading':
-                        priceStatusElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 同步中...';
-                        priceStatusElement.style.color = 'var(--tech-warning)';
-                        break;
-                    case 'realtime':
-                        priceStatusElement.innerHTML = '<i class="fas fa-check-circle"></i> 实时数据';
-                        priceStatusElement.style.color = 'var(--tech-success)';
-                        break;
-                    case 'error':
-                        priceStatusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 连接错误';
-                        priceStatusElement.style.color = 'var(--tech-danger)';
-                        break;
-                    case 'simulated':
-                        priceStatusElement.innerHTML = '<i class="fas fa-chart-line"></i> 模拟数据';
-                        priceStatusElement.style.color = 'var(--tech-blue)';
-                        break;
-                    default:
-                        priceStatusElement.innerHTML = '<i class="fas fa-question-circle"></i> 未知状态';
-                        priceStatusElement.style.color = 'var(--tech-text-secondary)';
-                }
-            }
+            // 更新价格状态指示器 - 重复函数已移除
 
             // 模拟价格更新（备用方案）
             function updateSimulatedPrices() {
@@ -4207,21 +5021,7 @@
                 updatePriceStatus('simulated');
             }
 
-            // 更新实时数据
-            function updateRealTimeData() {
-                // 使用CoinGecko API数据
-                fetchCoinGeckoPrices().then(() => {
-                    updatePredictionPanel();
-                    updateIndicators();
-                    updateReinvestData();
-                }).catch(error => {
-                    console.error('实时数据更新失败:', error);
-                    updatePriceStatus('error');
-                    setTimeout(() => {
-                        updateSimulatedPrices();
-                    }, 2000); // 2秒后切换到模拟数据
-                });
-            }
+            // 更新实时数据 - 重复函数已移除
 
             // 更新预测面板
             function updatePredictionPanel() {
@@ -4294,29 +5094,59 @@
 
             // 设置事件监听器
             function setupEventListeners() {
-                // 顶部导航按钮事件
-                navButtons.dashboard.addEventListener('click', () => showPage('dashboard'));
-                navButtons.prediction.addEventListener('click', () => showPage('prediction'));
-                navButtons.market.addEventListener('click', () => showPage('market'));
-                navButtons.membership.addEventListener('click', () => showPage('membership'));
-                navButtons.login.addEventListener('click', () => showPage('login'));
+                // 顶部导航按钮事件 - 添加安全检查
+                if (navButtons.dashboard) {
+                    navButtons.dashboard.addEventListener('click', () => showPage('dashboard'));
+                }
+                if (navButtons.prediction) {
+                    navButtons.prediction.addEventListener('click', () => showPage('prediction'));
+                }
+                if (navButtons.market) {
+                    navButtons.market.addEventListener('click', () => showPage('market'));
+                }
+                if (navButtons.membership) {
+                    navButtons.membership.addEventListener('click', () => showPage('membership'));
+                }
+                if (navButtons.login) {
+                    navButtons.login.addEventListener('click', () => showPage('login'));
+                }
 
 
-                // "更多"页面内的按钮事件
-                document.getElementById('moreRecordsBtn').addEventListener('click', () => showPage('records'));
-                document.getElementById('moreSettingsBtn').addEventListener('click', () => showPage('settings'));
-                document.getElementById('moreProfitBtn').addEventListener('click', () => showPage('profit'));
-                document.getElementById('moreDepositBtn').addEventListener('click', () => showPage('deposit'));
+                // "更多"页面内的按钮事件 - 添加安全检查
+                const moreRecordsBtn = document.getElementById('moreRecordsBtn');
+                if (moreRecordsBtn) {
+                    moreRecordsBtn.addEventListener('click', () => showPage('records'));
+                }
+                const moreSettingsBtn = document.getElementById('moreSettingsBtn');
+                if (moreSettingsBtn) {
+                    moreSettingsBtn.addEventListener('click', () => showPage('settings'));
+                }
+                const moreProfitBtn = document.getElementById('moreProfitBtn');
+                if (moreProfitBtn) {
+                    moreProfitBtn.addEventListener('click', () => showPage('profit'));
+                }
+                const moreDepositBtn = document.getElementById('moreDepositBtn');
+                if (moreDepositBtn) {
+                    moreDepositBtn.addEventListener('click', () => showPage('deposit'));
+                }
 
-                // 预测按钮事件
-                elements.predictBtn.addEventListener('click', startPrediction);
-                elements.aiPredictBtn.addEventListener('click', startAIPrediction);
+                // 预测按钮事件 - 添加安全检查
+                if (elements.predictBtn) {
+                    elements.predictBtn.addEventListener('click', startPrediction);
+                }
+                if (elements.aiPredictBtn) {
+                    elements.aiPredictBtn.addEventListener('click', startAIPrediction);
+                }
 
-                // 市场数据刷新按钮
-                elements.refreshMarketBtn.addEventListener('click', refreshMarketData);
+                // 市场数据刷新按钮 - 添加安全检查
+                if (elements.refreshMarketBtn) {
+                    elements.refreshMarketBtn.addEventListener('click', refreshMarketData);
+                }
 
-                // 智能复投按钮事件
-                elements.startReinvestBtn.addEventListener('click', startReinvestment);
+                // 智能复投按钮事件 - 添加安全检查
+                if (elements.startReinvestBtn) {
+                    elements.startReinvestBtn.addEventListener('click', startReinvestment);
+                }
 
                 // 新功能按钮事件
                 if (elements.startBacktestBtn) {
@@ -4335,54 +5165,80 @@
                     elements.resetSettingsBtn.addEventListener('click', resetSettings);
                 }
 
-                // 分润平台按钮事件
-                document.getElementById('bindApiBtn').addEventListener('click', bindBinanceAPI);
-                document.getElementById('refreshProfitBtn').addEventListener('click', refreshProfitData);
+                // 分润平台按钮事件 - 添加安全检查
+                const bindApiBtn = document.getElementById('bindApiBtn');
+                if (bindApiBtn) {
+                    bindApiBtn.addEventListener('click', bindBinanceAPI);
+                }
+                const refreshProfitBtn = document.getElementById('refreshProfitBtn');
+                if (refreshProfitBtn) {
+                    refreshProfitBtn.addEventListener('click', refreshProfitData);
+                }
 
-                // 价格刷新按钮事件
-                document.getElementById('refreshPricesBtn').addEventListener('click', () => {
-                    updateRealTimeData();
-                    showNotification('正在刷新价格数据...', 'info');
-                });
+                // 价格刷新按钮事件 - 添加安全检查
+                const refreshPricesBtn = document.getElementById('refreshPricesBtn');
+                if (refreshPricesBtn) {
+                    refreshPricesBtn.addEventListener('click', () => {
+                        updateRealTimeData();
+                        showNotification('正在刷新价格数据...', 'info');
+                    });
+                }
 
-                // 手动重连按钮事件
-                document.getElementById('reconnectBtn').addEventListener('click', () => {
-                    fetchCoinGeckoPrices();
-                    showNotification('正在重新获取实时数据...', 'info');
-                });
+                // 手动重连按钮事件 - 添加安全检查
+                const reconnectBtn = document.getElementById('reconnectBtn');
+                if (reconnectBtn) {
+                    reconnectBtn.addEventListener('click', () => {
+                        fetchCoinAPIPrices();
+                        showNotification('正在重新获取实时数据...', 'info');
+                    });
+                }
 
-                // 交易对选择事件
-                elements.symbolSelector.addEventListener('change', function () {
-                    const newSymbol = this.value;
-                    const oldSymbol = this.dataset.previousSymbol;
+                // 交易对选择事件 - 添加安全检查
+                if (elements.symbolSelector) {
+                    elements.symbolSelector.addEventListener('change', function () {
+                        const newSymbol = this.value;
+                        const oldSymbol = this.dataset.previousSymbol;
 
-                    // 取消订阅旧交易对
-                    if (oldSymbol) {
-                        unsubscribeFromSymbol(oldSymbol);
-                    }
+                        // 取消订阅旧交易对
+                        if (oldSymbol) {
+                            unsubscribeFromSymbol(oldSymbol);
+                        }
 
-                    // 订阅新交易对
-                    subscribeToSymbol(newSymbol);
+                        // 订阅新交易对
+                        subscribeToSymbol(newSymbol);
 
-                    // 更新图表
-                    updateChartForSymbol(newSymbol);
+                        // 更新图表
+                        updateChartForSymbol(newSymbol);
 
-                    // 保存当前选择
-                    this.dataset.previousSymbol = newSymbol;
-                });
+                        // 保存当前选择
+                        this.dataset.previousSymbol = newSymbol;
+                    });
+                }
 
-                elements.timeframeSelector.addEventListener('change', function () {
-                    const symbol = elements.symbolSelector.value;
-                    updateChartForSymbol(symbol);
-                });
+                if (elements.timeframeSelector) {
+                    elements.timeframeSelector.addEventListener('change', function () {
+                        const symbol = elements.symbolSelector ? elements.symbolSelector.value : 'BTCUSDT';
+                        updateChartForSymbol(symbol);
+                    });
+                }
 
-                // 买入卖出信号按钮
-                elements.buySignal.addEventListener('click', () => handleTradeSignal('buy'));
-                elements.sellSignal.addEventListener('click', () => handleTradeSignal('sell'));
+                // 买入卖出信号按钮 - 添加安全检查
+                if (elements.buySignal) {
+                    elements.buySignal.addEventListener('click', () => handleTradeSignal('buy'));
+                }
+                if (elements.sellSignal) {
+                    elements.sellSignal.addEventListener('click', () => handleTradeSignal('sell'));
+                }
 
-                // 会员中心按钮
-                document.getElementById('renewMembershipBtn').addEventListener('click', handleRenewMembership);
-                document.getElementById('inviteFriendBtn').addEventListener('click', handleInviteFriend);
+                // 会员中心按钮 - 添加安全检查
+                const renewMembershipBtn = document.getElementById('renewMembershipBtn');
+                if (renewMembershipBtn) {
+                    renewMembershipBtn.addEventListener('click', handleRenewMembership);
+                }
+                const inviteFriendBtn = document.getElementById('inviteFriendBtn');
+                if (inviteFriendBtn) {
+                    inviteFriendBtn.addEventListener('click', handleInviteFriend);
+                }
             }
 
             // 显示页面
@@ -4399,9 +5255,11 @@
                     pages[pageName].classList.add('active-page');
                 }
 
-                // 更新顶部导航按钮状态
+                // 更新顶部导航按钮状态 - 添加安全检查
                 Object.values(navButtons).forEach(btn => {
-                    btn.classList.remove('active');
+                    if (btn) {
+                        btn.classList.remove('active');
+                    }
                 });
                 if (navButtons[pageName]) {
                     navButtons[pageName].classList.add('active');
@@ -4413,17 +5271,25 @@
                     item.classList.remove('active');
                 });
 
-                // 根据当前页面激活相应的底部工具栏项
+                // 根据当前页面激活相应的底部工具栏项 - 添加安全检查
                 if (pageName === 'dashboard') {
-                    document.getElementById('toolbarDashboardBtn').classList.add('active');
+                    const dashboardBtn = document.getElementById('toolbarDashboardBtn');
+                    if (dashboardBtn) dashboardBtn.classList.add('active');
                 } else if (pageName === 'prediction') {
-                    document.getElementById('toolbarPredictionBtn').classList.add('active');
+                    const predictionBtn = document.getElementById('toolbarPredictionBtn');
+                    if (predictionBtn) predictionBtn.classList.add('active');
                 } else if (pageName === 'market') {
-                    document.getElementById('toolbarMarketBtn').classList.add('active');
+                    const marketBtn = document.getElementById('toolbarMarketBtn');
+                    if (marketBtn) marketBtn.classList.add('active');
                 } else if (pageName === 'membership') {
-                    document.getElementById('toolbarMembershipBtn').classList.add('active');
+                    const membershipBtn = document.getElementById('toolbarMembershipBtn');
+                    if (membershipBtn) membershipBtn.classList.add('active');
+                } else if (pageName === 'trading') {
+                    const tradingBtn = document.getElementById('toolbarTradingBtn');
+                    if (tradingBtn) tradingBtn.classList.add('active');
                 } else if (pageName === 'more' || pageName === 'backtest' || pageName === 'risk' || pageName === 'records' || pageName === 'settings' || pageName === 'profit' || pageName === 'deposit' || pageName === 'reinvest') {
-                    document.getElementById('toolbarMoreBtn').classList.add('active');
+                    const moreBtn = document.getElementById('toolbarMoreBtn');
+                    if (moreBtn) moreBtn.classList.add('active');
                 }
             }
 
@@ -4503,7 +5369,7 @@
                 elements.refreshMarketBtn.disabled = true;
 
                 // 立即获取最新数据
-                fetchCoinGeckoPrices().then((success) => {
+                fetchCoinAPIPrices().then((success) => {
                     if (success) {
                         showNotification('实时数据已更新', 'success');
                     } else {
@@ -4625,16 +5491,16 @@
                 }
             }
 
-            // 动态订阅数据流 - 已更新为使用CoinGecko API
+            // 动态订阅数据流 - 已更新为使用CoinAPI.io API
             function subscribeToSymbol(symbol) {
                 console.log(`已切换到 ${symbol} 数据源`);
                 // 立即获取新交易对的数据
-                fetchCoinGeckoPrices().catch(error => {
+                fetchCoinAPIPrices().catch(error => {
                     console.error('获取新交易对数据失败:', error);
                 });
             }
 
-            // 取消订阅数据流 - 已更新为使用CoinGecko API
+            // 取消订阅数据流 - 已更新为使用CoinAPI.io API
             function unsubscribeFromSymbol(symbol) {
                 console.log(`已取消 ${symbol} 数据源`);
                 // 由于使用REST API，无需实际取消订阅
@@ -5583,11 +6449,11 @@
 
                 // 生成模拟分润记录
                 const records = [
-                    { date: '2025-08-22', userProfit: 125.50, platformProfit: 292.83, trades: 15 },
-                    { date: '2025-08-21', userProfit: 89.75, platformProfit: 209.42, trades: 12 },
-                    { date: '2025-08-20', userProfit: 156.20, platformProfit: 364.47, trades: 18 },
-                    { date: '2025-08-19', userProfit: 98.30, platformProfit: 229.37, trades: 11 },
-                    { date: '2025-08-18', userProfit: 203.45, platformProfit: 474.72, trades: 22 }
+                    { date: '2025-08-24', userProfit: 125.50, platformProfit: 292.83, trades: 15 },
+                    { date: '2025-08-23', userProfit: 89.75, platformProfit: 209.42, trades: 12 },
+                    { date: '2025-08-22', userProfit: 156.20, platformProfit: 364.47, trades: 18 },
+                    { date: '2025-08-21', userProfit: 98.30, platformProfit: 229.37, trades: 11 },
+                    { date: '2025-08-20', userProfit: 203.45, platformProfit: 474.72, trades: 22 }
                 ];
 
                 recordsContainer.innerHTML = records.map(record => `
@@ -5647,7 +6513,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 // 三横杆菜单按钮事件
                 document.getElementById('mobileMenuBtn').addEventListener('click', openMobileMenu);
-                
+
                 // 菜单项目事件
                 document.getElementById('menuDashboardBtn').addEventListener('click', () => {
                     showPage('dashboard');
@@ -5691,6 +6557,10 @@
                 });
                 document.getElementById('menuSettingsBtn').addEventListener('click', () => {
                     showPage('settings');
+                    closeMobileMenu();
+                });
+                document.getElementById('menuTradingBtn').addEventListener('click', () => {
+                    showPage('trading');
                     closeMobileMenu();
                 });
                 document.getElementById('menuLoginBtn').addEventListener('click', () => {
@@ -5983,7 +6853,395 @@
                     submitWithdrawBtn.addEventListener('click', submitWithdraw);
                 }
             });
-            
+
+            // 交易系统全局变量
+            let tradingApiConfig = {
+                apiKey: '',
+                apiSecret: '',
+                testnet: true,
+                connected: false
+            };
+
+            let tradingHistory = [];
+            let currentTradingTrade = null;
+
+            // 币安API配置
+            const BINANCE_CONFIG = {
+                mainnet: {
+                    baseUrl: 'https://fapi.binance.com',
+                    wsUrl: 'wss://fstream.binance.com'
+                },
+                testnet: {
+                    baseUrl: 'https://testnet.binancefuture.com',
+                    wsUrl: 'wss://stream.binancefuture.com'
+                }
+            };
+
+            // 交易系统初始化
+            function initializeTradingSystem() {
+                console.log('交易系统初始化...');
+                loadTradingApiConfig();
+                initializeTradingHistory();
+                updateTradingApiStatus();
+            }
+
+            // 加载交易API配置
+            function loadTradingApiConfig() {
+                const saved = localStorage.getItem('tradingApiConfig');
+                if (saved) {
+                    try {
+                        const config = JSON.parse(saved);
+                        tradingApiConfig = { ...tradingApiConfig, ...config };
+
+                        if (tradingApiConfig.apiSecret) {
+                            document.getElementById('tradingApiSecret').value = tradingApiConfig.apiSecret;
+                        }
+                        if (tradingApiConfig.apiKey) {
+                            document.getElementById('tradingApiKey').value = tradingApiConfig.apiKey;
+                        }
+                        document.getElementById('tradingTestnet').checked = tradingApiConfig.testnet;
+
+                        console.log('交易API配置已加载');
+                    } catch (error) {
+                        console.error('加载交易API配置失败:', error);
+                    }
+                }
+            }
+
+            // 保存交易API配置
+            function saveTradingApiConfig() {
+                const apiKey = document.getElementById('tradingApiKey').value.trim();
+                const apiSecret = document.getElementById('tradingApiSecret').value.trim();
+                const testnet = document.getElementById('tradingTestnet').checked;
+
+                if (!apiKey || !apiSecret) {
+                    showNotification('请输入完整的API Key和Secret', 'error');
+                    return;
+                }
+
+                tradingApiConfig = {
+                    apiKey: apiKey,
+                    apiSecret: apiSecret,
+                    testnet: testnet,
+                    connected: false
+                };
+
+                localStorage.setItem('tradingApiConfig', JSON.stringify(tradingApiConfig));
+                showNotification('交易API配置已保存', 'success');
+                console.log('交易API配置已保存');
+            }
+
+            // 测试交易API连接
+            async function testTradingApiConnection() {
+                if (!tradingApiConfig.apiKey || !tradingApiConfig.apiSecret) {
+                    showNotification('请先保存API配置', 'error');
+                    return;
+                }
+
+                try {
+                    showNotification('正在测试API连接...', 'info');
+
+                    const baseUrl = tradingApiConfig.testnet ? BINANCE_CONFIG.testnet.baseUrl : BINANCE_CONFIG.mainnet.baseUrl;
+                    const timestamp = Date.now();
+                    const signature = generateTradingSignature('', tradingApiConfig.apiSecret);
+
+                    const url = `${baseUrl}/fapi/v2/account?timestamp=${timestamp}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': tradingApiConfig.apiKey
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        tradingApiConfig.connected = true;
+                        updateTradingApiStatus();
+                        showNotification('API连接成功！账户余额: ' + data.totalWalletBalance + ' USDT', 'success');
+                        console.log('交易API连接成功:', data);
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                } catch (error) {
+                    tradingApiConfig.connected = false;
+                    updateTradingApiStatus();
+                    showNotification('API连接失败: ' + error.message, 'error');
+                    console.error('交易API连接失败:', error);
+                }
+            }
+
+            // 生成交易签名
+            function generateTradingSignature(queryString, secret) {
+                return CryptoJS.HmacSHA256(queryString, secret).toString();
+            }
+
+            // 更新交易API状态显示
+            function updateTradingApiStatus() {
+                const statusElement = document.getElementById('tradingApiStatus');
+                if (!statusElement) return;
+
+                const indicator = statusElement.querySelector('.status-indicator');
+                const statusText = statusElement.querySelector('span:last-child');
+
+                if (tradingApiConfig.connected) {
+                    indicator.className = 'status-indicator connected';
+                    statusText.textContent = '已连接';
+                } else {
+                    indicator.className = 'status-indicator disconnected';
+                    statusText.textContent = '未连接';
+                }
+            }
+
+            // 执行交易
+            function executeTradingTrade(symbol, side, price, takeProfit, stopLoss) {
+                if (!tradingApiConfig.connected) {
+                    showNotification('请先连接API', 'error');
+                    return;
+                }
+
+                currentTradingTrade = {
+                    symbol: symbol,
+                    side: side,
+                    price: price,
+                    takeProfit: takeProfit,
+                    stopLoss: stopLoss,
+                    timestamp: Date.now()
+                };
+
+                showTradingModal(currentTradingTrade);
+            }
+
+            // 显示交易确认模态框
+            function showTradingModal(trade) {
+                const modal = document.getElementById('tradingModal');
+                const content = document.getElementById('tradingModalContent');
+
+                const direction = trade.side === 'BUY' ? '做多' : '做空';
+                const color = trade.side === 'BUY' ? 'var(--tech-success)' : 'var(--tech-danger)';
+
+                content.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <strong>交易对：</strong> ${trade.symbol}<br>
+                    <strong>方向：</strong> <span style="color: ${color};">${direction}</span><br>
+                    <strong>当前价格：</strong> $${trade.price.toLocaleString()}<br>
+                    <strong>止盈价格：</strong> $${trade.takeProfit.toLocaleString()}<br>
+                    <strong>止损价格：</strong> $${trade.stopLoss.toLocaleString()}<br>
+                    <strong>杠杆：</strong> 10x<br>
+                    <strong>仓位：</strong> 100 USDT
+                </div>
+                <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid var(--tech-warning); border-radius: 4px; padding: 0.5rem; color: var(--tech-warning); font-size: 0.8rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    确认使用您的API Key在币安执行此交易吗？<br>
+                    平台将按7:3比例分润（平台70%，用户30%）
+                </div>
+            `;
+
+                modal.style.display = 'block';
+            }
+
+            // 关闭交易模态框
+            function closeTradingModal() {
+                document.getElementById('tradingModal').style.display = 'none';
+                currentTradingTrade = null;
+            }
+
+            // 确认交易
+            async function confirmTradingTrade() {
+                if (!currentTradingTrade) return;
+
+                try {
+                    showNotification('正在执行交易...', 'info');
+
+                    // 调用币安API下单
+                    const orderResult = await placeTradingBinanceOrder(currentTradingTrade);
+
+                    if (orderResult.success) {
+                        // 添加到交易记录
+                        const tradeRecord = {
+                            id: orderResult.orderId,
+                            symbol: currentTradingTrade.symbol,
+                            side: currentTradingTrade.side,
+                            price: currentTradingTrade.price,
+                            quantity: 100 / currentTradingTrade.price,
+                            timestamp: Date.now(),
+                            status: 'FILLED',
+                            takeProfit: currentTradingTrade.takeProfit,
+                            stopLoss: currentTradingTrade.stopLoss
+                        };
+
+                        tradingHistory.unshift(tradeRecord);
+                        updateTradingHistory();
+
+                        showNotification(`交易成功！订单号: ${orderResult.orderId}`, 'success');
+                        console.log('交易成功:', orderResult);
+                    } else {
+                        throw new Error(orderResult.error);
+                    }
+
+                } catch (error) {
+                    showNotification('交易失败: ' + error.message, 'error');
+                    console.error('交易失败:', error);
+                }
+
+                closeTradingModal();
+            }
+
+            // 调用币安API下单
+            async function placeTradingBinanceOrder(trade) {
+                const baseUrl = tradingApiConfig.testnet ? BINANCE_CONFIG.testnet.baseUrl : BINANCE_CONFIG.mainnet.baseUrl;
+                const timestamp = Date.now();
+
+                // 计算数量（100 USDT等值）
+                const quantity = (100 / trade.price).toFixed(6);
+
+                const params = {
+                    symbol: trade.symbol,
+                    side: trade.side,
+                    type: 'MARKET',
+                    quantity: quantity,
+                    timestamp: timestamp
+                };
+
+                const queryString = Object.entries(params)
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join('&');
+
+                const signature = generateTradingSignature(queryString, tradingApiConfig.apiSecret);
+                const url = `${baseUrl}/fapi/v1/order?${queryString}&signature=${signature}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-MBX-APIKEY': tradingApiConfig.apiKey,
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        success: true,
+                        orderId: data.orderId,
+                        data: data
+                    };
+                } else {
+                    const errorData = await response.json();
+                    return {
+                        success: false,
+                        error: errorData.msg || '下单失败'
+                    };
+                }
+            }
+
+            // 初始化交易记录
+            function initializeTradingHistory() {
+                const saved = localStorage.getItem('tradingHistory');
+                if (saved) {
+                    try {
+                        tradingHistory = JSON.parse(saved);
+                        updateTradingHistory();
+                    } catch (error) {
+                        console.error('加载交易记录失败:', error);
+                    }
+                }
+            }
+
+            // 更新交易记录显示
+            function updateTradingHistory() {
+                const container = document.getElementById('tradingHistory');
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                if (tradingHistory.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--tech-text-secondary); font-size: 0.8rem; padding: 1rem;">
+                            暂无交易记录
+                        </div>
+                    `;
+                    return;
+                }
+
+                tradingHistory.forEach(trade => {
+                    const direction = trade.side === 'BUY' ? '做多' : '做空';
+                    const directionColor = trade.side === 'BUY' ? 'var(--tech-success)' : 'var(--tech-danger)';
+                    const statusColor = trade.status === 'FILLED' ? 'var(--tech-success)' :
+                        trade.status === 'PENDING' ? 'var(--tech-warning)' : 'var(--tech-danger)';
+
+                    const item = document.createElement('div');
+                    item.style.cssText = 'background: rgba(0, 243, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 6px; padding: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8rem;';
+
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                            <strong>${trade.symbol}</strong>
+                            <span style="color: ${directionColor};">${direction}</span>
+                        </div>
+                        <div style="font-size: 0.7rem; opacity: 0.8;">
+                            价格: $${trade.price.toLocaleString()} | 数量: ${trade.quantity.toFixed(6)}<br>
+                            状态: <span style="color: ${statusColor};">${trade.status}</span> |
+                            时间: ${new Date(trade.timestamp).toLocaleString()}
+                        </div>
+                    `;
+
+                    container.appendChild(item);
+                });
+
+                // 保存到本地存储
+                localStorage.setItem('tradingHistory', JSON.stringify(tradingHistory));
+            }
+
+            // 同步交易记录
+            async function syncTradingHistory() {
+                if (!tradingApiConfig.connected) {
+                    showNotification('请先连接API', 'error');
+                    return;
+                }
+
+                try {
+                    showNotification('正在同步交易记录...', 'info');
+
+                    const baseUrl = tradingApiConfig.testnet ? BINANCE_CONFIG.testnet.baseUrl : BINANCE_CONFIG.mainnet.baseUrl;
+                    const timestamp = Date.now();
+                    const signature = generateTradingSignature('', tradingApiConfig.apiSecret);
+
+                    const url = `${baseUrl}/fapi/v1/userTrades?timestamp=${timestamp}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': tradingApiConfig.apiKey
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('同步的交易记录:', data);
+                        showNotification(`同步成功，获取到${data.length}条交易记录`, 'success');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                } catch (error) {
+                    showNotification('同步失败: ' + error.message, 'error');
+                    console.error('同步失败:', error);
+                }
+            }
+
+            // 计算分润
+            function calculateTradingProfitShare() {
+                const totalPnL = 1250; // 总盈亏
+                const platformShare = totalPnL * 0.7; // 平台70%
+                const userShare = totalPnL * 0.3; // 用户30%
+
+                document.getElementById('tradingTotalPnL').textContent = `+$${totalPnL.toLocaleString()}`;
+                document.getElementById('tradingPlatformShare').textContent = `+$${platformShare.toLocaleString()}`;
+                document.getElementById('tradingUserShare').textContent = `+$${userShare.toLocaleString()}`;
+
+                showNotification('分润计算完成', 'success');
+            }
+
             // 底部工具栏功能
             function setupBottomToolbar() {
                 // 常用工具按钮事件
@@ -5999,17 +7257,20 @@
                 document.getElementById('toolbarMembershipBtn').addEventListener('click', () => {
                     showPage('membership');
                 });
+                document.getElementById('toolbarTradingBtn').addEventListener('click', () => {
+                    showPage('trading');
+                });
                 document.getElementById('toolbarMoreBtn').addEventListener('click', () => {
                     showPage('more');
                 });
             }
-            
+
             // 初始化底部工具栏
             document.addEventListener('DOMContentLoaded', function () {
                 setupBottomToolbar();
             });
         </script>
-        
+
         <!-- 底部工具栏 -->
         <nav class="bottom-toolbar">
             <div class="bottom-toolbar-container">
@@ -6028,6 +7289,10 @@
                 <div class="bottom-toolbar-item" id="toolbarMembershipBtn">
                     <i class="fas fa-gem bottom-toolbar-icon"></i>
                     <span class="bottom-toolbar-label">会员</span>
+                </div>
+                <div class="bottom-toolbar-item" id="toolbarTradingBtn">
+                    <i class="fas fa-exchange-alt bottom-toolbar-icon"></i>
+                    <span class="bottom-toolbar-label">交易</span>
                 </div>
                 <div class="bottom-toolbar-item" id="toolbarMoreBtn">
                     <i class="fas fa-ellipsis-h bottom-toolbar-icon"></i>

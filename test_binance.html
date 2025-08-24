@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Binance API 测试</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #1a1a1a;
+                color: #fff;
+            }
+
+            .test-section {
+                background: #2a2a2a;
+                padding: 20px;
+                margin: 20px 0;
+                border-radius: 8px;
+                border: 1px solid #333;
+            }
+
+            .success {
+                color: #28a745;
+            }
+
+            .error {
+                color: #dc3545;
+            }
+
+            .info {
+                color: #17a2b8;
+            }
+
+            button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            button:hover {
+                background: #0056b3;
+            }
+
+            .price-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .price-card {
+                background: #333;
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+            }
+
+            .price-value {
+                font-size: 24px;
+                font-weight: bold;
+                color: #28a745;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>🔗 Binance API 测试</h1>
+
+        <div class="test-section">
+            <h2>📊 API 配置</h2>
+            <p><strong>Base URL:</strong> https://api.binance.com/api/v3</p>
+            <p><strong>支持的交易对:</strong> BTCUSDT, ETHUSDT, BNBUSDT, SOLUSDT, XRPUSDT</p>
+            <button onclick="testAllPrices()">测试所有价格</button>
+            <button onclick="testSinglePrice()">测试单个价格</button>
+            <button onclick="test24hChange()">测试24小时变化</button>
+        </div>
+
+        <div class="test-section">
+            <h2>📈 实时价格</h2>
+            <div id="priceGrid" class="price-grid"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 测试结果</h2>
+            <div id="results"></div>
+        </div>
+
+        <script>
+            const BINANCE_API_BASE = 'https://api.binance.com/api/v3';
+            const SUPPORTED_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT'];
+
+            function log(message, type = 'info') {
+                const results = document.getElementById('results');
+                const timestamp = new Date().toLocaleTimeString();
+                const className = type === 'success' ? 'success' :
+                    type === 'error' ? 'error' : 'info';
+                results.innerHTML += `<p class="${className}">[${timestamp}] ${message}</p>`;
+                results.scrollTop = results.scrollHeight;
+            }
+
+            async function testAllPrices() {
+                log('开始测试所有交易对价格...', 'info');
+
+                const priceGrid = document.getElementById('priceGrid');
+                priceGrid.innerHTML = '';
+
+                for (const symbol of SUPPORTED_SYMBOLS) {
+                    try {
+                        const response = await fetch(`${BINANCE_API_BASE}/ticker/price?symbol=${symbol}`);
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const price = parseFloat(data.price);
+
+                            // 添加到价格网格
+                            const priceCard = document.createElement('div');
+                            priceCard.className = 'price-card';
+                            priceCard.innerHTML = `
+                            <h3>${symbol}</h3>
+                            <div class="price-value">$${price.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            })}</div>
+                        `;
+                            priceGrid.appendChild(priceCard);
+
+                            log(`✅ ${symbol}: $${price}`, 'success');
+                        } else {
+                            log(`❌ ${symbol}: 请求失败 ${response.status}`, 'error');
+                        }
+                    } catch (error) {
+                        log(`❌ ${symbol}: ${error.message}`, 'error');
+                    }
+
+                    // 添加延迟避免请求过快
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+            }
+
+            async function testSinglePrice() {
+                log('测试单个交易对价格...', 'info');
+
+                try {
+                    const response = await fetch(`${BINANCE_API_BASE}/ticker/price?symbol=BTCUSDT`);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        log(`✅ BTCUSDT价格: $${data.price}`, 'success');
+                        log(`📊 响应数据: ${JSON.stringify(data, null, 2)}`, 'info');
+                    } else {
+                        log(`❌ 请求失败: ${response.status} ${response.statusText}`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ 网络错误: ${error.message}`, 'error');
+                }
+            }
+
+            async function test24hChange() {
+                log('测试24小时价格变化...', 'info');
+
+                try {
+                    const response = await fetch(`${BINANCE_API_BASE}/ticker/24hr?symbol=BTCUSDT`);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const priceChange = parseFloat(data.priceChangePercent);
+                        const volume = parseFloat(data.volume);
+
+                        log(`✅ BTCUSDT 24小时变化: ${priceChange.toFixed(2)}%`, 'success');
+                        log(`📊 24小时成交量: ${volume.toLocaleString()} BTC`, 'info');
+                        log(`📈 最高价: $${data.highPrice}`, 'info');
+                        log(`📉 最低价: $${data.lowPrice}`, 'info');
+                    } else {
+                        log(`❌ 请求失败: ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ 网络错误: ${error.message}`, 'error');
+                }
+            }
+
+            // 页面加载时自动测试
+            window.addEventListener('load', () => {
+                log('🔍 Binance API测试工具已加载', 'info');
+                log('💡 点击按钮开始测试', 'info');
+            });
+        </script>
+    </body>
+
+</html>
