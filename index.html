@@ -24,18 +24,19 @@
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;600&display=swap');
 
             :root {
-                /* 科技蓝光主题 */
+                /* 科技蓝光主题 - 纯色深色模式 */
                 --tech-blue: #00f3ff;
                 --tech-blue-dark: #008b91;
                 --tech-purple: #8a2be2;
-                --tech-bg: #0a0a1a;
-                --tech-panel: #11112a;
+                --tech-bg: #1a1a1a;
+                --tech-panel: #2a2a2a;
                 --tech-panel-border: #00f3ff;
                 --tech-text: #ffffff;
                 --tech-text-secondary: #b0b0b0;
                 --tech-success: #28a745;
                 --tech-danger: #dc3545;
                 --tech-warning: #ffc107;
+                --tech-border: #404040;
             }
 
             body {
@@ -44,14 +45,66 @@
                 color: var(--tech-text);
                 margin: 0;
                 padding: 0;
-                background-image:
-                    linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                    radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
-                    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
-                background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%;
-                background-position: 0 0, 0 0, 0 0, 0 0;
                 min-height: 100vh;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            /* 确保所有页面容器都使用深色背景 */
+            .page-container {
+                background: var(--tech-bg);
+                min-height: 100vh;
+                transition: background-color 0.3s ease;
+            }
+
+            /* 深色主题增强 */
+            .dark-theme {
+                --tech-bg: #1a1a1a;
+                --tech-panel: #2a2a2a;
+                --tech-text: #ffffff;
+                --tech-text-secondary: #b0b0b0;
+                --tech-border: #404040;
+            }
+
+            /* 强制清除所有背景图案 */
+            body,
+            .page-container,
+            .content-wrapper,
+            .main-content,
+            div,
+            section,
+            article {
+                background-image: none !important;
+                background: var(--tech-bg) !important;
+            }
+
+            /* 确保所有页面都使用纯色背景 */
+            * {
+                background-image: none !important;
+            }
+
+            body {
+                background: var(--tech-bg) !important;
+                background-image: none !important;
+            }
+
+            /* 确保所有页面都使用深色背景 */
+            .dark-theme body,
+            .dark-theme .page-container,
+            .dark-theme [id$="Page"] {
+                background: var(--tech-bg) !important;
+                color: var(--tech-text) !important;
+            }
+
+            /* 深色主题下的特殊元素样式 */
+            .dark-theme .tech-panel {
+                background: var(--tech-panel) !important;
+                border-color: var(--tech-panel-border) !important;
+            }
+
+            .dark-theme .tech-btn {
+                background: var(--tech-panel) !important;
+                color: var(--tech-blue) !important;
+                border-color: var(--tech-blue) !important;
             }
 
             /* 科技字体类 */
@@ -98,6 +151,355 @@
                 transition: all 0.3s ease;
                 box-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
                 position: relative;
+                /* 移动端优化 */
+                min-height: 44px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* 移动端响应式优化 */
+            @media (max-width: 768px) {
+                .tech-btn {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.8rem !important;
+                    margin: 0.15rem;
+                    min-height: 40px;
+                }
+
+                /* 按钮组优化 */
+                .button-group {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.3rem;
+                    justify-content: center;
+                }
+
+                /* 交易记录区域优化 */
+                #tradingRecordsSection {
+                    padding: 0.5rem;
+                }
+
+                /* 统计卡片优化 */
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                    gap: 0.3rem !important;
+                }
+
+                /* 减少动画效果 */
+                * {
+                    animation-duration: 0.2s !important;
+                    transition-duration: 0.2s !important;
+                }
+
+                /* 优化滚动 */
+                #tradingHistory {
+                    max-height: 300px !important;
+                    -webkit-overflow-scrolling: touch;
+                }
+            }
+
+            /* 超小屏幕优化 */
+            @media (max-width: 480px) {
+                .tech-btn {
+                    padding: 0.4rem 0.6rem;
+                    font-size: 0.75rem !important;
+                    margin: 0.1rem;
+                }
+
+                .stats-grid {
+                    grid-template-columns: 1fr !important;
+                }
+
+                /* 减少按钮数量，只显示核心功能 */
+                .advanced-btn {
+                    display: none;
+                }
+            }
+
+            /* 触摸设备优化 */
+            @media (hover: none) and (pointer: coarse) {
+
+                /* 增加触摸目标大小 */
+                .tech-btn {
+                    min-height: 48px;
+                    min-width: 48px;
+                }
+
+                /* 优化滚动体验 */
+                * {
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                /* 减少悬停效果 */
+                .tech-btn:hover {
+                    transform: none !important;
+                    box-shadow: 0 0 5px rgba(0, 243, 255, 0.3) !important;
+                }
+
+                /* 优化输入框 */
+                input,
+                select,
+                textarea {
+                    font-size: 16px !important;
+                    /* 防止iOS缩放 */
+                }
+            }
+
+            /* 性能优化 */
+            @media (prefers-reduced-motion: reduce) {
+                * {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+            }
+
+            /* 高对比度模式支持 */
+            @media (prefers-contrast: high) {
+                .tech-btn {
+                    border-width: 2px;
+                    box-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+                }
+            }
+
+            /* 移动端导航栏样式 */
+            .mobile-nav {
+                display: none;
+            }
+
+            @media (max-width: 768px) {
+                .mobile-nav {
+                    display: block !important;
+                }
+
+                /* 为移动端导航栏留出空间 */
+                .container {
+                    margin-top: 60px;
+                }
+
+                /* 隐藏桌面端标题 */
+                .header-section h1 {
+                    display: none;
+                }
+
+                .header-section p {
+                    display: none;
+                }
+
+                /* 移动端卡片优化 */
+                .tech-card {
+                    margin: 0.5rem 0;
+                    padding: 0.8rem;
+                    border-radius: 8px;
+                }
+
+                /* 移动端按钮优化 */
+                .tech-btn {
+                    padding: 0.6rem 1rem;
+                    font-size: 0.9rem;
+                    min-height: 44px;
+                    /* 确保触摸目标足够大 */
+                }
+
+                /* 移动端表格优化 */
+                .tech-table {
+                    font-size: 0.8rem;
+                }
+
+                .tech-table th,
+                .tech-table td {
+                    padding: 0.5rem 0.3rem;
+                }
+
+                /* 移动端输入框优化 */
+                .tech-input {
+                    font-size: 16px;
+                    /* 防止iOS缩放 */
+                    padding: 0.8rem;
+                }
+
+                /* 移动端模态框优化 */
+                .modal-content {
+                    margin: 10% auto;
+                    width: 95%;
+                    max-width: none;
+                }
+
+                /* 移动端菜单面板优化 */
+                #mobileMenuPanel {
+                    width: 280px;
+                    max-width: 80vw;
+                }
+
+                /* 移动端滚动优化 */
+                body {
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                /* 移动端动画优化 */
+                .tech-card {
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+
+                .tech-card:active {
+                    transform: scale(0.98);
+                }
+
+                /* 移动端菜单动画 */
+                #mobileMenuPanel {
+                    transition: transform 0.3s ease;
+                    transform: translateX(-100%);
+                }
+
+                #mobileMenuPanel.show {
+                    transform: translateX(0);
+                }
+
+                /* 移动端状态指示器动画 */
+                #mobileStatus i {
+                    animation: pulse 2s infinite;
+                }
+
+                @keyframes pulse {
+                    0% {
+                        opacity: 1;
+                    }
+
+                    50% {
+                        opacity: 0.5;
+                    }
+
+                    100% {
+                        opacity: 1;
+                    }
+                }
+
+                /* 移动端加载动画 */
+                .mobile-loading {
+                    display: inline-block;
+                    width: 20px;
+                    height: 20px;
+                    border: 2px solid var(--tech-border);
+                    border-radius: 50%;
+                    border-top-color: var(--tech-blue);
+                    animation: spin 1s ease-in-out infinite;
+                }
+
+                @keyframes spin {
+                    to {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                /* 移动端下拉刷新指示器 */
+                .mobile-pull-refresh {
+                    position: fixed;
+                    top: 60px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--tech-bg);
+                    border: 1px solid var(--tech-border);
+                    border-radius: 20px;
+                    padding: 0.5rem 1rem;
+                    font-size: 0.8rem;
+                    color: var(--tech-text);
+                    z-index: 1000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+
+                .mobile-pull-refresh.show {
+                    opacity: 1;
+                }
+
+                /* 移动端长按菜单 */
+                .mobile-context-menu {
+                    position: fixed;
+                    background: var(--tech-bg);
+                    border: 1px solid var(--tech-border);
+                    border-radius: 8px;
+                    padding: 0.5rem 0;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                    z-index: 1002;
+                    display: none;
+                }
+
+                .mobile-context-menu.show {
+                    display: block;
+                }
+
+                .mobile-context-menu-item {
+                    padding: 0.5rem 1rem;
+                    cursor: pointer;
+                    transition: background 0.2s ease;
+                }
+
+                .mobile-context-menu-item:hover {
+                    background: rgba(0, 243, 255, 0.1);
+                }
+
+                /* 移动端键盘优化 */
+                .mobile-input {
+                    font-size: 16px !important;
+                    -webkit-appearance: none;
+                    border-radius: 8px;
+                }
+
+                /* 移动端滚动条隐藏 */
+                .mobile-scroll::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .mobile-scroll {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+
+                /* 移动端语音控制按钮 */
+                .mobile-voice-btn {
+                    position: fixed;
+                    bottom: 80px;
+                    right: 20px;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    background: var(--tech-blue);
+                    border: none;
+                    color: white;
+                    font-size: 1.2rem;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                }
+
+                .mobile-voice-btn:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 6px 16px rgba(0, 243, 255, 0.5);
+                }
+
+                .mobile-voice-btn:active {
+                    transform: scale(0.95);
+                }
+
+                /* 移动端语音识别动画 */
+                .mobile-voice-btn.listening {
+                    animation: pulse 1.5s infinite;
+                }
+
+                @keyframes pulse {
+                    0% {
+                        box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+                    }
+
+                    50% {
+                        box-shadow: 0 4px 20px rgba(0, 243, 255, 0.8);
+                    }
+
+                    100% {
+                        box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+                    }
+                }
             }
 
             /* 折叠图标样式 */
@@ -2612,12 +3014,6 @@
                     color: var(--tech-text);
                     margin: 0;
                     padding: 0;
-                    background-image:
-                        radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
-                        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-                    background-size: 50px 50px;
                     min-height: 100vh;
                 }
 
@@ -4203,13 +4599,7 @@
                     color: var(--tech-text);
                     margin: 0;
                     padding: 0;
-                    background-image:
-                        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                        radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
-                    background-size: 50px 50px, 50px 50px, 100% 100%, 100% 100%;
-                    background-position: 0 0, 0 0, 0 0, 0 0;
+
                     min-height: 100vh;
                 }
 
@@ -6772,12 +7162,7 @@
                         color: var(--tech-text);
                         margin: 0;
                         padding: 0;
-                        background-image:
-                            radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
-                            radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%),
-                            linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-                        background-size: 50px 50px;
+
                         min-height: 100vh;
                     }
 
@@ -16979,6 +17364,34 @@
                             style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; display: none;"
                             onclick="closeMobileMenu()"></div>
 
+                        <!-- 移动端导航栏 -->
+                        <div class="mobile-nav"
+                            style="display: none; position: fixed; top: 0; left: 0; right: 0; background: var(--tech-bg); border-bottom: 1px solid var(--tech-border); z-index: 1000; padding: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-chart-line"
+                                        style="color: var(--tech-blue); font-size: 1.1rem;"></i>
+                                    <div>
+                                        <h3 style="margin: 0; color: var(--tech-blue); font-size: 1rem;">预测系统</h3>
+                                        <small id="mobilePageTitle"
+                                            style="color: var(--tech-text-secondary); font-size: 0.7rem;">仪表盘</small>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <!-- 移动端状态指示器 -->
+                                    <div id="mobileStatus"
+                                        style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; color: var(--tech-green);">
+                                        <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                                        <span>在线</span>
+                                    </div>
+                                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()"
+                                        style="background: none; border: none; color: var(--tech-blue); font-size: 1.2rem; cursor: pointer; padding: 0.3rem;">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="container">
                             <!-- 标题区域 - 紧凑设计 -->
                             <div class="header-section" style="padding: 0.3rem 0; margin-bottom: 0.3rem;">
@@ -19414,14 +19827,15 @@
                                         </div>
                                     </div>
 
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                        <h4 class="tech-font" style="color: var(--tech-blue); margin: 0;">
+                                    <!-- 标题和基础控制区域 -->
+                                    <div style="margin-bottom: 1rem;">
+                                        <h4 class="tech-font" style="color: var(--tech-blue); margin: 0 0 0.5rem 0;">
                                             <i class="fas fa-history"></i> 交易订单
                                         </h4>
 
-                                        <!-- 订单类型标签 -->
-                                        <div style="display: flex; gap: 0.3rem; margin-right: 1rem;">
+                                        <!-- 订单类型和状态标签 -->
+                                        <div
+                                            style="display: flex; gap: 0.3rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
                                             <button id="orderTypeQuantified" class="tech-btn"
                                                 onclick="switchOrderType('quantified')"
                                                 style="font-size: 0.8rem; background: var(--tech-blue); color: var(--tech-bg);">
@@ -19431,10 +19845,7 @@
                                                 onclick="switchOrderType('manual')" style="font-size: 0.8rem;">
                                                 手动订单
                                             </button>
-                                        </div>
 
-                                        <!-- 状态标签 -->
-                                        <div style="display: flex; gap: 0.3rem; margin-right: 1rem;">
                                             <button id="statusActive" class="tech-btn"
                                                 onclick="filterTradingHistory('active')"
                                                 style="font-size: 0.8rem; background: var(--tech-blue); color: var(--tech-bg);">
@@ -19445,68 +19856,81 @@
                                                 已结束
                                             </button>
                                         </div>
-                                        <!-- 第一排：基础功能按钮 -->
-                                        <div
+                                    </div>
+
+                                    <!-- 功能按钮区域 - 重新组织布局 -->
+                                    <div style="margin-bottom: 1rem;">
+                                        <!-- 核心功能按钮 -->
+                                        <div class="button-group"
                                             style="display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                                            <button class="tech-btn" onclick="scrollToTradingRecords()" id="locateBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #2196f3, #1976d2);">
-                                                <i class="fas fa-crosshairs"></i> 定位
-                                            </button>
-                                            <button class="tech-btn" onclick="refreshTradingHistory()" id="refreshBtn"
+                                            <button class="tech-btn core-btn" onclick="refreshTradingHistory()"
+                                                id="refreshBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #4caf50, #388e3c);">
                                                 <i class="fas fa-sync-alt"></i> 刷新
                                             </button>
-                                            <button class="tech-btn" onclick="toggleTradingSearch()" id="searchBtn"
+                                            <button class="tech-btn core-btn" onclick="toggleTradingSearch()"
+                                                id="searchBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #ff9800, #f57c00);">
                                                 <i class="fas fa-search"></i> 搜索
                                             </button>
-                                            <button class="tech-btn" onclick="exportTradingRecords()" id="exportBtn"
+                                            <button class="tech-btn core-btn" onclick="exportTradingRecords()"
+                                                id="exportBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #9c27b0, #673ab7);">
                                                 <i class="fas fa-download"></i> 导出
                                             </button>
+                                            <button class="tech-btn core-btn" onclick="scrollToTradingRecords()"
+                                                id="locateBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #2196f3, #1976d2);">
+                                                <i class="fas fa-crosshairs"></i> 定位
+                                            </button>
                                         </div>
 
-                                        <!-- 第二排：高级功能按钮 -->
-                                        <div
+                                        <!-- 高级功能按钮 -->
+                                        <div class="button-group"
                                             style="display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                                            <button class="tech-btn" onclick="batchOperationTradingRecords()"
-                                                id="batchBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #607d8b, #455a64);">
-                                                <i class="fas fa-tasks"></i> 批量
-                                            </button>
-                                            <button class="tech-btn" onclick="advancedFilterTradingRecords()"
-                                                id="filterBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #e91e63, #c2185b);">
-                                                <i class="fas fa-sliders-h"></i> 高级
-                                            </button>
-                                            <button class="tech-btn" onclick="showTradingVisualization()" id="visualBtn"
+                                            <button class="tech-btn advanced-btn" onclick="showTradingVisualization()"
+                                                id="visualBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #00bcd4, #0097a7);">
                                                 <i class="fas fa-chart-area"></i> 可视化
                                             </button>
-                                            <button class="tech-btn" onclick="toggleRealTimeUpdates()" id="realtimeBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #4caf50, #388e3c);">
-                                                <i class="fas fa-play"></i> 实时
+                                            <button class="tech-btn advanced-btn" onclick="showDetailedStats()"
+                                                id="statsBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #00bcd4, #0097a7);">
+                                                <i class="fas fa-chart-bar"></i> 统计
+                                            </button>
+                                            <button class="tech-btn advanced-btn"
+                                                onclick="advancedFilterTradingRecords()" id="filterBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #e91e63, #c2185b);">
+                                                <i class="fas fa-sliders-h"></i> 高级
+                                            </button>
+                                            <button class="tech-btn advanced-btn" onclick="showSortOptions()"
+                                                id="sortBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #607d8b, #455a64);">
+                                                <i class="fas fa-sort"></i> 排序
                                             </button>
                                         </div>
 
-                                        <!-- 第三排：管理功能按钮 -->
-                                        <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
-                                            <button class="tech-btn" onclick="simulateRealTimeTrading()"
+                                        <!-- 管理功能按钮 -->
+                                        <div class="button-group" style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
+                                            <button class="tech-btn advanced-btn"
+                                                onclick="batchOperationTradingRecords()" id="batchBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #607d8b, #455a64);">
+                                                <i class="fas fa-tasks"></i> 批量
+                                            </button>
+                                            <button class="tech-btn advanced-btn" onclick="toggleRealTimeUpdates()"
+                                                id="realtimeBtn"
+                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #4caf50, #388e3c);">
+                                                <i class="fas fa-play"></i> 实时
+                                            </button>
+                                            <button class="tech-btn advanced-btn" onclick="simulateRealTimeTrading()"
                                                 id="simulateBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #ff9800, #f57c00);">
                                                 <i class="fas fa-plus"></i> 模拟
                                             </button>
-                                            <button class="tech-btn" onclick="clearTradingRecords()" id="clearBtn"
+                                            <button class="tech-btn advanced-btn" onclick="clearTradingRecords()"
+                                                id="clearBtn"
                                                 style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #f44336, #d32f2f);">
                                                 <i class="fas fa-trash"></i> 清空
-                                            </button>
-                                            <button class="tech-btn" onclick="showSortOptions()" id="sortBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #607d8b, #455a64);">
-                                                <i class="fas fa-sort"></i> 排序
-                                            </button>
-                                            <button class="tech-btn" onclick="showDetailedStats()" id="statsBtn"
-                                                style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: linear-gradient(45deg, #00bcd4, #0097a7);">
-                                                <i class="fas fa-chart-bar"></i> 统计
                                             </button>
                                         </div>
                                     </div>
@@ -19975,6 +20399,17 @@
                                     updatePriceStatus('error');
                                 } else if (status === '使用备用数据源') {
                                     updatePriceStatus('simulated');
+                                }
+
+                                // 更新移动端状态指示器
+                                if (status === '已连接' || status === '已连接币安') {
+                                    updateMobileStatus('在线', 'var(--tech-green)');
+                                } else if (status === '已断开' || status === '连接错误') {
+                                    updateMobileStatus('离线', 'var(--tech-danger)');
+                                } else if (status === '连接中...') {
+                                    updateMobileStatus('连接中', 'var(--tech-warning)');
+                                } else {
+                                    updateMobileStatus(status, color);
                                 }
                             }
 
@@ -20841,6 +21276,24 @@
                                     const moreBtn = document.getElementById('toolbarMoreBtn');
                                     if (moreBtn) moreBtn.classList.add('active');
                                 }
+
+                                // 更新移动端页面标题
+                                updateMobilePageTitle(pageName);
+
+                                // 移动端页面切换动画
+                                if (window.innerWidth <= 768) {
+                                    const currentPage = pages[pageName];
+                                    if (currentPage) {
+                                        currentPage.style.opacity = '0';
+                                        currentPage.style.transform = 'translateX(20px)';
+                                        currentPage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+                                        setTimeout(() => {
+                                            currentPage.style.opacity = '1';
+                                            currentPage.style.transform = 'translateX(0)';
+                                        }, 50);
+                                    }
+                                }
                             }
 
                             // 开始预测
@@ -21660,6 +22113,30 @@
                                         elements.notification.style.borderLeft = '4px solid var(--tech-blue)';
                                 }
 
+                                // 移动端通知优化
+                                if (window.innerWidth <= 768) {
+                                    elements.notification.style.position = 'fixed';
+                                    elements.notification.style.top = '70px'; // 避免被移动端导航栏遮挡
+                                    elements.notification.style.left = '10px';
+                                    elements.notification.style.right = '10px';
+                                    elements.notification.style.width = 'auto';
+                                    elements.notification.style.maxWidth = 'none';
+                                    elements.notification.style.zIndex = '1001';
+                                    elements.notification.style.borderRadius = '8px';
+                                    elements.notification.style.fontSize = '0.9rem';
+                                } else {
+                                    // 桌面端恢复默认样式
+                                    elements.notification.style.position = '';
+                                    elements.notification.style.top = '';
+                                    elements.notification.style.left = '';
+                                    elements.notification.style.right = '';
+                                    elements.notification.style.width = '';
+                                    elements.notification.style.maxWidth = '';
+                                    elements.notification.style.zIndex = '';
+                                    elements.notification.style.borderRadius = '';
+                                    elements.notification.style.fontSize = '';
+                                }
+
                                 // 3秒后自动隐藏
                                 setTimeout(() => {
                                     elements.notification.className = 'notification';
@@ -22070,6 +22547,750 @@
 
                                 // 遮罩层事件
                                 document.getElementById('menuOverlay').addEventListener('click', closeMobileMenu);
+                            }
+
+                            // 移动端导航栏功能
+                            function toggleMobileMenu() {
+                                const mobileMenu = document.getElementById('mobileMenuPanel');
+                                const overlay = document.getElementById('menuOverlay');
+
+                                if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') {
+                                    mobileMenu.style.display = 'block';
+                                    overlay.style.display = 'block';
+                                } else {
+                                    mobileMenu.style.display = 'none';
+                                    overlay.style.display = 'none';
+                                }
+                            }
+
+                            // 移动端响应式检测
+                            function checkMobileView() {
+                                const isMobile = window.innerWidth <= 768;
+                                const mobileNav = document.querySelector('.mobile-nav');
+                                const container = document.querySelector('.container');
+
+                                if (isMobile) {
+                                    if (mobileNav) mobileNav.style.display = 'block';
+                                    if (container) container.style.marginTop = '60px';
+                                } else {
+                                    if (mobileNav) mobileNav.style.display = 'none';
+                                    if (container) container.style.marginTop = '0';
+                                }
+                            }
+
+                            // 监听窗口大小变化
+                            window.addEventListener('resize', checkMobileView);
+                            // 页面加载时检查
+                            document.addEventListener('DOMContentLoaded', checkMobileView);
+
+                            // 移动端触摸优化
+                            function addMobileTouchOptimizations() {
+                                // 防止双击缩放
+                                let lastTouchEnd = 0;
+                                document.addEventListener('touchend', function (event) {
+                                    const now = (new Date()).getTime();
+                                    if (now - lastTouchEnd <= 300) {
+                                        event.preventDefault();
+                                    }
+                                    lastTouchEnd = now;
+                                }, false);
+
+                                // 移动端按钮触摸反馈
+                                const buttons = document.querySelectorAll('.tech-btn, .mobile-menu-btn');
+                                buttons.forEach(button => {
+                                    button.addEventListener('touchstart', function () {
+                                        this.style.transform = 'scale(0.95)';
+                                        this.style.transition = 'transform 0.1s ease';
+                                    });
+
+                                    button.addEventListener('touchend', function () {
+                                        this.style.transform = 'scale(1)';
+                                    });
+                                });
+
+                                // 移动端滑动菜单支持
+                                let startX = 0;
+                                let startY = 0;
+                                let isSwiping = false;
+
+                                document.addEventListener('touchstart', function (e) {
+                                    startX = e.touches[0].clientX;
+                                    startY = e.touches[0].clientY;
+                                    isSwiping = false;
+                                });
+
+                                document.addEventListener('touchmove', function (e) {
+                                    if (!isSwiping) {
+                                        const deltaX = Math.abs(e.touches[0].clientX - startX);
+                                        const deltaY = Math.abs(e.touches[0].clientY - startY);
+
+                                        if (deltaX > deltaY && deltaX > 50) {
+                                            isSwiping = true;
+                                        }
+                                    }
+                                });
+
+                                document.addEventListener('touchend', function (e) {
+                                    if (isSwiping) {
+                                        const deltaX = e.changedTouches[0].clientX - startX;
+                                        const mobileMenu = document.getElementById('mobileMenuPanel');
+
+                                        // 从左边缘向右滑动打开菜单
+                                        if (startX < 50 && deltaX > 100 && mobileMenu) {
+                                            mobileMenu.style.display = 'block';
+                                            document.getElementById('menuOverlay').style.display = 'block';
+                                        }
+                                        // 从右向左滑动关闭菜单
+                                        else if (deltaX < -100 && mobileMenu && mobileMenu.style.display === 'block') {
+                                            mobileMenu.style.display = 'none';
+                                            document.getElementById('menuOverlay').style.display = 'none';
+                                        }
+                                    }
+                                });
+                            }
+
+                            // 移动端性能优化
+                            function optimizeMobilePerformance() {
+                                // 减少重绘和回流
+                                const style = document.createElement('style');
+                                style.textContent = `
+                                    @media (max-width: 768px) {
+                                        * {
+                                            -webkit-transform: translateZ(0);
+                                            transform: translateZ(0);
+                                        }
+
+                                        .tech-card {
+                                            will-change: transform;
+                                        }
+
+                                        .mobile-nav {
+                                            -webkit-backface-visibility: hidden;
+                                            backface-visibility: hidden;
+                                        }
+                                    }
+                                `;
+                                document.head.appendChild(style);
+                            }
+
+                            // 初始化移动端优化
+                            document.addEventListener('DOMContentLoaded', function () {
+                                addMobileTouchOptimizations();
+                                optimizeMobilePerformance();
+
+                                // 移动端页面加载完成指示器
+                                if (window.innerWidth <= 768) {
+                                    setTimeout(() => {
+                                        updateMobileStatus('系统就绪', 'var(--tech-green)');
+                                        showNotification('移动端优化已启用', 'success');
+                                    }, 1000);
+                                }
+                            });
+
+                            // 更新移动端页面标题
+                            function updateMobilePageTitle(pageName) {
+                                const mobilePageTitle = document.getElementById('mobilePageTitle');
+                                if (mobilePageTitle) {
+                                    const pageTitles = {
+                                        'dashboard': '仪表盘',
+                                        'prediction': 'AI预测',
+                                        'market': '市场分析',
+                                        'membership': '会员中心',
+                                        'reinvest': '复投管理',
+                                        'backtest': '回测分析',
+                                        'risk': '风险控制',
+                                        'records': '交易记录',
+                                        'profit': '收益统计',
+                                        'deposit': '充值中心',
+                                        'settings': '系统设置',
+                                        'trading': '交易管理',
+                                        'login': '用户登录'
+                                    };
+                                    mobilePageTitle.textContent = pageTitles[pageName] || '预测系统';
+                                }
+                            }
+
+                            // 更新移动端状态指示器
+                            function updateMobileStatus(status, color = 'var(--tech-green)') {
+                                const mobileStatus = document.getElementById('mobileStatus');
+                                if (mobileStatus) {
+                                    const statusText = mobileStatus.querySelector('span');
+                                    const statusIcon = mobileStatus.querySelector('i');
+
+                                    if (statusText) statusText.textContent = status;
+                                    if (statusIcon) statusIcon.style.color = color;
+                                    mobileStatus.style.color = color;
+                                }
+                            }
+
+                            // 移动端网络状态检测
+                            function checkMobileNetworkStatus() {
+                                if (window.innerWidth <= 768) {
+                                    if (navigator.onLine) {
+                                        updateMobileStatus('在线', 'var(--tech-green)');
+                                    } else {
+                                        updateMobileStatus('离线', 'var(--tech-danger)');
+                                        showNotification('网络连接已断开', 'warning');
+                                    }
+                                }
+                            }
+
+                            // 监听网络状态变化
+                            window.addEventListener('online', () => {
+                                checkMobileNetworkStatus();
+                                showNotification('网络连接已恢复', 'success');
+                            });
+
+                            window.addEventListener('offline', () => {
+                                checkMobileNetworkStatus();
+                                showNotification('网络连接已断开', 'warning');
+                            });
+
+                            // 移动端错误处理
+                            window.addEventListener('error', function (e) {
+                                if (window.innerWidth <= 768) {
+                                    console.error('移动端错误:', e.error);
+                                    updateMobileStatus('错误', 'var(--tech-danger)');
+                                    showNotification('系统遇到错误，请刷新页面', 'error');
+                                }
+                            });
+
+                            // 移动端下拉刷新功能
+                            function initMobilePullRefresh() {
+                                if (window.innerWidth <= 768) {
+                                    let startY = 0;
+                                    let currentY = 0;
+                                    let isPulling = false;
+                                    let pullDistance = 0;
+
+                                    // 创建下拉刷新指示器
+                                    const pullRefreshIndicator = document.createElement('div');
+                                    pullRefreshIndicator.className = 'mobile-pull-refresh';
+                                    pullRefreshIndicator.innerHTML = '<i class="fas fa-sync-alt"></i> 下拉刷新';
+                                    document.body.appendChild(pullRefreshIndicator);
+
+                                    document.addEventListener('touchstart', function (e) {
+                                        if (window.scrollY === 0) {
+                                            startY = e.touches[0].clientY;
+                                            isPulling = true;
+                                        }
+                                    });
+
+                                    document.addEventListener('touchmove', function (e) {
+                                        if (isPulling && window.scrollY === 0) {
+                                            currentY = e.touches[0].clientY;
+                                            pullDistance = currentY - startY;
+
+                                            if (pullDistance > 0 && pullDistance < 100) {
+                                                pullRefreshIndicator.classList.add('show');
+                                                pullRefreshIndicator.innerHTML = '<i class="fas fa-sync-alt"></i> 下拉刷新';
+                                            } else if (pullDistance >= 100) {
+                                                pullRefreshIndicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 释放刷新';
+                                            }
+                                        }
+                                    });
+
+                                    document.addEventListener('touchend', function (e) {
+                                        if (isPulling && pullDistance >= 100) {
+                                            // 执行刷新
+                                            pullRefreshIndicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 刷新中...';
+                                            updateMobileStatus('刷新中', 'var(--tech-warning)');
+
+                                            // 模拟刷新操作
+                                            setTimeout(() => {
+                                                pullRefreshIndicator.classList.remove('show');
+                                                updateMobileStatus('刷新完成', 'var(--tech-green)');
+                                                showNotification('页面已刷新', 'success');
+
+                                                // 重新加载数据
+                                                if (typeof updateRealTimeData === 'function') {
+                                                    updateRealTimeData();
+                                                }
+                                            }, 1500);
+                                        } else {
+                                            pullRefreshIndicator.classList.remove('show');
+                                        }
+
+                                        isPulling = false;
+                                        pullDistance = 0;
+                                    });
+                                }
+                            }
+
+                            // 初始化移动端下拉刷新
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobilePullRefresh();
+                            });
+
+                            // 移动端长按菜单功能
+                            function initMobileContextMenu() {
+                                if (window.innerWidth <= 768) {
+                                    let longPressTimer = null;
+                                    let contextMenu = null;
+
+                                    // 创建长按菜单
+                                    function createContextMenu() {
+                                        if (!contextMenu) {
+                                            contextMenu = document.createElement('div');
+                                            contextMenu.className = 'mobile-context-menu';
+                                            contextMenu.innerHTML = `
+                                                <div class="mobile-context-menu-item" onclick="showPage('dashboard')">
+                                                    <i class="fas fa-tachometer-alt"></i> 仪表盘
+                                                </div>
+                                                <div class="mobile-context-menu-item" onclick="showPage('prediction')">
+                                                    <i class="fas fa-brain"></i> AI预测
+                                                </div>
+                                                <div class="mobile-context-menu-item" onclick="showPage('market')">
+                                                    <i class="fas fa-chart-line"></i> 市场分析
+                                                </div>
+                                                <div class="mobile-context-menu-item" onclick="toggleMobileMenu()">
+                                                    <i class="fas fa-bars"></i> 完整菜单
+                                                </div>
+                                            `;
+                                            document.body.appendChild(contextMenu);
+                                        }
+                                    }
+
+                                    // 长按事件处理
+                                    document.addEventListener('touchstart', function (e) {
+                                        if (e.target.closest('.tech-card') || e.target.closest('.tech-btn')) {
+                                            longPressTimer = setTimeout(() => {
+                                                createContextMenu();
+                                                contextMenu.style.display = 'block';
+                                                contextMenu.style.left = e.touches[0].clientX + 'px';
+                                                contextMenu.style.top = e.touches[0].clientY + 'px';
+
+                                                // 添加点击外部关闭功能
+                                                setTimeout(() => {
+                                                    document.addEventListener('click', closeContextMenu, { once: true });
+                                                }, 100);
+                                            }, 500);
+                                        }
+                                    });
+
+                                    document.addEventListener('touchend', function () {
+                                        if (longPressTimer) {
+                                            clearTimeout(longPressTimer);
+                                            longPressTimer = null;
+                                        }
+                                    });
+
+                                    function closeContextMenu() {
+                                        if (contextMenu) {
+                                            contextMenu.style.display = 'none';
+                                        }
+                                    }
+                                }
+                            }
+
+                            // 初始化移动端长按菜单
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobileContextMenu();
+                            });
+
+                            // 移动端性能监控
+                            function initMobilePerformanceMonitor() {
+                                if (window.innerWidth <= 768) {
+                                    let frameCount = 0;
+                                    let lastTime = performance.now();
+                                    let fps = 60;
+
+                                    function updateFPS() {
+                                        frameCount++;
+                                        const currentTime = performance.now();
+
+                                        if (currentTime - lastTime >= 1000) {
+                                            fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                                            frameCount = 0;
+                                            lastTime = currentTime;
+
+                                            // 如果FPS过低，显示警告
+                                            if (fps < 30) {
+                                                updateMobileStatus('性能警告', 'var(--tech-warning)');
+                                                showNotification('系统性能较低，建议关闭其他应用', 'warning');
+                                            } else {
+                                                updateMobileStatus('在线', 'var(--tech-green)');
+                                            }
+                                        }
+
+                                        requestAnimationFrame(updateFPS);
+                                    }
+
+                                    updateFPS();
+                                }
+                            }
+
+                            // 初始化移动端性能监控
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobilePerformanceMonitor();
+                            });
+
+                            // 移动端电池状态监控
+                            function initMobileBatteryMonitor() {
+                                if (window.innerWidth <= 768 && 'getBattery' in navigator) {
+                                    navigator.getBattery().then(function (battery) {
+                                        function updateBatteryStatus() {
+                                            const level = Math.round(battery.level * 100);
+                                            const charging = battery.charging;
+
+                                            if (level <= 20 && !charging) {
+                                                updateMobileStatus('电量低', 'var(--tech-danger)');
+                                                showNotification('电池电量不足，建议连接充电器', 'warning');
+                                            } else if (level <= 10 && !charging) {
+                                                updateMobileStatus('电量极低', 'var(--tech-danger)');
+                                                showNotification('电池电量极低，请立即充电', 'error');
+                                            } else if (charging) {
+                                                updateMobileStatus('充电中', 'var(--tech-success)');
+                                            }
+                                        }
+
+                                        // 监听电池状态变化
+                                        battery.addEventListener('levelchange', updateBatteryStatus);
+                                        battery.addEventListener('chargingchange', updateBatteryStatus);
+
+                                        // 初始检查
+                                        updateBatteryStatus();
+                                    });
+                                }
+                            }
+
+                            // 初始化移动端电池监控
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobileBatteryMonitor();
+                            });
+
+                            // 移动端主题切换功能
+                            function initMobileThemeToggle() {
+                                if (window.innerWidth <= 768) {
+                                    // 检测系统主题偏好
+                                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                                    const currentTheme = localStorage.getItem('mobileTheme') || (prefersDark ? 'dark' : 'light');
+
+                                    // 应用主题
+                                    applyMobileTheme(currentTheme);
+
+                                    // 监听系统主题变化
+                                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                                        const newTheme = e.matches ? 'dark' : 'light';
+                                        if (!localStorage.getItem('mobileTheme')) {
+                                            applyMobileTheme(newTheme);
+                                        }
+                                    });
+                                }
+                            }
+
+                            // 应用移动端主题
+                            function applyMobileTheme(theme) {
+                                const root = document.documentElement;
+
+                                if (theme === 'dark') {
+                                    root.style.setProperty('--tech-bg', '#0a0a0a');
+                                    root.style.setProperty('--tech-card-bg', '#1a1a1a');
+                                    root.style.setProperty('--tech-text', '#ffffff');
+                                    root.style.setProperty('--tech-text-secondary', '#cccccc');
+                                    root.style.setProperty('--tech-border', '#333333');
+                                } else {
+                                    root.style.setProperty('--tech-bg', '#f8f9fa');
+                                    root.style.setProperty('--tech-card-bg', '#ffffff');
+                                    root.style.setProperty('--tech-text', '#333333');
+                                    root.style.setProperty('--tech-text-secondary', '#666666');
+                                    root.style.setProperty('--tech-border', '#e0e0e0');
+                                }
+
+                                localStorage.setItem('mobileTheme', theme);
+                            }
+
+                            // 切换移动端主题
+                            function toggleMobileTheme() {
+                                const currentTheme = localStorage.getItem('mobileTheme') || 'light';
+                                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                                applyMobileTheme(newTheme);
+                                showNotification(`已切换到${newTheme === 'dark' ? '深色' : '浅色'}主题`, 'success');
+                            }
+
+                            // 初始化移动端主题
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // 确保默认使用深色主题
+                                const savedTheme = localStorage.getItem('mobileTheme');
+                                if (!savedTheme) {
+                                    applyMobileTheme('dark');
+                                } else if (savedTheme === 'light') {
+                                    // 如果之前保存的是浅色主题，自动切换到深色
+                                    applyMobileTheme('dark');
+                                }
+                                initMobileThemeToggle();
+                            });
+
+                            // 移动端手势导航功能
+                            function initMobileGestureNavigation() {
+                                if (window.innerWidth <= 768) {
+                                    let startX = 0;
+                                    let startY = 0;
+                                    let isNavigating = false;
+                                    const pageHistory = ['dashboard'];
+                                    let currentPageIndex = 0;
+
+                                    document.addEventListener('touchstart', function (e) {
+                                        startX = e.touches[0].clientX;
+                                        startY = e.touches[0].clientY;
+                                        isNavigating = false;
+                                    });
+
+                                    document.addEventListener('touchmove', function (e) {
+                                        if (!isNavigating) {
+                                            const deltaX = Math.abs(e.touches[0].clientX - startX);
+                                            const deltaY = Math.abs(e.touches[0].clientY - startY);
+
+                                            if (deltaX > deltaY && deltaX > 100) {
+                                                isNavigating = true;
+                                            }
+                                        }
+                                    });
+
+                                    document.addEventListener('touchend', function (e) {
+                                        if (isNavigating) {
+                                            const deltaX = e.changedTouches[0].clientX - startX;
+
+                                            // 向右滑动 - 返回上一页
+                                            if (deltaX > 100 && currentPageIndex > 0) {
+                                                currentPageIndex--;
+                                                const previousPage = pageHistory[currentPageIndex];
+                                                showPage(previousPage);
+                                                showNotification('返回上一页', 'info');
+                                            }
+                                            // 向左滑动 - 前进到下一页（如果有的话）
+                                            else if (deltaX < -100 && currentPageIndex < pageHistory.length - 1) {
+                                                currentPageIndex++;
+                                                const nextPage = pageHistory[currentPageIndex];
+                                                showPage(nextPage);
+                                                showNotification('前进到下一页', 'info');
+                                            }
+                                        }
+                                    });
+
+                                    // 重写showPage函数以记录页面历史
+                                    const originalShowPage = window.showPage;
+                                    window.showPage = function (pageName) {
+                                        if (originalShowPage) {
+                                            originalShowPage(pageName);
+                                        }
+
+                                        // 记录页面历史
+                                        if (pageHistory[currentPageIndex] !== pageName) {
+                                            pageHistory.splice(currentPageIndex + 1);
+                                            pageHistory.push(pageName);
+                                            currentPageIndex = pageHistory.length - 1;
+                                        }
+                                    };
+                                }
+                            }
+
+                            // 初始化移动端手势导航
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobileGestureNavigation();
+                            });
+
+                            // 移动端语音控制功能
+                            function initMobileVoiceControl() {
+                                if (window.innerWidth <= 768 && 'webkitSpeechRecognition' in window) {
+                                    const recognition = new webkitSpeechRecognition();
+                                    recognition.continuous = false;
+                                    recognition.interimResults = false;
+                                    recognition.lang = 'zh-CN';
+
+                                    let isListening = false;
+
+                                    // 创建语音控制按钮
+                                    const voiceButton = document.createElement('button');
+                                    voiceButton.className = 'mobile-voice-btn';
+                                    voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                                    voiceButton.style.cssText = `
+                                        position: fixed;
+                                        bottom: 80px;
+                                        right: 20px;
+                                        width: 50px;
+                                        height: 50px;
+                                        border-radius: 50%;
+                                        background: var(--tech-blue);
+                                        border: none;
+                                        color: white;
+                                        font-size: 1.2rem;
+                                        z-index: 1000;
+                                        box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+                                        transition: all 0.3s ease;
+                                    `;
+
+                                    voiceButton.addEventListener('click', function () {
+                                        if (!isListening) {
+                                            startVoiceRecognition();
+                                        } else {
+                                            stopVoiceRecognition();
+                                        }
+                                    });
+
+                                    document.body.appendChild(voiceButton);
+
+                                    function startVoiceRecognition() {
+                                        recognition.start();
+                                        isListening = true;
+                                        voiceButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                                        voiceButton.style.background = 'var(--tech-danger)';
+                                        updateMobileStatus('语音识别中', 'var(--tech-warning)');
+                                        showNotification('请说出您的指令', 'info');
+                                    }
+
+                                    function stopVoiceRecognition() {
+                                        recognition.stop();
+                                        isListening = false;
+                                        voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                                        voiceButton.style.background = 'var(--tech-blue)';
+                                        updateMobileStatus('在线', 'var(--tech-green)');
+                                    }
+
+                                    recognition.onresult = function (event) {
+                                        const transcript = event.results[0][0].transcript;
+                                        processVoiceCommand(transcript);
+                                        stopVoiceRecognition();
+                                    };
+
+                                    recognition.onerror = function (event) {
+                                        console.error('语音识别错误:', event.error);
+                                        stopVoiceRecognition();
+                                        showNotification('语音识别失败，请重试', 'error');
+                                    };
+
+                                    function processVoiceCommand(command) {
+                                        const lowerCommand = command.toLowerCase();
+
+                                        if (lowerCommand.includes('仪表盘') || lowerCommand.includes('首页')) {
+                                            showPage('dashboard');
+                                            showNotification('已切换到仪表盘', 'success');
+                                        } else if (lowerCommand.includes('预测') || lowerCommand.includes('ai')) {
+                                            showPage('prediction');
+                                            showNotification('已切换到AI预测', 'success');
+                                        } else if (lowerCommand.includes('市场') || lowerCommand.includes('行情')) {
+                                            showPage('market');
+                                            showNotification('已切换到市场分析', 'success');
+                                        } else if (lowerCommand.includes('菜单') || lowerCommand.includes('导航')) {
+                                            toggleMobileMenu();
+                                            showNotification('已打开菜单', 'success');
+                                        } else if (lowerCommand.includes('刷新') || lowerCommand.includes('更新')) {
+                                            location.reload();
+                                        } else {
+                                            showNotification(`未识别指令: ${command}`, 'warning');
+                                        }
+                                    }
+                                }
+                            }
+
+                            // 初始化移动端语音控制
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initMobileVoiceControl();
+                            });
+
+                            // 移动端优化总结和初始化
+                            function initAllMobileOptimizations() {
+                                if (window.innerWidth <= 768) {
+                                    console.log('🚀 初始化移动端优化...');
+
+                                    // 显示移动端优化状态
+                                    setTimeout(() => {
+                                        showNotification('移动端优化已启用', 'success');
+                                        updateMobileStatus('系统就绪', 'var(--tech-green)');
+
+                                        // 显示移动端功能提示
+                                        const mobileTips = [
+                                            '💡 提示：从左边缘向右滑动可打开菜单',
+                                            '💡 提示：下拉页面顶部可刷新数据',
+                                            '💡 提示：长按卡片可显示快捷菜单',
+                                            '💡 提示：点击右下角麦克风可语音控制',
+                                            '💡 提示：左右滑动可切换页面'
+                                        ];
+
+                                        let tipIndex = 0;
+                                        const showTip = () => {
+                                            if (tipIndex < mobileTips.length) {
+                                                showNotification(mobileTips[tipIndex], 'info');
+                                                tipIndex++;
+                                                setTimeout(showTip, 8000); // 每8秒显示一个提示
+                                            }
+                                        };
+
+                                        setTimeout(showTip, 3000); // 3秒后开始显示提示
+                                    }, 1000);
+                                }
+                            }
+
+                            // 初始化所有移动端优化
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initAllMobileOptimizations();
+                            });
+
+                            // 全局深色主题初始化
+                            function initDarkTheme() {
+                                const root = document.documentElement;
+
+                                // 强制应用深色主题
+                                root.style.setProperty('--tech-bg', '#1a1a1a');
+                                root.style.setProperty('--tech-panel', '#2a2a2a');
+                                root.style.setProperty('--tech-text', '#ffffff');
+                                root.style.setProperty('--tech-text-secondary', '#b0b0b0');
+                                root.style.setProperty('--tech-border', '#404040');
+
+                                // 强制清除所有背景图案
+                                document.body.style.backgroundImage = 'none';
+                                document.body.style.background = '#1a1a1a';
+
+                                // 清除所有页面容器的背景图案
+                                const containers = document.querySelectorAll('.page-container, .content-wrapper, .main-content');
+                                containers.forEach(container => {
+                                    container.style.backgroundImage = 'none';
+                                    container.style.background = '#1a1a1a';
+                                });
+
+                                // 添加深色主题类
+                                document.body.classList.add('dark-theme');
+
+                                // 确保所有页面容器都使用深色背景
+                                const pageContainers = document.querySelectorAll('.page-container, [id$="Page"]');
+                                pageContainers.forEach(container => {
+                                    container.style.background = 'var(--tech-bg)';
+                                    container.style.color = 'var(--tech-text)';
+                                });
+
+                                console.log('🎨 纯色深色主题已启用');
+
+                                // 显示纯色深色主题启用通知
+                                setTimeout(() => {
+                                    showNotification('🎨 纯色深色主题已启用', 'success');
+                                }, 500);
+                            }
+
+                            // 页面加载时初始化深色主题
+                            document.addEventListener('DOMContentLoaded', function () {
+                                initDarkTheme();
+                            });
+
+                            // 确保页面切换时保持深色主题
+                            const originalShowPage = window.showPage;
+                            if (originalShowPage) {
+                                window.showPage = function (pageName) {
+                                    originalShowPage(pageName);
+                                    // 页面切换后重新应用深色主题并清除背景图案
+                                    setTimeout(() => {
+                                        initDarkTheme();
+                                        // 强制清除所有背景图案
+                                        document.body.style.backgroundImage = 'none';
+                                        document.body.style.background = '#1a1a1a';
+
+                                        // 清除所有页面容器的背景图案
+                                        const containers = document.querySelectorAll('.page-container, .content-wrapper, .main-content');
+                                        containers.forEach(container => {
+                                            container.style.backgroundImage = 'none';
+                                            container.style.background = '#1a1a1a';
+                                        });
+                                    }, 100);
+                                };
                             }
 
                             // 复制地址功能
