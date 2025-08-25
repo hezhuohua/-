@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AI预测信号折叠功能测试</title>
+        <style>
+            :root {
+                --tech-bg: #0a0e1a;
+                --tech-blue: #00f3ff;
+                --tech-text: #ffffff;
+                --tech-muted: #8a8a8a;
+                --tech-success: #4caf50;
+                --tech-danger: #f44336;
+            }
+
+            body {
+                background: var(--tech-bg);
+                color: var(--tech-text);
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .tech-panel {
+                background: rgba(0, 243, 255, 0.05);
+                border: 1px solid rgba(0, 243, 255, 0.2);
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .tech-font {
+                font-family: 'Courier New', monospace;
+                font-weight: bold;
+            }
+
+            .tech-btn {
+                background: linear-gradient(45deg, var(--tech-blue), #0099cc);
+                color: var(--tech-bg);
+                border: none;
+                border-radius: 6px;
+                padding: 0.5rem 1rem;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+
+            .tech-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3);
+            }
+
+            .prediction-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.5rem;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 8px;
+                transition: background-color 0.3s ease;
+            }
+
+            .prediction-header:hover {
+                background: rgba(0, 243, 255, 0.1);
+            }
+
+            .toggle-icon {
+                color: var(--tech-blue);
+                transition: transform 0.3s ease;
+            }
+
+            .prediction-content {
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+
+            .signal-card {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid rgba(0, 243, 255, 0.3);
+                border-radius: 8px;
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .signal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0.3rem;
+            }
+
+            .signal-symbol {
+                font-weight: bold;
+                color: var(--tech-blue);
+            }
+
+            .signal-type {
+                padding: 0.2rem 0.5rem;
+                border-radius: 4px;
+                font-size: 0.7rem;
+            }
+
+            .signal-type.bullish {
+                background: rgba(40, 167, 69, 0.2);
+                color: var(--tech-success);
+            }
+
+            .signal-type.bearish {
+                background: rgba(220, 53, 69, 0.2);
+                color: var(--tech-danger);
+            }
+
+            .signal-details {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.3rem;
+                margin-bottom: 0.3rem;
+                font-size: 0.7rem;
+            }
+
+            .signal-actions {
+                display: flex;
+                gap: 0.3rem;
+                justify-content: center;
+            }
+
+            .signal-actions .tech-btn {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.5rem;
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+
+    <body>
+        <div class="tech-panel">
+            <div class="prediction-header" onclick="togglePredictionSignals()">
+                <h4 class="tech-font" style="color: var(--tech-blue); margin: 0;">
+                    <i class="fas fa-chart-line"></i> AI预测信号
+                </h4>
+                <i id="predictionToggleIcon" class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+
+            <div id="predictionSignalsContent" class="prediction-content">
+                <!-- BTC信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">BTC/USDT</span>
+                        <span class="signal-type bullish">看多信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$43,250.00</div>
+                        <div><strong>目标价格：</strong>$45,000.00</div>
+                        <div><strong>止损价格：</strong>$42,000.00</div>
+                        <div><strong>置信度：</strong>85%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ETH信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">ETH/USDT</span>
+                        <span class="signal-type bearish">看空信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$2,680.50</div>
+                        <div><strong>目标价格：</strong>$2,500.00</div>
+                        <div><strong>止损价格：</strong>$2,750.00</div>
+                        <div><strong>置信度：</strong>78%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BNB信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">BNB/USDT</span>
+                        <span class="signal-type bullish">看多信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$312.50</div>
+                        <div><strong>目标价格：</strong>$325.00</div>
+                        <div><strong>止损价格：</strong>$305.00</div>
+                        <div><strong>置信度：</strong>82%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ADA信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">ADA/USDT</span>
+                        <span class="signal-type bearish">看空信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$0.485</div>
+                        <div><strong>目标价格：</strong>$0.465</div>
+                        <div><strong>止损价格：</strong>$0.505</div>
+                        <div><strong>置信度：</strong>76%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SOL信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">SOL/USDT</span>
+                        <span class="signal-type bullish">看多信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$98.75</div>
+                        <div><strong>目标价格：</strong>$105.00</div>
+                        <div><strong>止损价格：</strong>$95.00</div>
+                        <div><strong>置信度：</strong>88%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DOT信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">DOT/USDT</span>
+                        <span class="signal-type bearish">看空信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$7.25</div>
+                        <div><strong>目标价格：</strong>$7.00</div>
+                        <div><strong>止损价格：</strong>$7.45</div>
+                        <div><strong>置信度：</strong>74%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LINK信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">LINK/USDT</span>
+                        <span class="signal-type bullish">看多信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$15.80</div>
+                        <div><strong>目标价格：</strong>$16.50</div>
+                        <div><strong>止损价格：</strong>$15.40</div>
+                        <div><strong>置信度：</strong>81%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MATIC信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">MATIC/USDT</span>
+                        <span class="signal-type bearish">看空信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$0.725</div>
+                        <div><strong>目标价格：</strong>$0.695</div>
+                        <div><strong>止损价格：</strong>$0.745</div>
+                        <div><strong>置信度：</strong>79%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AVAX信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">AVAX/USDT</span>
+                        <span class="signal-type bullish">看多信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$32.45</div>
+                        <div><strong>目标价格：</strong>$34.00</div>
+                        <div><strong>止损价格：</strong>$31.50</div>
+                        <div><strong>置信度：</strong>83%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+
+                <!-- UNI信号 -->
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <span class="signal-symbol">UNI/USDT</span>
+                        <span class="signal-type bearish">看空信号</span>
+                    </div>
+                    <div class="signal-details">
+                        <div><strong>当前价格：</strong>$8.95</div>
+                        <div><strong>目标价格：</strong>$8.65</div>
+                        <div><strong>止损价格：</strong>$9.15</div>
+                        <div><strong>置信度：</strong>77%</div>
+                    </div>
+                    <div class="signal-actions">
+                        <button class="tech-btn">
+                            <i class="fas fa-rocket"></i> 做多
+                        </button>
+                        <button class="tech-btn">
+                            <i class="fas fa-arrow-down"></i> 做空
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // AI预测信号折叠功能
+            function togglePredictionSignals() {
+                const content = document.getElementById('predictionSignalsContent');
+                const icon = document.getElementById('predictionToggleIcon');
+
+                if (content && icon) {
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        icon.style.transform = 'rotate(0deg)';
+                        icon.className = 'fas fa-chevron-down toggle-icon';
+                    } else {
+                        content.style.display = 'none';
+                        icon.style.transform = 'rotate(180deg)';
+                        icon.className = 'fas fa-chevron-up toggle-icon';
+                    }
+                }
+            }
+
+            // 初始化预测信号折叠状态
+            function initPredictionSignals() {
+                const content = document.getElementById('predictionSignalsContent');
+                const icon = document.getElementById('predictionToggleIcon');
+
+                if (content && icon) {
+                    // 默认展开状态
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(0deg)';
+                    icon.className = 'fas fa-chevron-down toggle-icon';
+                }
+            }
+
+            // 页面加载完成后初始化
+            document.addEventListener('DOMContentLoaded', function () {
+                initPredictionSignals();
+                console.log('AI预测信号折叠功能已初始化');
+            });
+        </script>
+    </body>
+
+</html>

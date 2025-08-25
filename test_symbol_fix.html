@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>交易对选择测试</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #0a0e1a;
+                color: #fff;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .test-container {
+                max-width: 600px;
+                margin: 0 auto;
+                background: #1a1f2e;
+                padding: 20px;
+                border-radius: 10px;
+                border: 1px solid #2a2f3e;
+            }
+
+            .symbol-selector {
+                width: 100%;
+                padding: 10px;
+                background: #2a2f3e;
+                border: 1px solid #00f3ff;
+                border-radius: 5px;
+                color: #fff;
+                margin-bottom: 20px;
+            }
+
+            .status {
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+                background: #2a2f3e;
+            }
+
+            .success {
+                border-left: 4px solid #28a745;
+            }
+
+            .error {
+                border-left: 4px solid #dc3545;
+            }
+
+            .info {
+                border-left: 4px solid #00f3ff;
+            }
+
+            .test-btn {
+                background: #00f3ff;
+                color: #000;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            .test-btn:hover {
+                background: #00d4e0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="test-container">
+            <h1>🔧 交易对选择功能测试</h1>
+
+            <div class="status info">
+                <strong>测试说明：</strong> 此页面用于测试交易对选择功能是否正常工作，避免出现系统错误。
+            </div>
+
+            <div>
+                <label for="symbolSelector">选择交易对：</label>
+                <select id="symbolSelector" class="symbol-selector">
+                    <option value="BTCUSDT">BTC/USDT</option>
+                    <option value="ETHUSDT">ETH/USDT</option>
+                    <option value="BNBUSDT">BNB/USDT</option>
+                    <option value="SOLUSDT">SOL/USDT</option>
+                    <option value="XRPUSDT">XRP/USDT</option>
+                    <option value="ADAUSDT">ADA/USDT</option>
+                    <option value="DOGEUSDT">DOGE/USDT</option>
+                    <option value="DOTUSDT">DOT/USDT</option>
+                    <option value="LINKUSDT">LINK/USDT</option>
+                    <option value="MATICUSDT">MATIC/USDT</option>
+                </select>
+            </div>
+
+            <div>
+                <button class="test-btn" onclick="testSymbolChange()">测试交易对切换</button>
+                <button class="test-btn" onclick="testDataFetch()">测试数据获取</button>
+                <button class="test-btn" onclick="clearLog()">清空日志</button>
+            </div>
+
+            <div id="log" class="status info">
+                <strong>测试日志：</strong><br>
+                <div id="logContent">等待测试开始...</div>
+            </div>
+        </div>
+
+        <script>
+            // 模拟修复后的函数
+            function subscribeToSymbol(symbol) {
+                log(`✅ 已切换到 ${symbol} 数据源`, 'success');
+                // 模拟数据获取
+                fetchMarketData().catch(error => {
+                    log(`❌ 获取新交易对数据失败: ${error.message}`, 'error');
+                });
+            }
+
+            function unsubscribeFromSymbol(symbol) {
+                log(`✅ 已取消 ${symbol} 数据源`, 'success');
+            }
+
+            function updateChartForSymbol(symbol) {
+                log(`✅ 更新图表为 ${symbol}`, 'success');
+            }
+
+            async function fetchMarketData() {
+                log('🔄 正在获取市场数据...', 'info');
+
+                try {
+                    // 模拟API调用
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // 模拟成功响应
+                    log('✅ 市场数据获取成功', 'success');
+                    return true;
+                } catch (error) {
+                    log(`❌ 市场数据获取失败: ${error.message}`, 'error');
+                    return false;
+                }
+            }
+
+            function log(message, type = 'info') {
+                const logContent = document.getElementById('logContent');
+                const timestamp = new Date().toLocaleTimeString('zh-CN');
+                const logEntry = `[${timestamp}] ${message}<br>`;
+
+                logContent.innerHTML = logEntry + logContent.innerHTML;
+
+                // 限制日志条数
+                const entries = logContent.innerHTML.split('<br>');
+                if (entries.length > 20) {
+                    logContent.innerHTML = entries.slice(0, 20).join('<br>');
+                }
+            }
+
+            function testSymbolChange() {
+                const symbolSelector = document.getElementById('symbolSelector');
+                const newSymbol = symbolSelector.value;
+                const oldSymbol = symbolSelector.dataset.previousSymbol;
+
+                log(`🔄 测试交易对切换: ${oldSymbol || '无'} → ${newSymbol}`, 'info');
+
+                try {
+                    // 取消订阅旧交易对
+                    if (oldSymbol) {
+                        unsubscribeFromSymbol(oldSymbol);
+                    }
+
+                    // 订阅新交易对
+                    subscribeToSymbol(newSymbol);
+
+                    // 更新图表
+                    updateChartForSymbol(newSymbol);
+
+                    // 保存当前选择
+                    symbolSelector.dataset.previousSymbol = newSymbol;
+
+                    log('✅ 交易对切换测试完成', 'success');
+                } catch (error) {
+                    log(`❌ 交易对切换测试失败: ${error.message}`, 'error');
+                }
+            }
+
+            function testDataFetch() {
+                log('🔄 开始测试数据获取功能...', 'info');
+                fetchMarketData();
+            }
+
+            function clearLog() {
+                document.getElementById('logContent').innerHTML = '日志已清空...';
+            }
+
+            // 添加事件监听器
+            document.getElementById('symbolSelector').addEventListener('change', function () {
+                log(`🔄 检测到交易对选择变化: ${this.value}`, 'info');
+            });
+
+            // 页面加载完成
+            window.addEventListener('load', function () {
+                log('✅ 测试页面加载完成', 'success');
+                log('🔧 修复内容：', 'info');
+                log('   - 修复了 fetchCoinAPIPrices 未定义的问题', 'info');
+                log('   - 统一使用 fetchMarketData 函数', 'info');
+                log('   - 修复了 updateChartWithRealData 参数问题', 'info');
+                log('   - 修正了币安API基础URL', 'info');
+            });
+        </script>
+    </body>
+
+</html>

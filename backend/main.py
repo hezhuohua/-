@@ -305,6 +305,17 @@ async def get_market_data(symbol: str):
     data = exchange_manager.get_symbol_data(symbol)
     return {"success": True, "data": data}
 
+@app.get("/api/market/data")
+async def get_all_market_data():
+    """获取所有支持交易对的市场数据"""
+    all_data = {}
+    supported_symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT', 'LINKUSDT', 'MATICUSDT']
+    for symbol in supported_symbols:
+        data = exchange_manager.get_symbol_data(symbol)
+        if data:
+            all_data[symbol] = data
+    return {"success": True, "data": all_data}
+
 @app.get("/api/market/aggregated/{symbol}")
 async def get_aggregated_data(symbol: str):
     """获取聚合市场数据"""

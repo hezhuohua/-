@@ -14,6 +14,7 @@ import time
 import json
 import sqlite3
 import os
+import random
 from datetime import datetime, timedelta
 import threading
 import schedule
@@ -52,7 +53,7 @@ def init_database():
         )
     ''')
 
-    # 交易记录表
+    # 交易记录表 - 添加order_type字段
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS trade_records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,6 +64,7 @@ def init_database():
             price REAL NOT NULL,
             quantity REAL NOT NULL,
             status TEXT NOT NULL,
+            order_type TEXT DEFAULT 'manual',  -- 新增：订单类型 (manual/ai/quantified)
             take_profit REAL,
             stop_loss REAL,
             pnl REAL DEFAULT 0,
@@ -73,6 +75,23 @@ def init_database():
             FOREIGN KEY (user_id) REFERENCES user_api_configs (user_id)
         )
     ''')
+
+    # 为现有表添加order_type字段（如果不存在）
+    try:
+        cursor.execute('ALTER TABLE trade_records ADD COLUMN order_type TEXT DEFAULT "manual"')
+        print("✅ 已为trade_records表添加order_type字段")
+    except sqlite3.OperationalError:
+        print("ℹ️ order_type字段已存在")
+
+    # 创建索引以提高查询性能
+    try:
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_trade_records_user_id ON trade_records(user_id)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_trade_records_order_type ON trade_records(order_type)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_trade_records_status ON trade_records(status)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_trade_records_executed_at ON trade_records(executed_at)')
+        print("✅ 数据库索引创建完成")
+    except sqlite3.OperationalError as e:
+        print(f"ℹ️ 索引创建状态: {e}")
 
     # 分润记录表
     cursor.execute('''
@@ -349,7 +368,7 @@ class DatabaseManager:
         finally:
             conn.close()
 
-    def save_trade_record(self, user_id, order_data, take_profit=None, stop_loss=None):
+    def save_trade_record(self, user_id, order_data, take_profit=None, stop_loss=None, order_type='manual'):
         """保存交易记录"""
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -357,8 +376,8 @@ class DatabaseManager:
         try:
             cursor.execute('''
                 INSERT INTO trade_records
-                (user_id, order_id, symbol, side, price, quantity, status, take_profit, stop_loss)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (user_id, order_id, symbol, side, price, quantity, status, order_type, take_profit, stop_loss)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 user_id,
                 order_data['orderId'],
@@ -367,6 +386,7 @@ class DatabaseManager:
                 float(order_data['price']),
                 float(order_data['executedQty']),
                 order_data['status'],
+                order_type,  # 新增：订单类型
                 take_profit,
                 stop_loss
             ))
@@ -391,6 +411,31 @@ class DatabaseManager:
                 ORDER BY executed_at DESC
                 LIMIT ?
             ''', (user_id, limit))
+
+            columns = [description[0] for description in cursor.description]
+            records = []
+
+            for row in cursor.fetchall():
+                record = dict(zip(columns, row))
+                record['executed_at'] = record['executed_at']
+                records.append(record)
+
+            return records
+        finally:
+            conn.close()
+
+    def get_trade_records_by_type(self, user_id, order_type, limit=50):
+        """获取用户特定订单类型的交易记录"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute('''
+                SELECT * FROM trade_records
+                WHERE user_id = ? AND order_type = ?
+                ORDER BY executed_at DESC
+                LIMIT ?
+            ''', (user_id, order_type, limit))
 
             columns = [description[0] for description in cursor.description]
             records = []
@@ -443,6 +488,17 @@ class DatabaseManager:
 db_manager = DatabaseManager()
 
 # API路由
+@app.route('/favicon.ico')
+def favicon():
+    """返回favicon图标"""
+    from flask import Response
+    # 返回一个简单的SVG图标
+    svg_icon = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <rect width="100" height="100" fill="#00f3ff" opacity="0.1"/>
+        <text x="50" y="60" font-size="50" text-anchor="middle" fill="#00f3ff">📈</text>
+    </svg>'''
+    return Response(svg_icon, mimetype='image/svg+xml')
+
 @app.route('/')
 def index():
     """主页"""
@@ -452,6 +508,7 @@ def index():
     <head>
         <title>币安代理交易系统</title>
         <meta charset="utf-8">
+        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
     </head>
     <body>
         <h1>🚀 币安代理交易系统后端服务</h1>
@@ -542,6 +599,7 @@ def execute_trade():
         quantity = data.get('quantity')
         take_profit = data.get('take_profit')
         stop_loss = data.get('stop_loss')
+        order_type = data.get('order_type', 'manual')  # 新增：订单类型，默认为手动
 
         if not all([user_id, symbol, side, quantity]):
             return jsonify({'success': False, 'error': '缺少必要参数'}), 400
@@ -560,12 +618,13 @@ def execute_trade():
         order_result = binance_api.place_order(symbol, side, quantity)
 
         if order_result['success']:
-            # 保存交易记录
+            # 保存交易记录，包含订单类型
             trade_id = db_manager.save_trade_record(
                 user_id,
                 order_result['data'],
                 take_profit,
-                stop_loss
+                stop_loss,
+                order_type  # 传递订单类型
             )
 
             return jsonify({
@@ -573,7 +632,8 @@ def execute_trade():
                 'message': '交易执行成功',
                 'data': {
                     'order_id': order_result['data']['orderId'],
-                    'trade_id': trade_id
+                    'trade_id': trade_id,
+                    'order_type': order_type
                 }
             })
         else:
@@ -598,6 +658,86 @@ def get_trade_records(user_id):
 
     except Exception as e:
         logger.error(f"获取交易记录异常: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/manual-orders/<user_id>', methods=['GET'])
+def get_manual_orders(user_id):
+    """获取手动订单详细数据"""
+    try:
+        # 参数验证
+        limit_str = request.args.get('limit', '50')
+        try:
+            limit = int(limit_str)
+            if limit <= 0 or limit > 1000:
+                return jsonify({'success': False, 'error': 'limit参数必须在1-1000之间'}), 400
+        except ValueError:
+            return jsonify({'success': False, 'error': 'limit参数必须是有效的整数'}), 400
+
+        status = request.args.get('status', 'all')  # all, active, completed
+        if status not in ['all', 'active', 'completed']:
+            return jsonify({'success': False, 'error': 'status参数必须是all、active或completed'}), 400
+
+        # 获取手动交易记录
+        records = db_manager.get_trade_records_by_type(user_id, 'manual', limit)
+
+        # 转换为手动订单格式
+        manual_orders = []
+        for record in records:
+            # 计算收益
+            pnl = record.get('pnl', 0)
+            pnl_percent = 0
+            if record.get('price') and record.get('quantity'):
+                total_value = float(record['price']) * float(record['quantity'])
+                if total_value > 0:
+                    pnl_percent = (pnl / total_value) * 100
+
+            # 生成订单号
+            order_id = f"MANUAL{datetime.now().strftime('%Y%m%d%H%M%S')}{random.randint(1000, 9999)}"
+
+            order = {
+                'id': record.get('id', order_id),  # 添加id字段
+                'orderId': order_id,
+                'strategyName': '手动交易',
+                'symbol': record['symbol'],
+                'baseAsset': record['symbol'].replace('USDT', ''),
+                'quoteAsset': 'USDT',
+                'side': record['side'],
+                'price': float(record['price']),
+                'quantity': float(record['quantity']),
+                'totalValue': float(record['price']) * float(record['quantity']),
+                'status': record['status'],
+                'timestamp': record['executed_at'],
+                'closePrice': float(record['price']) * (1 + (pnl_percent / 100)) if pnl_percent != 0 else float(record['price']),
+                'closeTime': record.get('closed_at'),
+                'pnl': pnl,
+                'pnlPercent': pnl_percent,
+                'position': random.randint(20, 80),  # 模拟仓位百分比
+                'takeProfit': float(record['price']) * 1.02 if record['side'] == 'BUY' else float(record['price']) * 0.98,
+                'stopLoss': float(record['price']) * 0.98 if record['side'] == 'BUY' else float(record['price']) * 1.02,
+                'fee': float(record['price']) * float(record['quantity']) * 0.001,  # 0.1% 手续费
+                'aiGenerated': False,  # 手动订单
+                'orderType': 'manual'
+            }
+
+            # 根据状态过滤
+            if status == 'all' or (status == 'active' and record['status'] == 'PENDING') or (status == 'completed' and record['status'] == 'FILLED'):
+                manual_orders.append(order)
+
+        return jsonify({
+            'success': True,
+            'data': manual_orders,
+            'count': len(manual_orders),
+            'summary': {
+                'total_orders': len(manual_orders),
+                'active_orders': len([o for o in manual_orders if o['status'] == 'PENDING']),
+                'completed_orders': len([o for o in manual_orders if o['status'] == 'FILLED']),
+                'total_pnl': sum(o['pnl'] for o in manual_orders),
+                'win_rate': len([o for o in manual_orders if o['pnl'] > 0]) / len(manual_orders) * 100 if manual_orders else 0
+            }
+        })
+
+    except Exception as e:
+        logger.error(f"获取手动订单异常: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/sync', methods=['POST'])
@@ -665,6 +805,86 @@ def calculate_profit_share():
 
     except Exception as e:
         logger.error(f"计算分润异常: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/quantified-orders/<user_id>', methods=['GET'])
+def get_quantified_orders(user_id):
+    """获取量化订单详细数据"""
+    try:
+        # 参数验证
+        limit_str = request.args.get('limit', '50')
+        try:
+            limit = int(limit_str)
+            if limit <= 0 or limit > 1000:
+                return jsonify({'success': False, 'error': 'limit参数必须在1-1000之间'}), 400
+        except ValueError:
+            return jsonify({'success': False, 'error': 'limit参数必须是有效的整数'}), 400
+
+        status = request.args.get('status', 'all')  # all, active, completed
+        if status not in ['all', 'active', 'completed']:
+            return jsonify({'success': False, 'error': 'status参数必须是all、active或completed'}), 400
+
+        # 获取量化交易记录
+        records = db_manager.get_trade_records_by_type(user_id, 'quantified', limit)
+
+        # 转换为量化订单格式
+        quantified_orders = []
+        for record in records:
+            # 计算收益
+            pnl = record.get('pnl', 0)
+            pnl_percent = 0
+            if record.get('price') and record.get('quantity'):
+                total_value = float(record['price']) * float(record['quantity'])
+                if total_value > 0:
+                    pnl_percent = (pnl / total_value) * 100
+
+            # 生成订单号
+            order_id = f"AI{datetime.now().strftime('%Y%m%d%H%M%S')}{random.randint(1000, 9999)}"
+
+            order = {
+                'id': record.get('id', order_id),  # 添加id字段
+                'orderId': order_id,
+                'strategyName': f"L{random.randint(1,3)}-合约策略交易",
+                'symbol': record['symbol'],
+                'baseAsset': record['symbol'].replace('USDT', ''),
+                'quoteAsset': 'USDT',
+                'side': record['side'],
+                'price': float(record['price']),
+                'quantity': float(record['quantity']),
+                'totalValue': float(record['price']) * float(record['quantity']),
+                'status': record['status'],
+                'timestamp': record['executed_at'],
+                'closePrice': float(record['price']) * (1 + (pnl_percent / 100)) if pnl_percent != 0 else float(record['price']),
+                'closeTime': record.get('closed_at'),
+                'pnl': pnl,
+                'pnlPercent': pnl_percent,
+                'position': random.randint(20, 80),  # 模拟仓位百分比
+                'takeProfit': float(record['price']) * 1.02 if record['side'] == 'BUY' else float(record['price']) * 0.98,
+                'stopLoss': float(record['price']) * 0.98 if record['side'] == 'BUY' else float(record['price']) * 1.02,
+                'fee': float(record['price']) * float(record['quantity']) * 0.001,  # 0.1% 手续费
+                'aiGenerated': True,
+                'orderType': record.get('order_type', 'quantified')  # 新增：订单类型
+            }
+
+            # 根据状态过滤
+            if status == 'all' or (status == 'active' and record['status'] == 'PENDING') or (status == 'completed' and record['status'] == 'FILLED'):
+                quantified_orders.append(order)
+
+        return jsonify({
+            'success': True,
+            'data': quantified_orders,
+            'count': len(quantified_orders),
+            'summary': {
+                'total_orders': len(quantified_orders),
+                'active_orders': len([o for o in quantified_orders if o['status'] == 'PENDING']),
+                'completed_orders': len([o for o in quantified_orders if o['status'] == 'FILLED']),
+                'total_pnl': sum(o['pnl'] for o in quantified_orders),
+                'win_rate': len([o for o in quantified_orders if o['pnl'] > 0]) / len(quantified_orders) * 100 if quantified_orders else 0
+            }
+        })
+
+    except Exception as e:
+        logger.error(f"获取量化订单异常: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/market-data', methods=['GET'])

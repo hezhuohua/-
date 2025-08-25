@@ -252,8 +252,4 @@ The backend is structured as a FastAPI application with the following key compon
 ## Frontend Components
 
 The frontend consists of several HTML files that serve different purposes:
-- `index.html` - Main dashboard with real-time charts and predictions
-- `demo.html` - Demonstration version with simulated data
-- Various test and diagnostic HTML files for specific features
-
-Key JavaScri
+- `

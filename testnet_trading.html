@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Binance Testnet 交易测试系统</title>
+
+        <!-- CSS框架 -->
+        <link href="https://cdn.jsdelivr.net/npm/element-plus@2.4.4/dist/index.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+        <!-- CryptoJS 加密库 -->
+        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+
+        <style>
+            :root {
+                --tech-blue: #00f3ff;
+                --tech-blue-dark: #008b91;
+                --tech-purple: #8a2be2;
+                --tech-bg: #0a0a1a;
+                --tech-panel: #11112a;
+                --tech-panel-border: #00f3ff;
+                --tech-text: #ffffff;
+                --tech-text-secondary: #b0b0b0;
+                --tech-success: #28a745;
+                --tech-danger: #dc3545;
+                --tech-warning: #ffc107;
+            }
+
+            body {
+                font-family: 'Arial', sans-serif;
+                background: var(--tech-bg);
+                color: var(--tech-text);
+                margin: 0;
+                padding: 20px;
+                background-image:
+                    radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 20%);
+                min-height: 100vh;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                padding: 20px;
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-panel-border);
+                border-radius: 16px;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            }
+
+            .header h1 {
+                color: var(--tech-blue);
+                margin: 0;
+                font-size: 2.5em;
+            }
+
+            .header .subtitle {
+                color: var(--tech-text-secondary);
+                margin-top: 10px;
+            }
+
+            .panel {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-panel-border);
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            }
+
+            .panel h2 {
+                color: var(--tech-blue);
+                margin-top: 0;
+                border-bottom: 1px solid var(--tech-panel-border);
+                padding-bottom: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                color: var(--tech-text-secondary);
+            }
+
+            .form-group input,
+            .form-group select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--tech-panel-border);
+                border-radius: 8px;
+                background: var(--tech-bg);
+                color: var(--tech-text);
+                box-sizing: border-box;
+            }
+
+            .btn {
+                background: var(--tech-panel);
+                border: 1px solid var(--tech-blue);
+                color: var(--tech-blue);
+                padding: 12px 24px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
+                margin: 5px;
+                font-weight: bold;
+            }
+
+            .btn:hover {
+                background: var(--tech-blue);
+                color: var(--tech-bg);
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            }
+
+            .btn-success {
+                border-color: var(--tech-success);
+                color: var(--tech-success);
+            }
+
+            .btn-success:hover {
+                background: var(--tech-success);
+                color: var(--tech-bg);
+            }
+
+            .btn-danger {
+                border-color: var(--tech-danger);
+                color: var(--tech-danger);
+            }
+
+            .btn-danger:hover {
+                background: var(--tech-danger);
+                color: var(--tech-bg);
+            }
+
+            .status {
+                padding: 10px;
+                border-radius: 8px;
+                margin: 10px 0;
+                font-weight: bold;
+            }
+
+            .status.success {
+                background: rgba(40, 167, 69, 0.2);
+                border: 1px solid var(--tech-success);
+                color: var(--tech-success);
+            }
+
+            .status.error {
+                background: rgba(220, 53, 69, 0.2);
+                border: 1px solid var(--tech-danger);
+                color: var(--tech-danger);
+            }
+
+            .status.info {
+                background: rgba(0, 243, 255, 0.2);
+                border: 1px solid var(--tech-blue);
+                color: var(--tech-blue);
+            }
+
+            .result {
+                background: var(--tech-bg);
+                border: 1px solid var(--tech-panel-border);
+                border-radius: 8px;
+                padding: 15px;
+                margin: 10px 0;
+                font-family: monospace;
+                white-space: pre-wrap;
+                max-height: 300px;
+                overflow-y: auto;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+
+            .api-info {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid var(--tech-blue);
+                border-radius: 8px;
+                padding: 15px;
+                margin: 10px 0;
+            }
+
+            .api-info h3 {
+                color: var(--tech-blue);
+                margin-top: 0;
+            }
+
+            .api-info p {
+                margin: 5px 0;
+                color: var(--tech-text-secondary);
+            }
+
+            .api-info .highlight {
+                color: var(--tech-blue);
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🚀 Binance Testnet 交易测试系统</h1>
+                <div class="subtitle">安全测试环境 - 使用虚拟资金进行交易测试</div>
+            </div>
+
+            <!-- API配置面板 -->
+            <div class="panel">
+                <h2><i class="fas fa-key"></i> API 配置</h2>
+
+                <div class="api-info">
+                    <h3>🔧 关键配置说明</h3>
+                    <p><strong>Testnet API 地址：</strong> <span class="highlight">https://testnet.binancefuture.com</span>
+                    </p>
+                    <p><strong>您的 API Key：</strong> <span
+                            class="highlight">BZGVVshdX8o6JCwChl9Nl0DuXVDASJO5coMsWNbUSKWkQXet5tmAKe2uGN74era5</span>
+                    </p>
+                    <p><strong>您的 API Secret：</strong> <span
+                            class="highlight">qRkCTvWI72lSFO6budBDv1fIyddb8Ag2UVlarqFuB8Qv7QRu0bB9LL29o8QFNlaD</span>
+                    </p>
+                    <p><strong>虚拟资金：</strong> <span class="highlight">10万 USDT</span> (Testnet 默认)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="apiKey">API Key:</label>
+                    <input type="text" id="apiKey"
+                        value="BZGVVshdX8o6JCwChl9Nl0DuXVDASJO5coMsWNbUSKWkQXet5tmAKe2uGN74era5"
+                        placeholder="输入您的API Key">
+                </div>
+
+                <div class="form-group">
+                    <label for="apiSecret">API Secret:</label>
+                    <input type="password" id="apiSecret"
+                        value="qRkCTvWI72lSFO6budBDv1fIyddb8Ag2UVlarqFuB8Qv7QRu0bB9LL29o8QFNlaD"
+                        placeholder="输入您的API Secret">
+                </div>
+
+                <button class="btn btn-success" onclick="testApiConnection()">
+                    <i class="fas fa-plug"></i> 测试API连接
+                </button>
+                <button class="btn" onclick="getAccountInfo()">
+                    <i class="fas fa-wallet"></i> 查询账户信息
+                </button>
+            </div>
+
+            <!-- 交易测试面板 -->
+            <div class="panel">
+                <h2><i class="fas fa-chart-line"></i> 交易测试</h2>
+
+                <div class="grid">
+                    <div>
+                        <div class="form-group">
+                            <label for="symbol">交易对:</label>
+                            <select id="symbol">
+                                <option value="BTCUSDT">BTCUSDT</option>
+                                <option value="ETHUSDT">ETHUSDT</option>
+                                <option value="BNBUSDT">BNBUSDT</option>
+                                <option value="SOLUSDT">SOLUSDT</option>
+                                <option value="XRPUSDT">XRPUSDT</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="side">交易方向:</label>
+                            <select id="side">
+                                <option value="BUY">买入 (做多)</option>
+                                <option value="SELL">卖出 (做空)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">数量:</label>
+                            <input type="number" id="quantity" value="0.001" step="0.001" min="0.001"
+                                placeholder="交易数量">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="orderType">订单类型:</label>
+                            <select id="orderType">
+                                <option value="MARKET">市价单</option>
+                                <option value="LIMIT">限价单</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="priceGroup" style="display: none;">
+                            <label for="price">价格:</label>
+                            <input type="number" id="price" step="0.01" placeholder="限价单价格">
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="btn btn-success" onclick="placeOrder()">
+                            <i class="fas fa-paper-plane"></i> 下单测试
+                        </button>
+                        <button class="btn" onclick="getOpenOrders()">
+                            <i class="fas fa-list"></i> 查询未成交订单
+                        </button>
+                        <button class="btn" onclick="getPositionRisk()">
+                            <i class="fas fa-chart-bar"></i> 查询持仓风险
+                        </button>
+                        <button class="btn" onclick="getTradeHistory()">
+                            <i class="fas fa-history"></i> 查询交易历史
+                        </button>
+                        <button class="btn btn-danger" onclick="cancelAllOrders()">
+                            <i class="fas fa-times"></i> 撤销所有订单
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 状态显示面板 -->
+            <div class="panel">
+                <h2><i class="fas fa-info-circle"></i> 测试结果</h2>
+                <div id="status"></div>
+                <div id="result"></div>
+            </div>
+        </div>
+
+        <script>
+            // Testnet API配置
+            const TESTNET_BASE_URL = 'https://testnet.binancefuture.com';
+            const API_KEY = 'BZGVVshdX8o6JCwChl9Nl0DuXVDASJO5coMsWNbUSKWkQXet5tmAKe2uGN74era5';
+            const API_SECRET = 'qRkCTvWI72lSFO6budBDv1fIyddb8Ag2UVlarqFuB8Qv7QRu0bB9LL29o8QFNlaD';
+
+            // 生成签名
+            function generateSignature(queryString, secret) {
+                return CryptoJS.HmacSHA256(queryString, secret).toString();
+            }
+
+            // 显示状态
+            function showStatus(message, type = 'info') {
+                const statusDiv = document.getElementById('status');
+                statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            }
+
+            // 显示结果
+            function showResult(data) {
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `<div class="result">${JSON.stringify(data, null, 2)}</div>`;
+            }
+
+            // 测试API连接
+            async function testApiConnection() {
+                try {
+                    showStatus('正在测试API连接...', 'info');
+
+                    const timestamp = Date.now();
+                    const queryString = `timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v2/account?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ API连接成功！', 'success');
+                        showResult({
+                            message: 'API连接测试成功',
+                            accountInfo: {
+                                totalWalletBalance: data.totalWalletBalance + ' USDT',
+                                totalUnrealizedProfit: data.totalUnrealizedProfit + ' USDT',
+                                totalMarginBalance: data.totalMarginBalance + ' USDT',
+                                availableBalance: data.availableBalance + ' USDT'
+                            }
+                        });
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ API连接失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 连接错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 获取账户信息
+            async function getAccountInfo() {
+                try {
+                    showStatus('正在获取账户信息...', 'info');
+
+                    const timestamp = Date.now();
+                    const queryString = `timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v2/account?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 账户信息获取成功', 'success');
+                        showResult(data);
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 获取账户信息失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 获取账户信息错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 下单测试
+            async function placeOrder() {
+                try {
+                    const symbol = document.getElementById('symbol').value;
+                    const side = document.getElementById('side').value;
+                    const quantity = document.getElementById('quantity').value;
+                    const orderType = document.getElementById('orderType').value;
+                    const price = document.getElementById('price').value;
+
+                    if (!quantity || quantity <= 0) {
+                        showStatus('❌ 请输入有效的交易数量', 'error');
+                        return;
+                    }
+
+                    if (orderType === 'LIMIT' && (!price || price <= 0)) {
+                        showStatus('❌ 限价单请输入有效价格', 'error');
+                        return;
+                    }
+
+                    showStatus('正在下单...', 'info');
+
+                    const timestamp = Date.now();
+                    let queryString = `symbol=${symbol}&side=${side}&type=${orderType}&quantity=${quantity}&timestamp=${timestamp}`;
+
+                    if (orderType === 'LIMIT') {
+                        queryString += `&price=${price}&timeInForce=GTC`;
+                    }
+
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v1/order?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 下单成功！', 'success');
+                        showResult({
+                            message: '下单测试成功',
+                            orderInfo: data,
+                            details: {
+                                symbol: data.symbol,
+                                side: data.side,
+                                type: data.type,
+                                quantity: data.origQty,
+                                price: data.price || '市价',
+                                status: data.status,
+                                orderId: data.orderId
+                            }
+                        });
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 下单失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 下单错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 获取未成交订单
+            async function getOpenOrders() {
+                try {
+                    showStatus('正在获取未成交订单...', 'info');
+
+                    const symbol = document.getElementById('symbol').value;
+                    const timestamp = Date.now();
+                    const queryString = `symbol=${symbol}&timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v1/openOrders?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 未成交订单获取成功', 'success');
+                        showResult(data);
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 获取未成交订单失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 获取未成交订单错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 获取持仓风险
+            async function getPositionRisk() {
+                try {
+                    showStatus('正在获取持仓风险...', 'info');
+
+                    const timestamp = Date.now();
+                    const queryString = `timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v2/positionRisk?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 持仓风险获取成功', 'success');
+                        showResult(data);
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 获取持仓风险失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 获取持仓风险错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 获取交易历史
+            async function getTradeHistory() {
+                try {
+                    showStatus('正在获取交易历史...', 'info');
+
+                    const symbol = document.getElementById('symbol').value;
+                    const timestamp = Date.now();
+                    const queryString = `symbol=${symbol}&limit=10&timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v1/userTrades?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 交易历史获取成功', 'success');
+                        showResult(data);
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 获取交易历史失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 获取交易历史错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 撤销所有订单
+            async function cancelAllOrders() {
+                try {
+                    const symbol = document.getElementById('symbol').value;
+
+                    if (!confirm(`确定要撤销所有 ${symbol} 的未成交订单吗？`)) {
+                        return;
+                    }
+
+                    showStatus('正在撤销所有订单...', 'info');
+
+                    const timestamp = Date.now();
+                    const queryString = `symbol=${symbol}&timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString, API_SECRET);
+
+                    const url = `${TESTNET_BASE_URL}/fapi/v1/allOpenOrders?${queryString}&signature=${signature}`;
+
+                    const response = await fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        showStatus('✅ 所有订单撤销成功', 'success');
+                        showResult(data);
+                    } else {
+                        const errorData = await response.json();
+                        showStatus('❌ 撤销订单失败: ' + errorData.msg, 'error');
+                        showResult(errorData);
+                    }
+                } catch (error) {
+                    showStatus('❌ 撤销订单错误: ' + error.message, 'error');
+                    showResult({ error: error.message });
+                }
+            }
+
+            // 订单类型切换
+            document.getElementById('orderType').addEventListener('change', function () {
+                const priceGroup = document.getElementById('priceGroup');
+                if (this.value === 'LIMIT') {
+                    priceGroup.style.display = 'block';
+                } else {
+                    priceGroup.style.display = 'none';
+                }
+            });
+
+            // 页面加载时自动测试连接
+            window.addEventListener('load', function () {
+                showStatus('🚀 Testnet交易测试系统已启动，点击"测试API连接"开始测试', 'info');
+            });
+        </script>
+    </body>
+
+</html>

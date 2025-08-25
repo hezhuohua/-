@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>简单 Testnet 测试</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #0a0a1a;
+                color: #ffffff;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .test-section {
+                background: #11112a;
+                border: 1px solid #00f3ff;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .btn {
+                background: #11112a;
+                border: 1px solid #00f3ff;
+                color: #00f3ff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            .btn:hover {
+                background: #00f3ff;
+                color: #0a0a1a;
+            }
+
+            .result {
+                background: #0a0a1a;
+                border: 1px solid #333;
+                border-radius: 5px;
+                padding: 15px;
+                margin: 10px 0;
+                white-space: pre-wrap;
+                font-family: monospace;
+            }
+
+            .success {
+                color: #28a745;
+            }
+
+            .error {
+                color: #dc3545;
+            }
+
+            .info {
+                color: #00f3ff;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>🚀 Binance Testnet 简单测试</h1>
+
+            <div class="test-section">
+                <h2>1. 测试公开API（无需认证）</h2>
+                <button class="btn" onclick="testPublicApi()">测试公开API</button>
+                <div id="publicResult" class="result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>2. 测试账户API（需要认证）</h2>
+                <p>API Key: BZGVVshdX8o6JCwChl9Nl0DuXVDASJO5coMsWNbUSKWkQXet5tmAKe2uGN74era5</p>
+                <button class="btn" onclick="testAccountApi()">测试账户API</button>
+                <div id="accountResult" class="result"></div>
+            </div>
+
+            <div class="test-section">
+                <h2>3. 测试下单API</h2>
+                <button class="btn" onclick="testOrderApi()">测试下单</button>
+                <div id="orderResult" class="result"></div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+        <script>
+            const API_KEY = 'BZGVVshdX8o6JCwChl9Nl0DuXVDASJO5coMsWNbUSKWkQXet5tmAKe2uGN74era5';
+            const API_SECRET = 'qRkCTvWI72lSFO6budBDv1fIyddb8Ag2UVlarqFuB8Qv7QRu0bB9LL29o8QFNlaD';
+            const BASE_URL = 'https://testnet.binancefuture.com';
+
+            function log(elementId, message, type = 'info') {
+                const element = document.getElementById(elementId);
+                const timestamp = new Date().toLocaleTimeString();
+                element.innerHTML += `[${timestamp}] ${message}\n`;
+                element.scrollTop = element.scrollHeight;
+            }
+
+            function generateSignature(queryString) {
+                return CryptoJS.HmacSHA256(queryString, API_SECRET).toString();
+            }
+
+            async function testPublicApi() {
+                log('publicResult', '开始测试公开API...', 'info');
+
+                try {
+                    // 测试获取服务器时间
+                    const response = await fetch(`${BASE_URL}/fapi/v1/time`);
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        log('publicResult', `✅ 服务器时间: ${new Date(data.serverTime).toLocaleString()}`, 'success');
+                    } else {
+                        log('publicResult', `❌ 错误: ${JSON.stringify(data)}`, 'error');
+                    }
+
+                    // 测试获取交易规则
+                    const rulesResponse = await fetch(`${BASE_URL}/fapi/v1/exchangeInfo`);
+                    const rulesData = await rulesResponse.json();
+
+                    if (rulesResponse.ok) {
+                        log('publicResult', `✅ 交易规则获取成功，支持 ${rulesData.symbols.length} 个交易对`, 'success');
+                    } else {
+                        log('publicResult', `❌ 交易规则错误: ${JSON.stringify(rulesData)}`, 'error');
+                    }
+
+                } catch (error) {
+                    log('publicResult', `❌ 网络错误: ${error.message}`, 'error');
+                }
+            }
+
+            async function testAccountApi() {
+                log('accountResult', '开始测试账户API...', 'info');
+
+                try {
+                    const timestamp = Date.now();
+                    const queryString = `timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString);
+
+                    const url = `${BASE_URL}/fapi/v2/account?${queryString}&signature=${signature}`;
+
+                    log('accountResult', `请求URL: ${url}`, 'info');
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        log('accountResult', `✅ 账户信息获取成功`, 'success');
+                        log('accountResult', `总余额: ${data.totalWalletBalance} USDT`, 'success');
+                        log('accountResult', `可用余额: ${data.availableBalance} USDT`, 'success');
+                        log('accountResult', `未实现盈亏: ${data.totalUnrealizedProfit} USDT`, 'success');
+                    } else {
+                        log('accountResult', `❌ 错误代码: ${data.code}`, 'error');
+                        log('accountResult', `❌ 错误信息: ${data.msg}`, 'error');
+
+                        // 提供解决方案
+                        if (data.code === -2015) {
+                            log('accountResult', '💡 解决方案: 请检查API Key权限，确保有"合约交易"权限', 'info');
+                        }
+                    }
+
+                } catch (error) {
+                    log('accountResult', `❌ 网络错误: ${error.message}`, 'error');
+                }
+            }
+
+            async function testOrderApi() {
+                log('orderResult', '开始测试下单API...', 'info');
+
+                try {
+                    const symbol = 'BTCUSDT';
+                    const side = 'BUY';
+                    const type = 'MARKET';
+                    const quantity = '0.001';
+                    const timestamp = Date.now();
+
+                    const queryString = `symbol=${symbol}&side=${side}&type=${type}&quantity=${quantity}&timestamp=${timestamp}`;
+                    const signature = generateSignature(queryString);
+
+                    const url = `${BASE_URL}/fapi/v1/order?${queryString}&signature=${signature}`;
+
+                    log('orderResult', `下单参数: ${symbol} ${side} ${quantity}`, 'info');
+
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-MBX-APIKEY': API_KEY
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        log('orderResult', `✅ 下单成功！`, 'success');
+                        log('orderResult', `订单ID: ${data.orderId}`, 'success');
+                        log('orderResult', `状态: ${data.status}`, 'success');
+                        log('orderResult', `成交价格: ${data.avgPrice}`, 'success');
+                        log('orderResult', `成交数量: ${data.executedQty}`, 'success');
+                    } else {
+                        log('orderResult', `❌ 下单失败`, 'error');
+                        log('orderResult', `错误代码: ${data.code}`, 'error');
+                        log('orderResult', `错误信息: ${data.msg}`, 'error');
+
+                        if (data.code === -2015) {
+                            log('orderResult', '💡 解决方案: 请检查API Key权限', 'info');
+                        } else if (data.code === -2019) {
+                            log('orderResult', '💡 解决方案: 资金不足，请检查账户余额', 'info');
+                        }
+                    }
+
+                } catch (error) {
+                    log('orderResult', `❌ 网络错误: ${error.message}`, 'error');
+                }
+            }
+        </script>
+    </body>
+
+</html>

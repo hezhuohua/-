@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>折叠功能测试</title>
+        <style>
+            :root {
+                --tech-bg: #0a0e1a;
+                --tech-blue: #00f3ff;
+                --tech-text: #ffffff;
+            }
+
+            body {
+                background: var(--tech-bg);
+                color: var(--tech-text);
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+
+            .test-panel {
+                background: rgba(0, 243, 255, 0.05);
+                border: 1px solid rgba(0, 243, 255, 0.2);
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 8px;
+                transition: background-color 0.3s ease;
+            }
+
+            .header:hover {
+                background: rgba(0, 243, 255, 0.1);
+            }
+
+            .toggle-icon {
+                color: var(--tech-blue);
+                transition: transform 0.3s ease;
+            }
+
+            .content {
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+
+            .test-item {
+                background: rgba(0, 243, 255, 0.1);
+                border: 1px solid rgba(0, 243, 255, 0.3);
+                border-radius: 8px;
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </head>
+
+    <body>
+        <h1>折叠功能测试</h1>
+
+        <div class="test-panel">
+            <div class="header" onclick="toggleContent()">
+                <h3 style="margin: 0; color: var(--tech-blue);">
+                    <i class="fas fa-chart-line"></i> 测试折叠功能
+                </h3>
+                <i id="testToggleIcon" class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+
+            <div id="testContent" class="content">
+                <div class="test-item">
+                    <strong>测试项目 1</strong>
+                    <p>这是第一个测试项目的内容</p>
+                </div>
+                <div class="test-item">
+                    <strong>测试项目 2</strong>
+                    <p>这是第二个测试项目的内容</p>
+                </div>
+                <div class="test-item">
+                    <strong>测试项目 3</strong>
+                    <p>这是第三个测试项目的内容</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleContent() {
+                const content = document.getElementById('testContent');
+                const icon = document.getElementById('testToggleIcon');
+
+                console.log('toggleContent 被调用');
+                console.log('content:', content);
+                console.log('icon:', icon);
+
+                if (content && icon) {
+                    console.log('当前显示状态:', content.style.display);
+
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        icon.style.transform = 'rotate(0deg)';
+                        icon.className = 'fas fa-chevron-down toggle-icon';
+                        console.log('展开内容');
+                    } else {
+                        content.style.display = 'none';
+                        icon.style.transform = 'rotate(180deg)';
+                        icon.className = 'fas fa-chevron-up toggle-icon';
+                        console.log('折叠内容');
+                    }
+                } else {
+                    console.error('找不到元素');
+                }
+            }
+
+            // 页面加载完成后初始化
+            document.addEventListener('DOMContentLoaded', function () {
+                console.log('页面加载完成');
+                const content = document.getElementById('testContent');
+                const icon = document.getElementById('testToggleIcon');
+
+                if (content && icon) {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(0deg)';
+                    icon.className = 'fas fa-chevron-down toggle-icon';
+                    console.log('初始化完成');
+                }
+            });
+        </script>
+    </body>
+
+</html>

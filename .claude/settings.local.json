@@ -10,7 +10,10 @@
       "Bash(curl:*)",
       "Bash(pip:*)",
       "Bash(launch_system.bat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(copy:*)",
+      "Bash(C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe:*)",
+      "Bash(cmd /c \"dir:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Binance Testnet API 设置指南</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background: #0a0a1a;
+                color: #ffffff;
+                padding: 20px;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+
+            .section {
+                background: #11112a;
+                border: 1px solid #00f3ff;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .section h2 {
+                color: #00f3ff;
+                border-bottom: 1px solid #00f3ff;
+                padding-bottom: 10px;
+            }
+
+            .step {
+                background: #0a0a1a;
+                border: 1px solid #333;
+                border-radius: 5px;
+                padding: 15px;
+                margin: 10px 0;
+            }
+
+            .step h3 {
+                color: #00f3ff;
+                margin-top: 0;
+            }
+
+            .highlight {
+                background: #00f3ff;
+                color: #0a0a1a;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-weight: bold;
+            }
+
+            .warning {
+                background: #dc3545;
+                color: #ffffff;
+                padding: 10px;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+
+            .success {
+                background: #28a745;
+                color: #ffffff;
+                padding: 10px;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+
+            .btn {
+                background: #11112a;
+                border: 1px solid #00f3ff;
+                color: #00f3ff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 5px;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+            .btn:hover {
+                background: #00f3ff;
+                color: #0a0a1a;
+            }
+
+            .code {
+                background: #0a0a1a;
+                border: 1px solid #333;
+                border-radius: 5px;
+                padding: 15px;
+                font-family: monospace;
+                white-space: pre-wrap;
+                margin: 10px 0;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>🔧 Binance Testnet API 设置指南</h1>
+
+            <div class="warning">
+                <strong>⚠️ 当前问题：</strong> API Key 返回错误 -2015 (Invalid API-key, IP, or permissions for action)
+            </div>
+
+            <div class="section">
+                <h2>📋 问题诊断</h2>
+                <p>错误代码 -2015 通常由以下原因引起：</p>
+                <ul>
+                    <li><strong>API Key 权限不足</strong> - 缺少"合约交易"权限</li>
+                    <li><strong>IP 限制</strong> - API Key 设置了 IP 白名单</li>
+                    <li><strong>API Key 类型错误</strong> - 使用了现货 API 而不是期货 API</li>
+                    <li><strong>API Key 已过期或无效</strong></li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>🔄 重新生成 Testnet API Key</h2>
+
+                <div class="step">
+                    <h3>步骤 1: 访问 Binance Testnet</h3>
+                    <p>打开浏览器，访问：<a href="https://testnet.binancefuture.com" target="_blank" class="btn">Binance
+                            Testnet</a></p>
+                    <p>如果还没有账号，请先注册一个 Testnet 账号。</p>
+                </div>
+
+                <div class="step">
+                    <h3>步骤 2: 登录并进入 API 管理</h3>
+                    <p>1. 登录您的 Testnet 账号</p>
+                    <p>2. 点击右上角的用户头像</p>
+                    <p>3. 选择 <span class="highlight">API Management</span></p>
+                </div>
+
+                <div class="step">
+                    <h3>步骤 3: 创建新的 API Key</h3>
+                    <p>1. 点击 <span class="highlight">Create API Key</span> 按钮</p>
+                    <p>2. 在权限设置中，<strong>必须勾选以下权限：</strong></p>
+                    <ul>
+                        <li>✅ <span class="highlight">Enable Futures</span> (启用期货交易)</li>
+                        <li>✅ <span class="highlight">Enable Reading</span> (启用读取权限)</li>
+                        <li>✅ <span class="highlight">Enable Spot & Margin Trading</span> (启用现货和保证金交易)</li>
+                    </ul>
+                    <p>3. <strong>重要：</strong> 取消勾选 <span class="highlight">Enable Withdrawals</span> (提现权限)</p>
+                    <p>4. 点击 <span class="highlight">Create</span> 创建 API Key</p>
+                </div>
+
+                <div class="step">
+                    <h3>步骤 4: 保存 API 信息</h3>
+                    <p>创建成功后，您会看到：</p>
+                    <div class="code">API Key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                        API Secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</div>
+                    <p><strong>⚠️ 重要提醒：</strong></p>
+                    <ul>
+                        <li>API Secret 只会显示一次，请立即复制保存</li>
+                        <li>不要分享给任何人</li>
+                        <li>建议保存在安全的密码管理器中</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 更新您的 API 配置</h2>
+                <p>获得新的 API Key 后，请更新以下配置：</p>
+
+                <div class="code">// 新的 API 配置
+                    const API_KEY = '您的新API Key';
+                    const API_SECRET = '您的新API Secret';
+                    const BASE_URL = 'https://testnet.binancefuture.com';</div>
+
+                <p>然后重新测试 API 连接。</p>
+            </div>
+
+            <div class="section">
+                <h2>🧪 测试步骤</h2>
+                <p>获得新的 API Key 后，按以下顺序测试：</p>
+
+                <div class="step">
+                    <h3>1. 测试公开 API</h3>
+                    <p>✅ 应该成功 - 获取服务器时间和交易规则</p>
+                </div>
+
+                <div class="step">
+                    <h3>2. 测试账户 API</h3>
+                    <p>✅ 应该成功 - 获取账户余额信息</p>
+                    <p>预期结果：显示 100,000 USDT 虚拟资金</p>
+                </div>
+
+                <div class="step">
+                    <h3>3. 测试下单 API</h3>
+                    <p>✅ 应该成功 - 可以进行模拟交易</p>
+                    <p>建议测试：买入 0.001 BTC</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🚀 快速测试工具</h2>
+                <p>使用以下工具快速测试您的 API：</p>
+
+                <a href="simple_testnet_test.html" class="btn">🔧 简单测试工具</a>
+                <a href="testnet_trading.html" class="btn">📈 完整交易测试</a>
+            </div>
+
+            <div class="section">
+                <h2>📞 常见问题</h2>
+
+                <div class="step">
+                    <h3>Q: 为什么我的 API Key 没有权限？</h3>
+                    <p>A: 请确保在创建 API Key 时勾选了"Enable Futures"权限。</p>
+                </div>
+
+                <div class="step">
+                    <h3>Q: 我可以使用真实的币安 API Key 吗？</h3>
+                    <p>A: <strong>绝对不可以！</strong> Testnet 和主网使用不同的 API Key。请使用专门的 Testnet API Key。</p>
+                </div>
+
+                <div class="step">
+                    <h3>Q: 测试时资金不足怎么办？</h3>
+                    <p>A: Testnet 账户默认有 100,000 USDT 虚拟资金。如果显示资金不足，请检查交易数量是否过大。</p>
+                </div>
+
+                <div class="step">
+                    <h3>Q: 如何确保 API Key 安全？</h3>
+                    <p>A: 1. 只启用必要的权限 2. 不要启用提现权限 3. 定期更换 API Key 4. 不要在代码中硬编码 API Secret</p>
+                </div>
+            </div>
+
+            <div class="success">
+                <strong>🎉 完成设置后，您就可以安全地在 Testnet 环境中测试交易功能了！</strong>
+            </div>
+        </div>
+    </body>
+
+</html>
